@@ -18,6 +18,7 @@ const HEADER3 = 'h3';
 const HEADER4 = 'h4';
 const HEADER5 = 'h5';
 const HEADER6 = 'h6';
+const HORIZONTAL_RULE = 'hr';
 const MATH = 'math';
 
 const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
@@ -74,6 +75,8 @@ class Note {
         nodes.push(createMath(content, created, modified));
       } else if (headers.includes(tagName)) {
         nodes.push(createHeader(parseInt(tagName[1]), content, created, modified));
+      } else if (tagName == 'hr') {
+        nodes.push(createHorizontalRule(created, modified));
       }
     }
 
@@ -109,6 +112,11 @@ window.addEventListener('load', () => {
       currentNote.append(caretPos + 1, header);
     });
   }
+
+  document.getElementById('ins-hr').addEventListener('click', e => {
+    const horizontal = createHorizontalRule();
+    currentNote.append(caretPos + 1, horizontal);
+  });
 
   /*
   document.getElementById('bold').addEventListener('click', e => {
@@ -339,6 +347,27 @@ function createHeader(level, content = '', created, modified) {
   });
 
   return header;
+}
+
+function createHorizontalRule(created, modified) {
+  const dom = document.createElement('hr');
+
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const horizontal = {
+    type: HORIZONTAL_RULE,
+    element: dom,
+    created,
+    modified
+  };
+
+  return horizontal;
 }
 
 /*
