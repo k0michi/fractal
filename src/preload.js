@@ -27,5 +27,9 @@ contextBridge.exposeInMainWorld('bridge', {
 
   async doesExist(...args) {
     return await ipcRenderer.invoke('does-exist', ...args);
-  }
+  },
+
+  async saveFileDialog(...args) {
+    return await ipcRenderer.invoke('save-file-dialog', ...args);
+  },
 });

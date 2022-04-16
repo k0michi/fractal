@@ -62,15 +62,25 @@ ipcMain.handle('save-file', async (e, filePath, data) => {
   return await fs.writeFile(filePath, data);
 });
 
+ipcMain.handle('save-file-dialog', async (e, filePath, data) => {
+  const result = await dialog.showSaveDialog({ properties: ['createDirectory'] });
+
+  if (!result.canceled) {
+    return result.filePath;
+  } else {
+    return null;
+  }
+});
+
 ipcMain.handle('read-dir', async (e, dirPath, fullPath) => {
   const dir = await fs.opendir(dirPath);
   const ents = [];
 
   for await (const dirent of dir) {
     if (dirent.isFile()) {
-      if (fullPath){
+      if (fullPath) {
         ents.push(path.join(dirPath, dirent.name));
-      }else{
+      } else {
         ents.push(dirent.name);
       }
     }
@@ -91,7 +101,7 @@ ipcMain.handle('does-exist', async (e, filePath) => {
   try {
     await fs.access(filePath);
     return true;
-  }catch(e){
+  } catch (e) {
     return false;
   }
 });

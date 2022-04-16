@@ -126,6 +126,16 @@ class NoteFile {
 }
 
 async function saveNoteFile(noteFile) {
+  if (noteFile.path == null) {
+    const path = await bridge.saveFileDialog();
+
+    if (path == null) {
+      throw new Error('Canceled');
+    }
+
+    noteFile.path = path;
+  }
+
   await bridge.saveFile(noteFile.path, noteFile.note.toXML());
 }
 
@@ -265,7 +275,7 @@ window.addEventListener('load', async () => {
     }
 
     currentNote = new Note();
-    currentNoteFile = new NoteFile(`${library.basePath}/${name}`);
+    currentNoteFile = new NoteFile(`${library.basePath}/${name}`, currentNote);
     await saveNoteFile(currentNoteFile);
     await library.refresh();
     renderFiles();
