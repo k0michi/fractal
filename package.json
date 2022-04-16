@@ -1,4 +1,6 @@
 {
+  "name": "sarashina",
+  "productName": "Sarashina",
   "dependencies": {
     "katex": "^0.15.2",
     "prismjs": "^1.26.0"

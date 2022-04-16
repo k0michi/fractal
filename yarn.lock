@@ -4273,25 +4273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    "@babel/cli": ^7.17.6
-    "@babel/core": ^7.17.9
-    "@babel/preset-env": ^7.16.11
-    concurrently: ^7.1.0
-    css-loader: ^6.5.1
-    electron: ^18.0.4
-    html-webpack-plugin: ^5.5.0
-    katex: ^0.15.2
-    prismjs: ^1.26.0
-    style-loader: ^3.3.1
-    webpack: ^5.64.4
-    webpack-cli: ^4.9.1
-  languageName: unknown
-  linkType: soft
-
 "rxjs@npm:^6.6.3":
   version: 6.6.7
   resolution: "rxjs@npm:6.6.7"
@@ -4321,6 +4302,25 @@ __metadata:
   checksum: cab8f25ae6f1434abee8d80023d7e72b598cf1327164ddab31003c51215526801e40b66c5e65d658a0af1e9d6478cadcb4c745f4bd6751f97d8644786c0978b0
   languageName: node
   linkType: hard
+
+"sarashina@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "sarashina@workspace:."
+  dependencies:
+    "@babel/cli": ^7.17.6
+    "@babel/core": ^7.17.9
+    "@babel/preset-env": ^7.16.11
+    concurrently: ^7.1.0
+    css-loader: ^6.5.1
+    electron: ^18.0.4
+    html-webpack-plugin: ^5.5.0
+    katex: ^0.15.2
+    prismjs: ^1.26.0
+    style-loader: ^3.3.1
+    webpack: ^5.64.4
+    webpack-cli: ^4.9.1
+  languageName: unknown
+  linkType: soft
 
 "schema-utils@npm:^3.1.0, schema-utils@npm:^3.1.1":
   version: 3.1.1

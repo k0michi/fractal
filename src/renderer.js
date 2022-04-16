@@ -26,13 +26,38 @@ const MATH = 'math';
 
 const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
 
+class Library {
+  constructor(basePath) {
+    this.basePath = basePath;
+  }
+
+  async initialize() {
+    await bridge.makeDir(this.basePath);
+    await this.refresh();
+  }
+
+  async refresh() {
+    this.files = await bridge.readDir(this.basePath, false);
+  }
+
+  async doesExist(filename) {
+    const path = `${this.basePath}/${filename}`;
+    return await bridge.doesExist(path);
+  }
+
+  async open(filename) {
+    const path = `${this.basePath}/${filename}`;
+    const text = await bridge.readFile(path);
+    const noteFile = new NoteFile(path, Note.fromXML(text));
+    return noteFile;
+  }
+}
+
 class Note {
-  constructor(...args) {
-    if (args.length == 0) {
-      this.content = [createParagraph()];
-    } else {
-      this.content = args[0];
-    }
+  constructor(created, modified, content) {
+    this.created = created ?? Date.now();
+    this.modified = modified ?? this.created;
+    this.content = content ?? [createParagraph()];
   }
 
   append(index, element) {
@@ -84,15 +109,28 @@ class Note {
         nodes.push(createBlockquote(content, created, modified));
       } else if (tagName == 'code') {
         const language = n.getAttribute('language');
-        nodes.push(createCode(content,language, created, modified));
+        nodes.push(createCode(content, language, created, modified));
       }
     }
 
-    return new Note(nodes);
+    // FIX ME
+    return new Note(null, null, nodes);
   }
 }
 
+class NoteFile {
+  constructor(path, note) {
+    this.path = path;
+    this.note = note;
+  }
+}
+
+async function saveNoteFile(noteFile) {
+  await bridge.saveFile(noteFile.path, noteFile.note.toXML());
+}
+
 let currentNote = new Note();
+let currentNoteFile = new NoteFile(null, currentNote);
 
 let noteContent;
 let caretPos = 0;
@@ -106,7 +144,15 @@ function applyBold(node, start, end) {
 }
 */
 
-window.addEventListener('load', () => {
+function renderCurrentNote() {
+  utils.removeChildNodes(noteContent);
+
+  for (const e of currentNote.content) {
+    noteContent.append(e.element);
+  }
+}
+
+window.addEventListener('load', async () => {
   noteContent = document.getElementById('note-content');
 
   document.getElementById('ins-math').addEventListener('click', e => {
@@ -173,26 +219,76 @@ window.addEventListener('load', () => {
   });*/
 
   document.getElementById('save').addEventListener('click', async e => {
-    utils.saveFile('Untitled.xml', currentNote.toXML());
+    await saveNoteFile(currentNoteFile);
   });
 
   document.getElementById('open').addEventListener('click', async e => {
-    const files = await utils.openFile();
-    const file = files[0];
-    const xml = await utils.readAsText(file);
+    const file = await bridge.openFile();
+    const xml = await bridge.readFile(file);
     currentNote = Note.fromXML(xml);
-
-    utils.removeChildNodes(noteContent);
-
-    for (const e of currentNote.content) {
-      noteContent.append(e.element);
-    }
+    currentNoteFile = new NoteFile(file, currentNote);
+    renderCurrentNote();
   });
 
-  for (const e of currentNote.content) {
-    noteContent.append(e.element);
+  renderCurrentNote();
+
+  const userDataPath = await bridge.getPath('userData');
+  const libraryPath = `${userDataPath}/library`;
+  const library = new Library(libraryPath);
+  await library.initialize();
+
+  const libraryDOM = document.getElementById('library');
+  renderFiles();
+
+  function renderFiles() {
+    utils.removeChildNodes(libraryDOM);
+
+    for (const f of library.files) {
+      const fileDOM = document.createElement('div');
+      fileDOM.classList.add('file');
+      fileDOM.textContent = f;
+      libraryDOM.append(fileDOM);
+    }
   }
+
+  document.getElementById('new').addEventListener('click', async e => {
+    let name = `untitled_${dateToString(new Date())}`;
+
+    if (await library.doesExist(name)) {
+      let i = 2;
+
+      while (await library.doesExist(`${name}_${i}`)) {
+        i++;
+      }
+
+      name = `${name}_${i}`;
+    }
+
+    currentNote = new Note();
+    currentNoteFile = new NoteFile(`${library.basePath}/${name}`);
+    await saveNoteFile(currentNoteFile);
+    await library.refresh();
+    renderFiles();
+  });
+
+  libraryDOM.addEventListener('click', async e => {
+    if (e.target.classList.contains('file')) {
+      const filename = e.target.textContent;
+      const noteFile = await library.open(filename);
+      currentNoteFile = noteFile;
+      currentNote = noteFile.note;
+      renderCurrentNote();
+    }
+  });
 });
+
+function dateToString(date) {
+  return `${padZero(date.getFullYear(), 4)}-${padZero(date.getMonth() + 1, 2)}-${padZero(date.getDate(), 2)}`;
+}
+
+function padZero(value, n) {
+  return value.toString().padStart(n, '0');
+}
 
 function focus(index) {
   currentNote.content[index].element.focus();
