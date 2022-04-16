@@ -19,6 +19,7 @@ const HEADER4 = 'h4';
 const HEADER5 = 'h5';
 const HEADER6 = 'h6';
 const HORIZONTAL_RULE = 'hr';
+const BLOCKQUOTE = 'blockquote';
 const MATH = 'math';
 
 const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
@@ -77,6 +78,8 @@ class Note {
         nodes.push(createHeader(parseInt(tagName[1]), content, created, modified));
       } else if (tagName == 'hr') {
         nodes.push(createHorizontalRule(created, modified));
+      } else if (tagName == 'blockquote') {
+        nodes.push(createBlockquote(content, created, modified));
       }
     }
 
@@ -116,6 +119,11 @@ window.addEventListener('load', () => {
   document.getElementById('ins-hr').addEventListener('click', e => {
     const horizontal = createHorizontalRule();
     currentNote.append(caretPos + 1, horizontal);
+  });
+
+  document.getElementById('ins-blockquote').addEventListener('click', e => {
+    const blockquote = createBlockquote();
+    currentNote.append(caretPos + 1, blockquote);
   });
 
   /*
@@ -368,6 +376,41 @@ function createHorizontalRule(created, modified) {
   };
 
   return horizontal;
+}
+
+function createBlockquote(content = '', created, modified) {
+  const dom = document.createElement('blockquote');
+  dom.textContent = content;
+  dom.style = 'overflow-wrap: anywhere; width: 100%;';
+  dom.contentEditable = true;
+
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const blockquote = {
+    type: BLOCKQUOTE,
+    content,
+    element: dom,
+    created,
+    modified
+  };
+
+  dom.addEventListener('input', e => {
+    blockquote.content = dom.textContent;
+    blockquote.modified = Date.now();
+  });
+
+  dom.addEventListener('focus', e => {
+    const index = currentNote.content.indexOf(blockquote);
+    caretPos = index;
+  });
+
+  return blockquote;
 }
 
 /*
