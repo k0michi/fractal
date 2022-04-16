@@ -13,7 +13,15 @@ export function readAsText(file) {
     reader.addEventListener('load', () => resolve(reader.result));
     reader.readAsText(file);
   });
-};
+}
+
+export function readAsDataURL(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => resolve(reader.result));
+    reader.readAsDataURL(file);
+  });
+}
 
 export function saveFile(filename, content) {
   const a = document.createElement('a');

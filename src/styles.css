@@ -31,15 +31,21 @@ body {
 }
 
 .math {
-  height: 20px;
+  height: 1em;
 }
 
 pre {
   margin: 0;
+  height: 1em;
 }
 
 blockquote {
   margin: 0;
   padding-left: 24px;
   border-left: 3px solid #000;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }

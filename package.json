@@ -4,17 +4,23 @@
     "prismjs": "^1.26.0"
   },
   "scripts": {
-    "build-dev": "webpack --mode development",
-    "build-prod": "webpack --mode production",
-    "serve-dev": "webpack serve --mode development",
-    "serve-prod": "webpack serve --mode production"
+    "watch": "concurrently \"babel src --out-dir dist -w\" \"webpack --mode development --watch\"",
+    "build.main": "babel src --out-dir dist",
+    "build.renderer": "webpack --mode production",
+    "build.renderer.dev": "webpack --mode development",
+    "start": "electron ."
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "concurrently": "^7.1.0",
     "css-loader": "^6.5.1",
+    "electron": "^18.0.4",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.64.4",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.6.0"
-  }
+    "webpack-cli": "^4.9.1"
+  },
+  "main": "dist/main.js"
 }
