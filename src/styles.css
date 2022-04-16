@@ -2,19 +2,26 @@ body {
   margin: 0;
 }
 
-#root {}
+#root {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
 
 #library {
-  width: fit-content;
-  position: fixed;
-  top: 20px;
-  z-index: 1;
+  flex: 0 0 200px;
 }
 
 #library > div {
   width: fit-content;
   cursor: default;
   user-select: none;
+}
+
+#editor{
+  flex: 1 1 auto;
+  overflow: auto;
 }
 
 #note {
@@ -38,9 +45,8 @@ body {
 }
 
 #tools {
-  position: fixed;
-  top: 0;
-  z-index: 1;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .math {
