@@ -8,7 +8,19 @@ import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism-tomorrow.css';
 
 const PARAGRAPH = 'p';
+const BOLD = 'b';
+const ITALIC = 'i';
+const UNDERLINE = 'u';
+const STRIKETHROUGH = 's';
+const HEADER1 = 'h1';
+const HEADER2 = 'h2';
+const HEADER3 = 'h3';
+const HEADER4 = 'h4';
+const HEADER5 = 'h5';
+const HEADER6 = 'h6';
 const MATH = 'math';
+
+const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
 
 class Note {
   constructor(...args) {
@@ -60,6 +72,8 @@ class Note {
         nodes.push(createParagraph(content, created, modified));
       } else if (tagName == 'math') {
         nodes.push(createMath(content, created, modified));
+      } else if (headers.includes(tagName)) {
+        nodes.push(createHeader(parseInt(tagName[1]), content, created, modified));
       }
     }
 
@@ -72,6 +86,15 @@ let currentNote = new Note();
 let noteContent;
 let caretPos;
 
+/*
+function applyBold(node, start, end) {
+  const range = document.createRange();
+  range.setStart(node,start);
+  range.setEnd(node,end);
+  range.surroundContents(document.createElement('b'));
+}
+*/
+
 window.addEventListener('load', () => {
   noteContent = document.getElementById('note-content');
 
@@ -79,6 +102,39 @@ window.addEventListener('load', () => {
     const math = createMath();
     currentNote.append(caretPos + 1, math);
   });
+
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById('ins-h' + i).addEventListener('click', e => {
+      const header = createHeader(i);
+      currentNote.append(caretPos + 1, header);
+    });
+  }
+
+  /*
+  document.getElementById('bold').addEventListener('click', e => {
+    const selection = window.getSelection();
+
+    if(selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+
+      let node = range.startContainer;
+
+      applyBold(node, range.startOffset, node==range.endContainer?range.endOffset:node.length);
+
+      if (node != range.endContainer){
+        do {
+          node = node.nextSibling;
+
+          const b = node.parentElement.closest('b');
+          const p = node.parentElement.closest('p');
+        
+          if (b == null) {
+            applyBold(node, 0, node==range.endContainer?range.endOffset:node.length);
+          }
+        }while(node != range.endContainer);
+      }
+    }
+  });*/
 
   document.getElementById('save').addEventListener('click', async e => {
     utils.saveFile('Untitled.xml', currentNote.toXML());
@@ -156,8 +212,6 @@ function createParagraph(content = '', created, modified) {
         focus(index - 1);
       }
     }
-    console.log(selection.anchorOffset);
-    console.log(paragraph.content.length);
 
     if (e.key == 'ArrowDown') {
       // FIX ME
@@ -185,6 +239,7 @@ function createParagraph(content = '', created, modified) {
       selection.deleteFromDocument();
       selection.getRangeAt(0).insertNode(document.createTextNode(paste));
       selection.collapseToEnd();
+      textArea.normalize();
       paragraph.content = textArea.textContent;
     }
 
@@ -242,5 +297,71 @@ function createMath(content = '', created, modified) {
     math.modified = Date.now();
   });
 
+  edit.addEventListener('focus', e => {
+    const index = currentNote.content.indexOf(math);
+    caretPos = index;
+  });
+
   return math;
 }
+
+function createHeader(level, content = '', created, modified) {
+  const type = headers[level - 1];
+  const dom = document.createElement(type);
+  dom.textContent = content;
+  dom.style = 'overflow-wrap: anywhere; width: 100%;';
+  dom.contentEditable = true;
+
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const header = {
+    type,
+    content,
+    element: dom,
+    created,
+    modified
+  };
+
+  dom.addEventListener('input', e => {
+    header.content = dom.textContent;
+    header.modified = Date.now();
+  });
+
+  dom.addEventListener('focus', e => {
+    const index = currentNote.content.indexOf(header);
+    caretPos = index;
+  });
+
+  return header;
+}
+
+/*
+function createBold(content = '', created, modified) {
+  const element = document.createElement('b');
+  element.textContent = content;
+
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const bold = {
+    type: BOLD,
+    content,
+    element,
+    created,
+    modified
+  };
+
+  return bold;
+}
+*/
