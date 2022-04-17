@@ -220,7 +220,7 @@ function padZero(value, n) {
 }
 
 function focus(index) {
-  currentNote.content[index].element.focus();
+  currentNote.content[index]?.element.focus();
 }
 
 let isComposing = false;
@@ -234,10 +234,10 @@ window.addEventListener('compositionend', e => {
 });
 
 export function createParagraph(content = '', created, modified) {
-  const textArea = document.createElement('p');
-  textArea.style = 'overflow-wrap: anywhere; width: 100%;';
-  textArea.contentEditable = true;
-  textArea.textContent = content;
+  const $paragraph = document.createElement('p');
+  $paragraph.style = 'overflow-wrap: anywhere; width: 100%;';
+  $paragraph.contentEditable = true;
+  $paragraph.textContent = content;
 
   if (created == null) {
     created = Date.now();
@@ -250,12 +250,12 @@ export function createParagraph(content = '', created, modified) {
   const paragraph = {
     type: PARAGRAPH,
     content,
-    element: textArea,
+    element: $paragraph,
     created,
     modified
   };
 
-  textArea.addEventListener('keydown', e => {
+  $paragraph.addEventListener('keydown', e => {
     const index = currentNote.content.indexOf(paragraph);
     caretPos = index;
 
@@ -269,30 +269,26 @@ export function createParagraph(content = '', created, modified) {
     const selection = window.getSelection();
 
     if (e.key == 'ArrowUp' && selection.isCollapsed && selection.anchorOffset == 0) {
-      if (index - 1 >= 0) {
-        focus(index - 1);
-      }
+      focus(index - 1);
     }
 
-    if (e.key == 'ArrowDown') {
-      // FIX ME
-      if (index + 1 < currentNote.content.length && selection.isCollapsed && selection.anchorOffset == paragraph.content.length) {
-        focus(index + 1);
-      }
+    // FIX ME
+    if (e.key == 'ArrowDown' && currentNote.content.length && selection.isCollapsed && selection.anchorOffset == paragraph.content.length) {
+      focus(index + 1);
     }
   });
 
-  textArea.addEventListener('input', e => {
-    paragraph.content = textArea.textContent;
+  $paragraph.addEventListener('input', e => {
+    paragraph.content = $paragraph.textContent;
     paragraph.modified = Date.now();
   });
 
-  textArea.addEventListener('focus', e => {
+  $paragraph.addEventListener('focus', e => {
     const index = currentNote.content.indexOf(paragraph);
     caretPos = index;
   });
 
-  textArea.addEventListener('paste', e => {
+  $paragraph.addEventListener('paste', e => {
     const paste = (e.clipboardData || window.clipboardData).getData('text');
     const selection = window.getSelection();
 
@@ -300,8 +296,8 @@ export function createParagraph(content = '', created, modified) {
       selection.deleteFromDocument();
       selection.getRangeAt(0).insertNode(document.createTextNode(paste));
       selection.collapseToEnd();
-      textArea.normalize();
-      paragraph.content = textArea.textContent;
+      $paragraph.normalize();
+      paragraph.content = $paragraph.textContent;
     }
 
     e.preventDefault();
@@ -311,14 +307,14 @@ export function createParagraph(content = '', created, modified) {
 }
 
 export function createMath(content = '', created, modified) {
-  const dom = document.createElement('div');
-  dom.className = 'math';
-  const edit = document.createElement('pre');
-  edit.style = 'overflow-wrap: anywhere; width: 100%;';
-  edit.contentEditable = true;
+  const $container = document.createElement('div');
+  $container.className = 'math';
+  const $editor = document.createElement('pre');
+  $editor.style = 'overflow-wrap: anywhere; width: 100%;';
+  $editor.contentEditable = true;
 
-  edit.textContent = content;
-  Katex.render(content, dom, { displayMode: true });
+  $editor.textContent = content;
+  Katex.render(content, $container, { displayMode: true });
 
   if (created == null) {
     created = Date.now();
@@ -331,34 +327,34 @@ export function createMath(content = '', created, modified) {
   const math = {
     type: MATH,
     content,
-    element: dom,
+    element: $container,
     created,
     modified
   };
 
   window.addEventListener('click', e => {
-    if (dom.contains(e.target) && (dom.firstChild == null || dom.firstChild != edit)) {
-      if (dom.firstChild != null) {
-        dom.removeChild(dom.firstChild);
+    if ($container.contains(e.target) && ($container.firstChild == null || $container.firstChild != $editor)) {
+      if ($container.firstChild != null) {
+        $container.removeChild($container.firstChild);
       }
 
-      dom.append(edit);
-      edit.focus();
-    } else if (!dom.contains(e.target) && (dom.firstChild == null || !dom.firstChild.classList.contains('katex-display'))) {
-      if (dom.firstChild != null) {
-        dom.removeChild(dom.firstChild);
+      $container.append($editor);
+      $editor.focus();
+    } else if (!$container.contains(e.target) && ($container.firstChild == null || !$container.firstChild.classList.contains('katex-display'))) {
+      if ($container.firstChild != null) {
+        $container.removeChild($container.firstChild);
       }
 
-      Katex.render(math.content, dom, { displayMode: true });
+      Katex.render(math.content, $container, { displayMode: true });
     }
   });
 
-  edit.addEventListener('input', e => {
-    math.content = edit.textContent;
+  $editor.addEventListener('input', e => {
+    math.content = $editor.textContent;
     math.modified = Date.now();
   });
 
-  edit.addEventListener('focus', e => {
+  $editor.addEventListener('focus', e => {
     const index = currentNote.content.indexOf(math);
     caretPos = index;
   });
@@ -368,10 +364,10 @@ export function createMath(content = '', created, modified) {
 
 export function createHeader(level, content = '', created, modified) {
   const type = headers[level - 1];
-  const dom = document.createElement(type);
-  dom.textContent = content;
-  dom.style = 'overflow-wrap: anywhere; width: 100%;';
-  dom.contentEditable = true;
+  const $header = document.createElement(type);
+  $header.textContent = content;
+  $header.style = 'overflow-wrap: anywhere; width: 100%;';
+  $header.contentEditable = true;
 
   if (created == null) {
     created = Date.now();
@@ -384,17 +380,17 @@ export function createHeader(level, content = '', created, modified) {
   const header = {
     type,
     content,
-    element: dom,
+    element: $header,
     created,
     modified
   };
 
-  dom.addEventListener('input', e => {
-    header.content = dom.textContent;
+  $header.addEventListener('input', e => {
+    header.content = $header.textContent;
     header.modified = Date.now();
   });
 
-  dom.addEventListener('focus', e => {
+  $header.addEventListener('focus', e => {
     const index = currentNote.content.indexOf(header);
     caretPos = index;
   });
@@ -403,7 +399,7 @@ export function createHeader(level, content = '', created, modified) {
 }
 
 export function createHorizontalRule(created, modified) {
-  const dom = document.createElement('hr');
+  const $hr = document.createElement('hr');
 
   if (created == null) {
     created = Date.now();
@@ -415,7 +411,7 @@ export function createHorizontalRule(created, modified) {
 
   const horizontal = {
     type: HORIZONTAL_RULE,
-    element: dom,
+    element: $hr,
     created,
     modified
   };
@@ -424,10 +420,10 @@ export function createHorizontalRule(created, modified) {
 }
 
 export function createBlockquote(content = '', created, modified) {
-  const dom = document.createElement('blockquote');
-  dom.textContent = content;
-  dom.style = 'overflow-wrap: anywhere; width: 100%;';
-  dom.contentEditable = true;
+  const $blockquote = document.createElement('blockquote');
+  $blockquote.textContent = content;
+  $blockquote.style = 'overflow-wrap: anywhere; width: 100%;';
+  $blockquote.contentEditable = true;
 
   if (created == null) {
     created = Date.now();
@@ -440,17 +436,17 @@ export function createBlockquote(content = '', created, modified) {
   const blockquote = {
     type: BLOCKQUOTE,
     content,
-    element: dom,
+    element: $blockquote,
     created,
     modified
   };
 
-  dom.addEventListener('input', e => {
-    blockquote.content = dom.textContent;
+  $blockquote.addEventListener('input', e => {
+    blockquote.content = $blockquote.textContent;
     blockquote.modified = Date.now();
   });
 
-  dom.addEventListener('focus', e => {
+  $blockquote.addEventListener('focus', e => {
     const index = currentNote.content.indexOf(blockquote);
     caretPos = index;
   });
@@ -486,18 +482,18 @@ function createImage(content, created, modified) {
 */
 
 export function createCode(content = '', language = 'javascript', created, modified) {
-  const domPre = document.createElement('pre');
-  const domCode = document.createElement('code');
-  domPre.append(domCode);
-  domCode.textContent = content;
-  domCode.contentEditable = true;
+  const $pre = document.createElement('pre');
+  const $code = document.createElement('code');
+  $pre.append($code);
+  $code.textContent = content;
+  $code.contentEditable = true;
 
   if (language != null) {
-    domCode.classList.add(`language-${language}`);
-    domPre.classList.add(`language-${language}`);
+    $code.classList.add(`language-${language}`);
+    $pre.classList.add(`language-${language}`);
   }
 
-  Prism.highlightElement(domCode, false);
+  Prism.highlightElement($code, false);
 
   if (created == null) {
     created = Date.now();
@@ -510,25 +506,25 @@ export function createCode(content = '', language = 'javascript', created, modif
   const code = {
     type: CODE,
     content,
-    element: domPre,
+    element: $pre,
     created,
     modified,
     language
   };
 
-  domCode.addEventListener('input', e => {
-    code.content = domCode.textContent;
+  $code.addEventListener('input', e => {
+    code.content = $code.textContent;
     code.modified = Date.now();
 
     if (!isComposing) {
       // Work around for the problem that the cursor goes to the beginning after highlighting
-      const range = getCursorRange(domCode);
-      Prism.highlightElement(domCode, false);
-      setCursorRange(domCode, range);
+      const range = getCursorRange($code);
+      Prism.highlightElement($code, false);
+      setCursorRange($code, range);
     }
   });
 
-  domCode.addEventListener('focus', e => {
+  $code.addEventListener('focus', e => {
     const index = currentNote.content.indexOf(code);
     caretPos = index;
   });
@@ -591,7 +587,6 @@ function getCursorRange(parent) {
 }
 
 function setCursorRange(parent, cursorRange) {
-  console.log(cursorRange)
   const { start, end } = cursorRange;
 
   let anchorNode, anchorOffset, focusNode, focusOffset;
