@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: sans-serif;
 }
 
 #root {
@@ -11,12 +12,6 @@ body {
 
 #library {
   flex: 0 0 200px;
-}
-
-#library > div {
-  width: fit-content;
-  cursor: default;
-  user-select: none;
 }
 
 #editor{
@@ -33,6 +28,7 @@ body {
   margin-bottom: 24px;
   margin-left: auto;
   margin-right: auto;
+  font-family: serif;
 }
 
 #note-content {
@@ -53,27 +49,36 @@ body {
   height: 1em;
 }
 
-pre {
+#note pre {
   margin: 0;
   min-height: 1em;
 }
 
-blockquote {
+#note blockquote {
   margin: 0;
   padding-left: 24px;
   border-left: 3px solid #000;
 }
 
-img {
+#note img {
   display: block;
   max-width: 100%;
 }
 
-code {
+#note code {
   outline: none;
   font-size: 14px !important;
 }
 
-.file {
-  margin-left: 4px;
+.library-item {
+  box-sizing: border-box;
+  cursor: default;
+  user-select: none;
+  padding: 2px 8px;
+  width: 100%;
+}
+
+.library-item.selected {
+  background-color: rgb(234, 234, 234);
+  border-radius: 6px;
 }

@@ -1,3 +1,4 @@
+import LibraryItem from "./library-item";
 import Note from "./note";
 import NoteFile from "./note-file";
 
@@ -14,8 +15,7 @@ export default class Library {
   async refresh() {
     const files = await bridge.readDir(this.basePath, false);
     files.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
-
-    this.files = files;
+    this.files = files.map(name => new LibraryItem(name, `${this.basePath}/${name}`));
   }
 
   async doesExist(filename) {

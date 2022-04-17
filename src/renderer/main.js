@@ -43,16 +43,46 @@ async function saveNoteFile(noteFile) {
   await bridge.saveFile(noteFile.path, noteFile.note.toXML());
 }
 
+function openNoteFile(noteFile) {
+  const $selected = $library.querySelector('.selected');
+  $selected?.classList.remove('selected');
+  const $toSelect = $library.querySelector(`[data-path='${noteFile.path}']`);
+  $toSelect?.classList.add('selected');
+
+  currentNoteFile = noteFile;
+  currentNote = noteFile.note;
+  renderNote(noteFile.note);
+}
+
 function renderNote(note) {
   utils.removeChildNodes($noteContainer);
   $noteContainer.append(note.noteView.$note);
   note.noteView.render(note);
 }
 
+function renderFiles() {
+  utils.removeChildNodes($library);
+
+  for (const f of library.files) {
+    const $item = document.createElement('div');
+    $item.classList.add('library-item');
+    $item.textContent = f.name;
+    $item.dataset.path = f.path;
+
+    if (currentNoteFile.path == f.path) {
+      $item.classList.add('selected');
+    }
+
+    $library.append($item);
+  }
+}
+
 let $noteContainer;
-let currentNote = new Note();
-let currentNoteFile = new NoteFile(null, currentNote);
+let currentNote;
+let currentNoteFile;
 let caretPos = 0;
+let library;
+let $library;
 
 /*
 function applyBold(node, start, end) {
@@ -65,6 +95,7 @@ function applyBold(node, start, end) {
 
 window.addEventListener('load', async () => {
   $noteContainer = document.getElementById('note-container');
+  $library = document.getElementById('library');
 
   document.getElementById('ins-math').addEventListener('click', e => {
     const math = createMath();
@@ -136,31 +167,20 @@ window.addEventListener('load', async () => {
   document.getElementById('open').addEventListener('click', async e => {
     const file = await bridge.openFile();
     const xml = await bridge.readFile(file);
-    currentNote = Note.fromXML(xml);
-    currentNoteFile = new NoteFile(file, currentNote);
-    renderNote(currentNote);
+    const note = Note.fromXML(xml);
+    const noteFile = new NoteFile(file, note);
+    openNoteFile(noteFile);
   });
 
-  renderNote(currentNote);
+  const emptyNote = new Note();
+  const emptyNoteFile = new NoteFile(null, emptyNote);
+  openNoteFile(emptyNoteFile);
 
   const userDataPath = await bridge.getPath('userData');
   const libraryPath = `${userDataPath}/library`;
-  const library = new Library(libraryPath);
+  library = new Library(libraryPath);
   await library.initialize();
-
-  const libraryDOM = document.getElementById('library');
   renderFiles();
-
-  function renderFiles() {
-    utils.removeChildNodes(libraryDOM);
-
-    for (const f of library.files) {
-      const fileDOM = document.createElement('div');
-      fileDOM.classList.add('file');
-      fileDOM.textContent = f;
-      libraryDOM.append(fileDOM);
-    }
-  }
 
   document.getElementById('new').addEventListener('click', async e => {
     let name = `untitled_${dateToString(new Date())}`;
@@ -182,13 +202,11 @@ window.addEventListener('load', async () => {
     renderFiles();
   });
 
-  libraryDOM.addEventListener('click', async e => {
-    if (e.target.classList.contains('file')) {
+  $library.addEventListener('click', async e => {
+    if (e.target.classList.contains('library-item')) {
       const filename = e.target.textContent;
       const noteFile = await library.open(filename);
-      currentNoteFile = noteFile;
-      currentNote = noteFile.note;
-      renderNote(currentNote);
+      openNoteFile(noteFile);
     }
   });
 });
