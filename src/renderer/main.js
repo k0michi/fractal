@@ -2,6 +2,9 @@ import Katex from 'katex';
 import Prism from 'prismjs';
 
 import * as utils from './utils';
+import Note from './note';
+import NoteFile from './note-file';
+import Library from './library';
 
 import './styles.css';
 import 'katex/dist/katex.min.css';
@@ -26,105 +29,6 @@ const MATH = 'math';
 
 const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
 
-class Library {
-  constructor(basePath) {
-    this.basePath = basePath;
-  }
-
-  async initialize() {
-    await bridge.makeDir(this.basePath);
-    await this.refresh();
-  }
-
-  async refresh() {
-    this.files = await bridge.readDir(this.basePath, false);
-  }
-
-  async doesExist(filename) {
-    const path = `${this.basePath}/${filename}`;
-    return await bridge.doesExist(path);
-  }
-
-  async open(filename) {
-    const path = `${this.basePath}/${filename}`;
-    const text = await bridge.readFile(path);
-    const noteFile = new NoteFile(path, Note.fromXML(text));
-    return noteFile;
-  }
-}
-
-class Note {
-  constructor(created, modified, content) {
-    this.created = created ?? Date.now();
-    this.modified = modified ?? this.created;
-    this.content = content ?? [createParagraph()];
-  }
-
-  append(index, element) {
-    if (index >= this.content.length) {
-      noteContent.insertBefore(element.element, null);
-    } else {
-      noteContent.insertBefore(element.element, this.content[index].element);
-    }
-
-    this.content.splice(index, 0, element);
-  }
-
-  toXML() {
-    const serializer = new XMLSerializer();
-    const xml = document.implementation.createDocument(null, 'xml');
-
-    for (const e of this.content) {
-      const tagName = e.type;
-      const element = xml.createElement(tagName);
-      element.append(e.content);
-      element.setAttribute('created', e.created);
-      element.setAttribute('modified', e.modified);
-      xml.firstChild.appendChild(element);
-    }
-
-    return serializer.serializeToString(xml);
-  }
-
-  static fromXML(text) {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, 'text/xml');
-    const nodes = [];
-
-    for (const n of xml.firstChild.childNodes) {
-      const tagName = n.tagName;
-      const content = n.textContent;
-      const created = parseInt(n.getAttribute('created'));
-      const modified = parseInt(n.getAttribute('modified'));
-
-      if (tagName == 'p') {
-        nodes.push(createParagraph(content, created, modified));
-      } else if (tagName == 'math') {
-        nodes.push(createMath(content, created, modified));
-      } else if (headers.includes(tagName)) {
-        nodes.push(createHeader(parseInt(tagName[1]), content, created, modified));
-      } else if (tagName == 'hr') {
-        nodes.push(createHorizontalRule(created, modified));
-      } else if (tagName == 'blockquote') {
-        nodes.push(createBlockquote(content, created, modified));
-      } else if (tagName == 'code') {
-        const language = n.getAttribute('language');
-        nodes.push(createCode(content, language, created, modified));
-      }
-    }
-
-    // FIX ME
-    return new Note(null, null, nodes);
-  }
-}
-
-class NoteFile {
-  constructor(path, note) {
-    this.path = path;
-    this.note = note;
-  }
-}
-
 async function saveNoteFile(noteFile) {
   if (noteFile.path == null) {
     const path = await bridge.saveFileDialog();
@@ -139,10 +43,15 @@ async function saveNoteFile(noteFile) {
   await bridge.saveFile(noteFile.path, noteFile.note.toXML());
 }
 
+function renderNote(note) {
+  utils.removeChildNodes($noteContainer);
+  $noteContainer.append(note.noteView.$note);
+  note.noteView.render(note);
+}
+
+let $noteContainer;
 let currentNote = new Note();
 let currentNoteFile = new NoteFile(null, currentNote);
-
-let noteContent;
 let caretPos = 0;
 
 /*
@@ -154,16 +63,8 @@ function applyBold(node, start, end) {
 }
 */
 
-function renderCurrentNote() {
-  utils.removeChildNodes(noteContent);
-
-  for (const e of currentNote.content) {
-    noteContent.append(e.element);
-  }
-}
-
 window.addEventListener('load', async () => {
-  noteContent = document.getElementById('note-content');
+  $noteContainer = document.getElementById('note-container');
 
   document.getElementById('ins-math').addEventListener('click', e => {
     const math = createMath();
@@ -237,10 +138,10 @@ window.addEventListener('load', async () => {
     const xml = await bridge.readFile(file);
     currentNote = Note.fromXML(xml);
     currentNoteFile = new NoteFile(file, currentNote);
-    renderCurrentNote();
+    renderNote(currentNote);
   });
 
-  renderCurrentNote();
+  renderNote(currentNote);
 
   const userDataPath = await bridge.getPath('userData');
   const libraryPath = `${userDataPath}/library`;
@@ -287,7 +188,7 @@ window.addEventListener('load', async () => {
       const noteFile = await library.open(filename);
       currentNoteFile = noteFile;
       currentNote = noteFile.note;
-      renderCurrentNote();
+      renderNote(currentNote);
     }
   });
 });
@@ -314,7 +215,7 @@ window.addEventListener('compositionend', e => {
   isComposing = false;
 });
 
-function createParagraph(content = '', created, modified) {
+export function createParagraph(content = '', created, modified) {
   const textArea = document.createElement('p');
   textArea.style = 'overflow-wrap: anywhere; width: 100%;';
   textArea.contentEditable = true;

@@ -68,3 +68,7 @@ img {
   display: block;
   max-width: 100%;
 }
+
+.file {
+  margin-left: 4px;
+}
