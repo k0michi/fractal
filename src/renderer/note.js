@@ -1,4 +1,4 @@
-import { createParagraph } from "./main";
+import { createBlockquote, createHeader, createHorizontalRule, createMath, createParagraph } from "./main";
 import NoteView from "./note-view";
 
 export default class Note {

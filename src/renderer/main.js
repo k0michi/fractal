@@ -292,7 +292,7 @@ export function createParagraph(content = '', created, modified) {
   return paragraph;
 }
 
-function createMath(content = '', created, modified) {
+export function createMath(content = '', created, modified) {
   const dom = document.createElement('div');
   dom.className = 'math';
   const edit = document.createElement('pre');
@@ -348,7 +348,7 @@ function createMath(content = '', created, modified) {
   return math;
 }
 
-function createHeader(level, content = '', created, modified) {
+export function createHeader(level, content = '', created, modified) {
   const type = headers[level - 1];
   const dom = document.createElement(type);
   dom.textContent = content;
@@ -384,7 +384,7 @@ function createHeader(level, content = '', created, modified) {
   return header;
 }
 
-function createHorizontalRule(created, modified) {
+export function createHorizontalRule(created, modified) {
   const dom = document.createElement('hr');
 
   if (created == null) {
@@ -405,7 +405,7 @@ function createHorizontalRule(created, modified) {
   return horizontal;
 }
 
-function createBlockquote(content = '', created, modified) {
+export function createBlockquote(content = '', created, modified) {
   const dom = document.createElement('blockquote');
   dom.textContent = content;
   dom.style = 'overflow-wrap: anywhere; width: 100%;';
