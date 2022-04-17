@@ -1,4 +1,4 @@
-import { createBlockquote, createHeader, createHorizontalRule, createMath, createParagraph } from "./main";
+import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph, headers } from "./main";
 import NoteView from "./note-view";
 
 export default class Note {
@@ -29,6 +29,11 @@ export default class Note {
       element.append(e.content);
       element.setAttribute('created', e.created);
       element.setAttribute('modified', e.modified);
+
+      if (e.language != null) {
+      element.setAttribute('language', e.language);
+      }
+
       xml.firstChild.appendChild(element);
     }
 

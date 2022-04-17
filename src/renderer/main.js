@@ -8,7 +8,7 @@ import Library from './library';
 
 import './styles.css';
 import 'katex/dist/katex.min.css';
-import 'prismjs/themes/prism-tomorrow.css';
+import 'prismjs/themes/prism.css';
 
 const PARAGRAPH = 'p';
 const BOLD = 'b';
@@ -27,7 +27,7 @@ const IMAGE = 'image';
 const CODE = 'code';
 const MATH = 'math';
 
-const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
+export const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
 
 async function saveNoteFile(noteFile) {
   if (noteFile.path == null) {
@@ -96,12 +96,12 @@ window.addEventListener('load', async () => {
     const image = createImage(imageData);
     currentNote.append(caretPos + 1, image);
   });
+  */
 
   document.getElementById('ins-code').addEventListener('click', e => {
     const code = createCode();
     currentNote.append(caretPos + 1, code);
   });
-  */
 
   /*
   document.getElementById('bold').addEventListener('click', e => {
@@ -465,8 +465,9 @@ function createImage(content, created, modified) {
 
   return image;
 }
+*/
 
-function createCode(content = '',language='javascript', created, modified) {
+export function createCode(content = '', language = 'javascript', created, modified) {
   const domPre = document.createElement('pre');
   const domCode = document.createElement('code');
   domPre.append(domCode);
@@ -477,6 +478,8 @@ function createCode(content = '',language='javascript', created, modified) {
     domCode.classList.add(`language-${language}`);
     domPre.classList.add(`language-${language}`);
   }
+
+  Prism.highlightElement(domCode, false);
 
   if (created == null) {
     created = Date.now();
@@ -491,13 +494,20 @@ function createCode(content = '',language='javascript', created, modified) {
     content,
     element: domPre,
     created,
-    modified
+    modified,
+    language
   };
 
   domCode.addEventListener('input', e => {
     code.content = domCode.textContent;
     code.modified = Date.now();
-    Prism.highlightElement(domCode);
+
+    if (!isComposing) {
+      // Work around for the problem that the cursor goes to the beginning after highlighting
+      const range = getCursorRange(domCode);
+      Prism.highlightElement(domCode, false);
+      setCursorRange(domCode, range);
+    }
   });
 
   domCode.addEventListener('focus', e => {
@@ -507,7 +517,99 @@ function createCode(content = '',language='javascript', created, modified) {
 
   return code;
 }
-*/
+
+function visitNodes(element, visitor) {
+  const stack = [];
+
+  if (element.firstChild != null) {
+    stack.push(element.firstChild);
+  }
+
+  while (stack.length > 0) {
+    const top = stack.pop();
+    visitor(top);
+
+    if (top.nextSibling != null) {
+      stack.push(top.nextSibling);
+    }
+
+    if (top.firstChild != null) {
+      stack.push(top.firstChild);
+    }
+  }
+}
+
+function getCursorRange(parent) {
+  const selection = window.getSelection();
+  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
+  let start = 0;
+  let end = 0;
+  let startReached = false;
+  let endReached = false;
+
+  visitNodes(parent, n => {
+    if (n == anchorNode) {
+      start += anchorOffset;
+      startReached = true;
+    }
+
+    if (n == focusNode) {
+      end += focusOffset;
+      endReached = true;
+    }
+
+    if (n.nodeType == Node.TEXT_NODE) {
+      if (!startReached) {
+        start += n.length;
+      }
+
+      if (!endReached) {
+        end += n.length;
+      }
+    }
+  });
+
+  return { start, end };
+}
+
+function setCursorRange(parent, cursorRange) {
+  console.log(cursorRange)
+  const { start, end } = cursorRange;
+
+  let anchorNode, anchorOffset, focusNode, focusOffset;
+  let position = 0;
+
+  visitNodes(parent, n => {
+    if (n.nodeType == Node.TEXT_NODE) {
+      const length = n.length;
+
+      if (position + length > start && anchorNode == null) {
+        anchorNode = n;
+        anchorOffset = start - position;
+      }
+
+      if (position + length > end && focusNode == null) {
+        focusNode = n;
+        focusOffset = end - position;
+      }
+
+      position += length;
+    }
+  });
+
+  if (anchorNode == null) {
+    anchorNode = parent;
+    anchorOffset = parent.childNodes.length;
+  }
+
+  if (focusNode == null) {
+    focusNode = parent;
+    focusOffset = parent.childNodes.length;
+  }
+
+  const selection = window.getSelection();
+  selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+}
 
 /*
 function createBold(content = '', created, modified) {

@@ -55,7 +55,7 @@ body {
 
 pre {
   margin: 0;
-  height: 1em;
+  min-height: 1em;
 }
 
 blockquote {
@@ -67,6 +67,11 @@ blockquote {
 img {
   display: block;
   max-width: 100%;
+}
+
+code {
+  outline: none;
+  font-size: 14px !important;
 }
 
 .file {
