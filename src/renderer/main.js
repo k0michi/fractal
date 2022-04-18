@@ -259,21 +259,27 @@ export function createParagraph(content = '', created, modified) {
     const index = currentNote.content.indexOf(paragraph);
     caretPos = index;
 
+    const selection = window.getSelection();
+    const selectionRange = getCursorRange($paragraph);
+
     if (e.key == 'Enter' && !isComposing) {
       const nextParagraph = createParagraph();
       currentNote.append(index + 1, nextParagraph);
-      nextParagraph.element.focus();
+      focus(index + 1);
       e.preventDefault();
     }
 
-    const selection = window.getSelection();
+    if (e.key == 'Backspace' && selection.isCollapsed && selectionRange.start == 0) {
+      currentNote.remove(index);
+      focus(index - 1);
+      e.preventDefault();
+    }
 
-    if (e.key == 'ArrowUp' && selection.isCollapsed && selection.anchorOffset == 0) {
+    if (e.key == 'ArrowUp' && selection.isCollapsed && selectionRange.start == 0) {
       focus(index - 1);
     }
 
-    // FIX ME
-    if (e.key == 'ArrowDown' && currentNote.content.length && selection.isCollapsed && selection.anchorOffset == paragraph.content.length) {
+    if (e.key == 'ArrowDown' && selection.isCollapsed && selectionRange.start == $paragraph.textContent.length) {
       focus(index + 1);
     }
   });

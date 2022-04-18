@@ -19,6 +19,11 @@ export default class Note {
     this.content.splice(index, 0, element);
   }
 
+  remove(index) {
+    const removed = this.content.splice(index, 1)[0];
+    removed.element.remove();
+  }
+
   toXML() {
     const serializer = new XMLSerializer();
     const xml = document.implementation.createDocument(null, 'xml');
@@ -31,7 +36,7 @@ export default class Note {
       element.setAttribute('modified', e.modified);
 
       if (e.language != null) {
-      element.setAttribute('language', e.language);
+        element.setAttribute('language', e.language);
       }
 
       xml.firstChild.appendChild(element);
