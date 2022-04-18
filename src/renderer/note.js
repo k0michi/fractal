@@ -1,12 +1,15 @@
 import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph, headers } from "./main";
+import NoteBody from "./note-body";
+import NoteHead from "./note-head";
 import NoteView from "./note-view";
 
 export default class Note {
-  constructor(created, modified, content) {
+  constructor(head, body) {
     this.noteView = new NoteView();
-    this.created = created ?? Date.now();
-    this.modified = modified ?? this.created;
-    this.content = content ?? [createParagraph()];
+    this.head = head ?? new NoteHead('');
+    this.body = body ?? new NoteBody();
+    // TODO: Remove
+    this.content = this.body.children;
   }
 
   append(index, element) {
@@ -27,6 +30,18 @@ export default class Note {
   toXML() {
     const serializer = new XMLSerializer();
     const xml = document.implementation.createDocument(null, 'xml');
+    const $root = xml.firstChild;
+    const $head = xml.createElement('head');
+    $root.append($head);
+
+    for (const [key, value] of Object.entries(this.head.properties)) {
+      const meta = xml.createElement(key);
+      meta.append(value);
+      $head.append(meta);
+    }
+
+    const $body = xml.createElement('body');
+    $root.append($body);
 
     for (const e of this.content) {
       const tagName = e.type;
@@ -39,40 +54,52 @@ export default class Note {
         element.setAttribute('language', e.language);
       }
 
-      xml.firstChild.appendChild(element);
+      $body.appendChild(element);
     }
 
+    console.log($root)
     return serializer.serializeToString(xml);
   }
 
   static fromXML(text) {
     const parser = new DOMParser();
     const xml = parser.parseFromString(text, 'text/xml');
-    const nodes = [];
+    const $root = xml.firstChild;
+    const $head = $root.querySelector('head');
+    const properties = {};
 
-    for (const n of xml.firstChild.childNodes) {
+    for (const n of $head.childNodes) {
+      const tagName = n.tagName;
+      const content = n.textContent;
+      properties[tagName] = content;
+    }
+
+    const head = new NoteHead(properties);
+    const $body = $root.querySelector('body');
+    const body = [];
+
+    for (const n of $body.childNodes) {
       const tagName = n.tagName;
       const content = n.textContent;
       const created = parseInt(n.getAttribute('created'));
       const modified = parseInt(n.getAttribute('modified'));
 
       if (tagName == 'p') {
-        nodes.push(createParagraph(content, created, modified));
+        body.push(createParagraph(content, created, modified));
       } else if (tagName == 'math') {
-        nodes.push(createMath(content, created, modified));
+        body.push(createMath(content, created, modified));
       } else if (headers.includes(tagName)) {
-        nodes.push(createHeader(parseInt(tagName[1]), content, created, modified));
+        body.push(createHeader(parseInt(tagName[1]), content, created, modified));
       } else if (tagName == 'hr') {
-        nodes.push(createHorizontalRule(created, modified));
+        body.push(createHorizontalRule(created, modified));
       } else if (tagName == 'blockquote') {
-        nodes.push(createBlockquote(content, created, modified));
+        body.push(createBlockquote(content, created, modified));
       } else if (tagName == 'code') {
         const language = n.getAttribute('language');
-        nodes.push(createCode(content, language, created, modified));
+        body.push(createCode(content, language, created, modified));
       }
     }
 
-    // FIX ME
-    return new Note(null, null, nodes);
+    return new Note(head, new NoteBody(body));
   }
 }

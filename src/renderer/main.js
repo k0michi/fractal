@@ -5,6 +5,7 @@ import * as utils from './utils';
 import Note from './note';
 import NoteFile from './note-file';
 import Library from './library';
+import NoteHead from './note-head';
 
 import './styles.css';
 import 'katex/dist/katex.min.css';
@@ -172,7 +173,7 @@ window.addEventListener('load', async () => {
     openNoteFile(noteFile);
   });
 
-  const emptyNote = new Note();
+  const emptyNote = new Note(NoteHead.create('Untitled'));
   const emptyNoteFile = new NoteFile(null, emptyNote);
   openNoteFile(emptyNoteFile);
 
@@ -195,7 +196,7 @@ window.addEventListener('load', async () => {
       name = `${name}_${i}`;
     }
 
-    currentNote = new Note();
+    currentNote = new Note(NoteHead.create(name));
     currentNoteFile = new NoteFile(`${library.basePath}/${name}`, currentNote);
     await saveNoteFile(currentNoteFile);
     await library.refresh();
