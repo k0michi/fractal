@@ -57,7 +57,6 @@ export default class Note {
       $body.appendChild(element);
     }
 
-    console.log($root)
     return serializer.serializeToString(xml);
   }
 

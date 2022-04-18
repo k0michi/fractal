@@ -30,6 +30,20 @@ const MATH = 'math';
 
 export const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
 
+/*
+class App {
+  constructor() {
+    window.addEventListener('load', this.onLoad);
+  }
+
+  onLoad() {
+    
+  }
+}
+
+const app = new App();
+*/
+
 async function saveNoteFile(noteFile) {
   if (noteFile.path == null) {
     const path = await bridge.saveFileDialog();
@@ -184,7 +198,7 @@ window.addEventListener('load', async () => {
   renderFiles();
 
   document.getElementById('new').addEventListener('click', async e => {
-    let name = `untitled_${dateToString(new Date())}`;
+    let name = `untitled_${utils.dateToString(new Date())}`;
 
     if (await library.doesExist(name)) {
       let i = 2;
@@ -211,14 +225,6 @@ window.addEventListener('load', async () => {
     }
   });
 });
-
-function dateToString(date) {
-  return `${padZero(date.getFullYear(), 4)}-${padZero(date.getMonth() + 1, 2)}-${padZero(date.getDate(), 2)}`;
-}
-
-function padZero(value, n) {
-  return value.toString().padStart(n, '0');
-}
 
 function focus(index) {
   currentNote.content[index]?.element.focus();
@@ -261,7 +267,7 @@ export function createParagraph(content = '', created, modified) {
     caretPos = index;
 
     const selection = window.getSelection();
-    const selectionRange = getCursorRange($paragraph);
+    const selectionRange = utils.getCursorRange($paragraph);
 
     if (e.key == 'Enter' && !isComposing) {
       const nextParagraph = createParagraph();
@@ -525,9 +531,9 @@ export function createCode(content = '', language = 'javascript', created, modif
 
     if (!isComposing) {
       // Work around for the problem that the cursor goes to the beginning after highlighting
-      const range = getCursorRange($code);
+      const range = utils.getCursorRange($code);
       Prism.highlightElement($code, false);
-      setCursorRange($code, range);
+      utils.setCursorRange($code, range);
     }
   });
 
@@ -537,98 +543,6 @@ export function createCode(content = '', language = 'javascript', created, modif
   });
 
   return code;
-}
-
-function visitNodes(element, visitor) {
-  const stack = [];
-
-  if (element.firstChild != null) {
-    stack.push(element.firstChild);
-  }
-
-  while (stack.length > 0) {
-    const top = stack.pop();
-    visitor(top);
-
-    if (top.nextSibling != null) {
-      stack.push(top.nextSibling);
-    }
-
-    if (top.firstChild != null) {
-      stack.push(top.firstChild);
-    }
-  }
-}
-
-function getCursorRange(parent) {
-  const selection = window.getSelection();
-  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-  let start = 0;
-  let end = 0;
-  let startReached = false;
-  let endReached = false;
-
-  visitNodes(parent, n => {
-    if (n == anchorNode) {
-      start += anchorOffset;
-      startReached = true;
-    }
-
-    if (n == focusNode) {
-      end += focusOffset;
-      endReached = true;
-    }
-
-    if (n.nodeType == Node.TEXT_NODE) {
-      if (!startReached) {
-        start += n.length;
-      }
-
-      if (!endReached) {
-        end += n.length;
-      }
-    }
-  });
-
-  return { start, end };
-}
-
-function setCursorRange(parent, cursorRange) {
-  const { start, end } = cursorRange;
-
-  let anchorNode, anchorOffset, focusNode, focusOffset;
-  let position = 0;
-
-  visitNodes(parent, n => {
-    if (n.nodeType == Node.TEXT_NODE) {
-      const length = n.length;
-
-      if (position + length > start && anchorNode == null) {
-        anchorNode = n;
-        anchorOffset = start - position;
-      }
-
-      if (position + length > end && focusNode == null) {
-        focusNode = n;
-        focusOffset = end - position;
-      }
-
-      position += length;
-    }
-  });
-
-  if (anchorNode == null) {
-    anchorNode = parent;
-    anchorOffset = parent.childNodes.length;
-  }
-
-  if (focusNode == null) {
-    focusNode = parent;
-    focusOffset = parent.childNodes.length;
-  }
-
-  const selection = window.getSelection();
-  selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
 }
 
 /*
