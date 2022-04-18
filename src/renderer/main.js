@@ -11,6 +11,7 @@ import './styles.css';
 import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism.css';
 import ToolsView from './tools-view';
+import LibraryView from './library-view';
 
 const PARAGRAPH = 'p';
 const BOLD = 'b';
@@ -60,13 +61,10 @@ async function saveNoteFile(noteFile) {
 }
 
 function openNoteFile(noteFile) {
-  const $selected = $library.querySelector('.selected');
-  $selected?.classList.remove('selected');
-  const $toSelect = $library.querySelector(`[data-path='${noteFile.path}']`);
-  $toSelect?.classList.add('selected');
-
   currentNoteFile = noteFile;
   currentNote = noteFile.note;
+  libraryView.setSelectedPath(currentNoteFile.path);
+  renderFiles();
   renderNote(noteFile.note);
 }
 
@@ -77,20 +75,7 @@ function renderNote(note) {
 }
 
 function renderFiles() {
-  utils.removeChildNodes($library);
-
-  for (const f of library.files) {
-    const $item = document.createElement('div');
-    $item.classList.add('library-item');
-    $item.textContent = f.name;
-    $item.dataset.path = f.path;
-
-    if (currentNoteFile.path == f.path) {
-      $item.classList.add('selected');
-    }
-
-    $library.append($item);
-  }
+  libraryView.renderFiles(library.files);
 }
 
 let $noteContainer;
@@ -98,10 +83,10 @@ let currentNote;
 let currentNoteFile;
 let caretPos = 0;
 let library;
-let $library;
 let isComposing = false;
 
 let toolsView = new ToolsView();
+let libraryView = new LibraryView();
 
 export function insertMath() {
   const math = createMath();
@@ -140,6 +125,11 @@ export async function selectAndOpenNoteBook() {
   openNoteFile(noteFile);
 }
 
+export async function selectLibraryItem(filename) {
+  const noteFile = await library.open(filename);
+  openNoteFile(noteFile);
+}
+
 export async function newNote() {
   let name = `untitled_${utils.dateToString(new Date())}`;
 
@@ -157,18 +147,15 @@ export async function newNote() {
   currentNoteFile = new NoteFile(`${library.basePath}/${name}`, currentNote);
   await saveNoteFile(currentNoteFile);
   await library.refresh();
+  libraryView.setSelectedPath(currentNoteFile.path);
   renderFiles();
 }
 
 window.addEventListener('load', async () => {
   $noteContainer = document.getElementById('note-container');
-  $library = document.getElementById('library');
 
   toolsView.initialize();
-
-  const emptyNote = new Note(NoteHead.create('Untitled'));
-  const emptyNoteFile = new NoteFile(null, emptyNote);
-  openNoteFile(emptyNoteFile);
+  libraryView.initialize();
 
   const userDataPath = await bridge.getPath('userData');
   const libraryPath = `${userDataPath}/library`;
@@ -176,13 +163,9 @@ window.addEventListener('load', async () => {
   await library.initialize();
   renderFiles();
 
-  $library.addEventListener('click', async e => {
-    if (e.target.classList.contains('library-item')) {
-      const filename = e.target.textContent;
-      const noteFile = await library.open(filename);
-      openNoteFile(noteFile);
-    }
-  });
+  const emptyNote = new Note(NoteHead.create('Untitled'));
+  const emptyNoteFile = new NoteFile(null, emptyNote);
+  openNoteFile(emptyNoteFile);
 });
 
 function focus(index) {
