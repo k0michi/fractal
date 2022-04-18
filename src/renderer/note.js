@@ -1,7 +1,7 @@
 import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph, headers } from "./main";
 import NoteBody from "./note-body";
 import NoteHead from "./note-head";
-import NoteView from "./note-view";
+import NoteView from "./views/note-view";
 
 export default class Note {
   constructor(head, body) {

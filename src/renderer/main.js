@@ -10,8 +10,8 @@ import NoteHead from './note-head';
 import './styles.css';
 import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism.css';
-import ToolsView from './tools-view';
-import LibraryView from './library-view';
+import ToolsView from './views/tools-view';
+import LibraryView from './views/library-view';
 
 const PARAGRAPH = 'p';
 const BOLD = 'b';

@@ -1,5 +1,5 @@
-import { selectLibraryItem } from "./main";
-import { removeChildNodes } from "./utils";
+import { selectLibraryItem } from "../main";
+import { removeChildNodes } from "../utils";
 
 export default class LibraryView {
   constructor() {

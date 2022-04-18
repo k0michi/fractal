@@ -1,4 +1,4 @@
-import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, newNote, saveCurrentNoteFile, selectAndOpenNoteBook } from "./main";
+import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, newNote, saveCurrentNoteFile, selectAndOpenNoteBook } from "../main";
 
 export default class ToolsView {
   constructor() {
