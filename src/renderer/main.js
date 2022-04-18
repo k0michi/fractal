@@ -10,6 +10,7 @@ import NoteHead from './note-head';
 import './styles.css';
 import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism.css';
+import ToolsView from './tools-view';
 
 const PARAGRAPH = 'p';
 const BOLD = 'b';
@@ -98,94 +99,72 @@ let currentNoteFile;
 let caretPos = 0;
 let library;
 let $library;
+let isComposing = false;
 
-/*
-function applyBold(node, start, end) {
-  const range = document.createRange();
-  range.setStart(node,start);
-  range.setEnd(node,end);
-  range.surroundContents(document.createElement('b'));
+let toolsView = new ToolsView();
+
+export function insertMath() {
+  const math = createMath();
+  currentNote.append(caretPos + 1, math);
 }
-*/
+
+export function insertHeader(level) {
+  const header = createHeader(level);
+  currentNote.append(caretPos + 1, header);
+}
+
+export function insertHorizontalRule() {
+  const horizontal = createHorizontalRule();
+  currentNote.append(caretPos + 1, horizontal);
+}
+
+export function insertBlockquote() {
+  const blockquote = createBlockquote();
+  currentNote.append(caretPos + 1, blockquote);
+}
+
+export function insertCode() {
+  const code = createCode();
+  currentNote.append(caretPos + 1, code);
+}
+
+export async function saveCurrentNoteFile() {
+  await saveNoteFile(currentNoteFile);
+}
+
+export async function selectAndOpenNoteBook() {
+  const file = await bridge.openFile();
+  const xml = await bridge.readFile(file);
+  const note = Note.fromXML(xml);
+  const noteFile = new NoteFile(file, note);
+  openNoteFile(noteFile);
+}
+
+export async function newNote() {
+  let name = `untitled_${utils.dateToString(new Date())}`;
+
+  if (await library.doesExist(name)) {
+    let i = 2;
+
+    while (await library.doesExist(`${name}_${i}`)) {
+      i++;
+    }
+
+    name = `${name}_${i}`;
+  }
+
+  currentNote = new Note(NoteHead.create(name));
+  currentNoteFile = new NoteFile(`${library.basePath}/${name}`, currentNote);
+  await saveNoteFile(currentNoteFile);
+  await library.refresh();
+  renderFiles();
+}
 
 window.addEventListener('load', async () => {
   $noteContainer = document.getElementById('note-container');
   $library = document.getElementById('library');
 
-  document.getElementById('ins-math').addEventListener('click', e => {
-    const math = createMath();
-    currentNote.append(caretPos + 1, math);
-  });
-
-  for (let i = 1; i <= 6; i++) {
-    document.getElementById('ins-h' + i).addEventListener('click', e => {
-      const header = createHeader(i);
-      currentNote.append(caretPos + 1, header);
-    });
-  }
-
-  document.getElementById('ins-hr').addEventListener('click', e => {
-    const horizontal = createHorizontalRule();
-    currentNote.append(caretPos + 1, horizontal);
-  });
-
-  document.getElementById('ins-blockquote').addEventListener('click', e => {
-    const blockquote = createBlockquote();
-    currentNote.append(caretPos + 1, blockquote);
-  });
-
-  /*
-  document.getElementById('ins-image').addEventListener('click', async e => {
-    const files = await utils.openFile();
-    const file = files[0];
-    const imageData = await utils.readAsDataURL(file);
-    const image = createImage(imageData);
-    currentNote.append(caretPos + 1, image);
-  });
-  */
-
-  document.getElementById('ins-code').addEventListener('click', e => {
-    const code = createCode();
-    currentNote.append(caretPos + 1, code);
-  });
-
-  /*
-  document.getElementById('bold').addEventListener('click', e => {
-    const selection = window.getSelection();
-
-    if(selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-
-      let node = range.startContainer;
-
-      applyBold(node, range.startOffset, node==range.endContainer?range.endOffset:node.length);
-
-      if (node != range.endContainer){
-        do {
-          node = node.nextSibling;
-
-          const b = node.parentElement.closest('b');
-          const p = node.parentElement.closest('p');
-        
-          if (b == null) {
-            applyBold(node, 0, node==range.endContainer?range.endOffset:node.length);
-          }
-        }while(node != range.endContainer);
-      }
-    }
-  });*/
-
-  document.getElementById('save').addEventListener('click', async e => {
-    await saveNoteFile(currentNoteFile);
-  });
-
-  document.getElementById('open').addEventListener('click', async e => {
-    const file = await bridge.openFile();
-    const xml = await bridge.readFile(file);
-    const note = Note.fromXML(xml);
-    const noteFile = new NoteFile(file, note);
-    openNoteFile(noteFile);
-  });
+  toolsView.initialize();
 
   const emptyNote = new Note(NoteHead.create('Untitled'));
   const emptyNoteFile = new NoteFile(null, emptyNote);
@@ -196,26 +175,6 @@ window.addEventListener('load', async () => {
   library = new Library(libraryPath);
   await library.initialize();
   renderFiles();
-
-  document.getElementById('new').addEventListener('click', async e => {
-    let name = `untitled_${utils.dateToString(new Date())}`;
-
-    if (await library.doesExist(name)) {
-      let i = 2;
-
-      while (await library.doesExist(`${name}_${i}`)) {
-        i++;
-      }
-
-      name = `${name}_${i}`;
-    }
-
-    currentNote = new Note(NoteHead.create(name));
-    currentNoteFile = new NoteFile(`${library.basePath}/${name}`, currentNote);
-    await saveNoteFile(currentNoteFile);
-    await library.refresh();
-    renderFiles();
-  });
 
   $library.addEventListener('click', async e => {
     if (e.target.classList.contains('library-item')) {
@@ -229,8 +188,6 @@ window.addEventListener('load', async () => {
 function focus(index) {
   currentNote.content[index]?.element.focus();
 }
-
-let isComposing = false;
 
 window.addEventListener('compositionstart', e => {
   isComposing = true;
@@ -467,33 +424,6 @@ export function createBlockquote(content = '', created, modified) {
   return blockquote;
 }
 
-/*
-function createImage(content, created, modified) {
-  const dom = document.createElement('img');
-  dom.textContent = content;
-  dom.src = content;
-  //dom.style = 'overflow-wrap: anywhere; width: 100%;';
-
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
-  const image = {
-    type: IMAGE,
-    content,
-    element: dom,
-    created,
-    modified
-  };
-
-  return image;
-}
-*/
-
 export function createCode(content = '', language = 'javascript', created, modified) {
   const $pre = document.createElement('pre');
   const $code = document.createElement('code');
@@ -544,28 +474,3 @@ export function createCode(content = '', language = 'javascript', created, modif
 
   return code;
 }
-
-/*
-function createBold(content = '', created, modified) {
-  const element = document.createElement('b');
-  element.textContent = content;
-
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
-  const bold = {
-    type: BOLD,
-    content,
-    element,
-    created,
-    modified
-  };
-
-  return bold;
-}
-*/
