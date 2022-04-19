@@ -76,17 +76,17 @@ let libraryView = new LibraryView();
 let noteView = new NoteView();
 
 function insertBlock(index, element) {
-  if (index >= this.content.length) {
+  if (index >= currentNote.body.children.length) {
     noteView.insertElement(element.element, null);
   } else {
-    noteView.insertElement(element.element, currentNote.content[index].element);
+    noteView.insertElement(element.element, currentNote.body.children[index].element);
   }
 
   currentNote.insert(index, element);
 }
 
 function removeBlock(index) {
-  currentNote.content[index].element.remove();
+  currentNote.body.children[index].element.remove();
   currentNote.remove(index);
 }
 
@@ -171,7 +171,7 @@ window.addEventListener('load', async () => {
 });
 
 function focus(index) {
-  currentNote.content[index]?.element.focus();
+  currentNote.body.children[index]?.element.focus();
 }
 
 window.addEventListener('compositionstart', e => {
@@ -210,7 +210,7 @@ function buildParagraph(paragraph) {
   $paragraph.textContent = paragraph.content;
 
   $paragraph.addEventListener('keydown', e => {
-    const index = currentNote.content.indexOf(paragraph);
+    const index = currentNote.body.children.indexOf(paragraph);
     caretPos = index;
 
     const selection = window.getSelection();
@@ -244,7 +244,7 @@ function buildParagraph(paragraph) {
   });
 
   $paragraph.addEventListener('focus', e => {
-    const index = currentNote.content.indexOf(paragraph);
+    const index = currentNote.body.children.indexOf(paragraph);
     caretPos = index;
   });
 
@@ -320,7 +320,7 @@ export function buildMath(math) {
   });
 
   $editor.addEventListener('focus', e => {
-    const index = currentNote.content.indexOf(math);
+    const index = currentNote.body.children.indexOf(math);
     caretPos = index;
   });
 
@@ -363,7 +363,7 @@ function buildHeader(header) {
   });
 
   $header.addEventListener('focus', e => {
-    const index = currentNote.content.indexOf(header);
+    const index = currentNote.body.children.indexOf(header);
     caretPos = index;
   });
 
@@ -424,7 +424,7 @@ function buildBlockquote(blockquote) {
   });
 
   $blockquote.addEventListener('focus', e => {
-    const index = currentNote.content.indexOf(blockquote);
+    const index = currentNote.body.children.indexOf(blockquote);
     caretPos = index;
   });
 
@@ -510,7 +510,7 @@ function buildCode(code) {
   });
 
   $code.addEventListener('focus', e => {
-    const index = currentNote.content.indexOf(code);
+    const index = currentNote.body.children.indexOf(code);
     caretPos = index;
   });
 
