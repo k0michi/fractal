@@ -16,6 +16,7 @@ import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism.css';
 import ToolsView from './views/tools-view';
 import LibraryView from './views/library-view';
+import NoteView from './views/note-view';
 
 /*
 class App {
@@ -55,8 +56,8 @@ function openNoteFile(noteFile) {
 
 function renderNote(note) {
   utils.removeChildNodes($noteContainer);
-  $noteContainer.append(note.noteView.$note);
-  note.noteView.render(note);
+  $noteContainer.append(noteView.$note);
+  noteView.render(note);
 }
 
 function renderFiles() {
@@ -72,30 +73,46 @@ let isComposing = false;
 
 let toolsView = new ToolsView();
 let libraryView = new LibraryView();
+let noteView = new NoteView();
+
+function insertBlock(index, element) {
+  if (index >= this.content.length) {
+    noteView.insertElement(element.element, null);
+  } else {
+    noteView.insertElement(element.element, currentNote.content[index].element);
+  }
+
+  currentNote.insert(index, element);
+}
+
+function removeBlock(index) {
+  currentNote.content[index].element.remove();
+  currentNote.remove(index);
+}
 
 export function insertMath() {
   const math = createMath();
-  currentNote.append(caretPos + 1, math);
+  insertBlock(caretPos + 1, math);
 }
 
 export function insertHeader(level) {
   const header = createHeader(level);
-  currentNote.append(caretPos + 1, header);
+  insertBlock(caretPos + 1, header);
 }
 
 export function insertHorizontalRule() {
   const horizontal = createHorizontalRule();
-  currentNote.append(caretPos + 1, horizontal);
+  insertBlock(caretPos + 1, horizontal);
 }
 
 export function insertBlockquote() {
   const blockquote = createBlockquote();
-  currentNote.append(caretPos + 1, blockquote);
+  insertBlock(caretPos + 1, blockquote);
 }
 
 export function insertCode() {
   const code = createCode();
-  currentNote.append(caretPos + 1, code);
+  insertBlock(caretPos + 1, code);
 }
 
 export async function saveCurrentNoteFile() {
@@ -201,13 +218,13 @@ function buildParagraph(paragraph) {
 
     if (e.key == 'Enter' && !isComposing) {
       const nextParagraph = createParagraph();
-      currentNote.append(index + 1, nextParagraph);
+      insertBlock(index + 1, nextParagraph);
       focus(index + 1);
       e.preventDefault();
     }
 
     if (e.key == 'Backspace' && selection.isCollapsed && selectionRange.start == 0) {
-      currentNote.remove(index);
+      removeBlock(index);
       focus(index - 1);
       e.preventDefault();
     }

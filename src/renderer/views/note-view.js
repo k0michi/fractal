@@ -20,7 +20,7 @@ export default class NoteView {
     $h1.textContent = note.head.properties.title;
     this.$noteContent.append($h1);
 
-    for (const e of note.content) {
+    for (const e of note.body.children) {
       this.$noteContent.append(e.element);
     }
   }

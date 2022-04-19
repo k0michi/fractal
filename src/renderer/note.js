@@ -1,31 +1,20 @@
 import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph } from "./main";
 import NoteBody from "./note-body";
 import NoteHead from "./note-head";
-import NoteView from "./views/note-view";
 import * as symbols from './symbols';
 
 export default class Note {
   constructor(head, body) {
-    this.noteView = new NoteView();
     this.head = head ?? new NoteHead('');
     this.body = body ?? new NoteBody();
-    // TODO: Remove
-    this.content = this.body.children;
   }
 
-  append(index, element) {
-    if (index >= this.content.length) {
-      this.noteView.insertElement(element.element, null);
-    } else {
-      this.noteView.insertElement(element.element, this.content[index].element);
-    }
-
-    this.content.splice(index, 0, element);
+  insert(index, element) {
+    this.body.children.splice(index, 0, element);
   }
 
   remove(index) {
-    const removed = this.content.splice(index, 1)[0];
-    removed.element.remove();
+    this.body.children.splice(index, 1)[0];
   }
 
   toXML() {
@@ -44,7 +33,7 @@ export default class Note {
     const $body = xml.createElement('body');
     $root.append($body);
 
-    for (const e of this.content) {
+    for (const e of this.body.children) {
       const tagName = e.type;
       const element = xml.createElement(tagName);
       element.append(e.content);
