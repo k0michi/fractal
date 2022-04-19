@@ -1,5 +1,8 @@
 import Katex from 'katex';
 import Prism from 'prismjs';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-cpp';
+import 'prismjs/components/prism-java';
 
 import * as utils from './utils';
 import Note from './note';
@@ -355,11 +358,6 @@ export function createHorizontalRule(created, modified) {
 }
 
 export function createBlockquote(content = '', created, modified) {
-  const $blockquote = document.createElement('blockquote');
-  $blockquote.textContent = content;
-  $blockquote.style = 'overflow-wrap: anywhere; width: 100%;';
-  $blockquote.contentEditable = true;
-
   if (created == null) {
     created = Date.now();
   }
@@ -371,10 +369,22 @@ export function createBlockquote(content = '', created, modified) {
   const blockquote = {
     type: symbols.BLOCKQUOTE,
     content,
-    element: $blockquote,
     created,
     modified
   };
+
+  const $blockquote = buildBlockquote(blockquote);
+
+  blockquote.element = $blockquote;
+
+  return blockquote;
+}
+
+function buildBlockquote(blockquote) {
+  const $blockquote = document.createElement('blockquote');
+  $blockquote.textContent = content;
+  $blockquote.style = 'overflow-wrap: anywhere; width: 100%;';
+  $blockquote.contentEditable = true;
 
   $blockquote.addEventListener('input', e => {
     blockquote.content = $blockquote.textContent;
@@ -386,19 +396,42 @@ export function createBlockquote(content = '', created, modified) {
     caretPos = index;
   });
 
-  return blockquote;
+  return $blockquote;
+}
+
+function buildLanguageSelect(selected) {
+  const $select = document.createElement('select');
+  $select.style = 'display: block;';
+  $select.name = 'language';
+
+  for (let language of symbols.languages) {
+    const $option = document.createElement('option');
+    $option.value = language.id;
+    $option.text = language.name;
+    $select.append($option);
+  }
+
+  $select.value = selected;
+  return $select;
+}
+
+function setLanguage(language, $pre, $code) {
+  $code.className = `language-${language}`;
+  $pre.className = `language-${language}`;
 }
 
 export function createCode(content = '', language = 'javascript', created, modified) {
   const $pre = document.createElement('pre');
+  const $langSelect = buildLanguageSelect(language);
   const $code = document.createElement('code');
+  $code.style = 'display: inline-block; width: 100%;';
+  $pre.append($langSelect);
   $pre.append($code);
   $code.textContent = content;
   $code.contentEditable = true;
 
   if (language != null) {
-    $code.classList.add(`language-${language}`);
-    $pre.classList.add(`language-${language}`);
+    setLanguage(language, $pre, $code);
   }
 
   Prism.highlightElement($code, false);
@@ -427,9 +460,16 @@ export function createCode(content = '', language = 'javascript', created, modif
     if (!isComposing) {
       // Work around for the problem that the cursor goes to the beginning after highlighting
       const range = utils.getCursorRange($code);
-      Prism.highlightElement($code, false);
+      //Prism.highlightElement($code, false);
       utils.setCursorRange($code, range);
     }
+  });
+
+  $langSelect.addEventListener('change', e => {
+    const newLanguage = e.target.value;
+    setLanguage(newLanguage, $pre, $code);
+    Prism.highlightElement($code, false);
+    code.language = newLanguage;
   });
 
   $code.addEventListener('focus', e => {

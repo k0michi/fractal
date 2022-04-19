@@ -16,3 +16,30 @@ export const CODE = 'code';
 export const MATH = 'math';
 
 export const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
+
+export const languages = [
+  {
+    name: 'JavaScript',
+    id: 'javascript'
+  },
+  {
+    name: 'HTML',
+    id: 'html'
+  },
+  {
+    name: 'CSS',
+    id: 'css'
+  },
+  {
+    name: 'C',
+    id: 'c'
+  },
+  {
+    name: 'C++',
+    id: 'cpp'
+  },
+  {
+    name: 'Java',
+    id: 'java'
+  }
+];

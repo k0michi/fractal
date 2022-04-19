@@ -46,7 +46,7 @@ body {
 }
 
 .math {
-  height: 1em;
+  min-height: 1em;
 }
 
 #note pre {
