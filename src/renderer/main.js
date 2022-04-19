@@ -166,11 +166,6 @@ window.addEventListener('compositionend', e => {
 });
 
 export function createParagraph(content = '', created, modified) {
-  const $paragraph = document.createElement('p');
-  $paragraph.style = 'overflow-wrap: anywhere; width: 100%;';
-  $paragraph.contentEditable = true;
-  $paragraph.textContent = content;
-
   if (created == null) {
     created = Date.now();
   }
@@ -182,10 +177,20 @@ export function createParagraph(content = '', created, modified) {
   const paragraph = {
     type: symbols.PARAGRAPH,
     content,
-    element: $paragraph,
     created,
     modified
   };
+
+  const $paragraph = buildParagraph(paragraph);
+  paragraph.element = $paragraph;
+  return paragraph;
+}
+
+function buildParagraph(paragraph) {
+  const $paragraph = document.createElement('p');
+  $paragraph.style = 'overflow-wrap: anywhere; width: 100%;';
+  $paragraph.contentEditable = true;
+  $paragraph.textContent = paragraph.content;
 
   $paragraph.addEventListener('keydown', e => {
     const index = currentNote.content.indexOf(paragraph);
@@ -241,19 +246,10 @@ export function createParagraph(content = '', created, modified) {
     e.preventDefault();
   });
 
-  return paragraph;
+  return $paragraph;
 }
 
 export function createMath(content = '', created, modified) {
-  const $container = document.createElement('div');
-  $container.className = 'math';
-  const $editor = document.createElement('pre');
-  $editor.style = 'overflow-wrap: anywhere; width: 100%;';
-  $editor.contentEditable = true;
-
-  $editor.textContent = content;
-  Katex.render(content, $container, { displayMode: true });
-
   if (created == null) {
     created = Date.now();
   }
@@ -265,10 +261,24 @@ export function createMath(content = '', created, modified) {
   const math = {
     type: symbols.MATH,
     content,
-    element: $container,
     created,
     modified
   };
+
+  const $container = buildMath(math);
+  math.element = $container;
+  return math;
+}
+
+export function buildMath(math) {
+  const $container = document.createElement('div');
+  $container.className = 'math';
+  const $editor = document.createElement('pre');
+  $editor.style = 'overflow-wrap: anywhere; width: 100%;';
+  $editor.contentEditable = true;
+
+  $editor.textContent = math.content;
+  Katex.render(math.content, $container, { displayMode: true });
 
   window.addEventListener('click', e => {
     if ($container.contains(e.target) && ($container.firstChild == null || $container.firstChild != $editor)) {
@@ -297,15 +307,11 @@ export function createMath(content = '', created, modified) {
     caretPos = index;
   });
 
-  return math;
+  return $container;
 }
 
 export function createHeader(level, content = '', created, modified) {
   const type = symbols.headers[level - 1];
-  const $header = document.createElement(type);
-  $header.textContent = content;
-  $header.style = 'overflow-wrap: anywhere; width: 100%;';
-  $header.contentEditable = true;
 
   if (created == null) {
     created = Date.now();
@@ -318,10 +324,21 @@ export function createHeader(level, content = '', created, modified) {
   const header = {
     type,
     content,
-    element: $header,
     created,
     modified
   };
+
+  const $header = buildHeader(header);
+  header.element = $header;
+
+  return header;
+}
+
+function buildHeader(header) {
+  const $header = document.createElement(header.type);
+  $header.textContent = header.content;
+  $header.style = 'overflow-wrap: anywhere; width: 100%;';
+  $header.contentEditable = true;
 
   $header.addEventListener('input', e => {
     header.content = $header.textContent;
@@ -333,7 +350,7 @@ export function createHeader(level, content = '', created, modified) {
     caretPos = index;
   });
 
-  return header;
+  return $header;
 }
 
 export function createHorizontalRule(created, modified) {
@@ -374,15 +391,13 @@ export function createBlockquote(content = '', created, modified) {
   };
 
   const $blockquote = buildBlockquote(blockquote);
-
   blockquote.element = $blockquote;
-
   return blockquote;
 }
 
 function buildBlockquote(blockquote) {
   const $blockquote = document.createElement('blockquote');
-  $blockquote.textContent = content;
+  $blockquote.textContent = blockquote.content;
   $blockquote.style = 'overflow-wrap: anywhere; width: 100%;';
   $blockquote.contentEditable = true;
 
@@ -421,21 +436,6 @@ function setLanguage(language, $pre, $code) {
 }
 
 export function createCode(content = '', language = 'javascript', created, modified) {
-  const $pre = document.createElement('pre');
-  const $langSelect = buildLanguageSelect(language);
-  const $code = document.createElement('code');
-  $code.style = 'display: inline-block; width: 100%;';
-  $pre.append($langSelect);
-  $pre.append($code);
-  $code.textContent = content;
-  $code.contentEditable = true;
-
-  if (language != null) {
-    setLanguage(language, $pre, $code);
-  }
-
-  Prism.highlightElement($code, false);
-
   if (created == null) {
     created = Date.now();
   }
@@ -447,11 +447,31 @@ export function createCode(content = '', language = 'javascript', created, modif
   const code = {
     type: symbols.CODE,
     content,
-    element: $pre,
     created,
     modified,
     language
   };
+
+  const $pre = buildCode(code);
+  code.element = $pre;
+  return code;
+}
+
+function buildCode(code) {
+  const $pre = document.createElement('pre');
+  const $langSelect = buildLanguageSelect(code.language);
+  const $code = document.createElement('code');
+  $code.style = 'display: inline-block; width: 100%;';
+  $pre.append($langSelect);
+  $pre.append($code);
+  $code.textContent = code.content;
+  $code.contentEditable = true;
+
+  if (code.language != null) {
+    setLanguage(code.language, $pre, $code);
+  }
+
+  Prism.highlightElement($code, false);
 
   $code.addEventListener('input', e => {
     code.content = $code.textContent;
@@ -460,7 +480,7 @@ export function createCode(content = '', language = 'javascript', created, modif
     if (!isComposing) {
       // Work around for the problem that the cursor goes to the beginning after highlighting
       const range = utils.getCursorRange($code);
-      //Prism.highlightElement($code, false);
+      Prism.highlightElement($code, false);
       utils.setCursorRange($code, range);
     }
   });
@@ -477,5 +497,5 @@ export function createCode(content = '', language = 'javascript', created, modif
     caretPos = index;
   });
 
-  return code;
+  return $pre;
 }
