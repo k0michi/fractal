@@ -14,7 +14,7 @@ body {
   flex: 0 0 200px;
 }
 
-#editor{
+#editor {
   flex: 1 1 auto;
   overflow: auto;
 }
@@ -68,6 +68,34 @@ body {
 #note code {
   outline: none;
   font-size: 14px !important;
+}
+
+#note h1#title {
+  margin-bottom: 12px;
+}
+
+#note h1 {
+  margin: 0;
+}
+
+#note h2 {
+  margin: 0;
+}
+
+#note h3 {
+  margin: 0;
+}
+
+#note h4 {
+  margin: 0;
+}
+
+#note h5 {
+  margin: 0;
+}
+
+#note h6 {
+  margin: 0;
 }
 
 .library-item {
