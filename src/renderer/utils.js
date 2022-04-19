@@ -12,12 +12,8 @@ export function padZero(value, n) {
   return value.toString().padStart(n, '0');
 }
 
-export function visitNodes(element, visitor) {
-  const stack = [];
-
-  if (element.firstChild != null) {
-    stack.push(element.firstChild);
-  }
+export function visitNodes(node, visitor) {
+  const stack = [node];
 
   while (stack.length > 0) {
     const top = stack.pop();
@@ -35,20 +31,40 @@ export function visitNodes(element, visitor) {
 
 export function getCursorRange(parent) {
   const selection = window.getSelection();
-  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
+  let { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
   let start = 0;
   let end = 0;
   let startReached = false;
   let endReached = false;
+  let isAnchorText = true;
+  let isFocusText = true;
+
+  // The anchor is located between two nodes
+  if (anchorNode.nodeType == Node.ELEMENT_NODE) {
+    // The range of offset is [0, childNodes.length]
+    anchorNode = anchorNode.childNodes[anchorOffset];
+    isAnchorText = false;
+  }
+
+  if (focusNode.nodeType == Node.ELEMENT_NODE) {
+    focusNode = focusNode.childNodes[focusOffset];
+    isFocusText = false;
+  }
 
   visitNodes(parent, n => {
     if (n == anchorNode) {
-      start += anchorOffset;
+      if (isAnchorText) {
+        start += anchorOffset;
+      }
+
       startReached = true;
     }
 
     if (n == focusNode) {
-      end += focusOffset;
+      if (isFocusText) {
+        end += focusOffset;
+      }
+
       endReached = true;
     }
 

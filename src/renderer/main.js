@@ -249,7 +249,7 @@ function buildParagraph(paragraph) {
   });
 
   $paragraph.addEventListener('paste', e => {
-    const paste = (e.clipboardData || window.clipboardData).getData('text');
+    const paste = (e.clipboardData ?? window.clipboardData).getData('text');
     const selection = window.getSelection();
 
     if (selection.rangeCount > 0) {
@@ -258,6 +258,7 @@ function buildParagraph(paragraph) {
       selection.collapseToEnd();
       $paragraph.normalize();
       paragraph.content = $paragraph.textContent;
+      paragraph.modified = Date.now();
     }
 
     e.preventDefault();
@@ -512,6 +513,25 @@ function buildCode(code) {
   $code.addEventListener('focus', e => {
     const index = currentNote.body.children.indexOf(code);
     caretPos = index;
+  });
+
+  $code.addEventListener('paste', e => {
+    const paste = (e.clipboardData ?? window.clipboardData).getData('text');
+    const selection = window.getSelection();
+
+    if (selection.rangeCount > 0) {
+      selection.deleteFromDocument();
+      selection.getRangeAt(0).insertNode(document.createTextNode(paste));
+      selection.collapseToEnd();
+      $code.normalize();
+      const range = utils.getCursorRange($code, selection);
+      Prism.highlightElement($code, false);
+      utils.setCursorRange($code, range);
+      code.content = $code.textContent;
+      code.modified = Date.now();
+    }
+
+    e.preventDefault();
   });
 
   return $pre;
