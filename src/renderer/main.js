@@ -6,31 +6,13 @@ import Note from './note';
 import NoteFile from './note-file';
 import Library from './library';
 import NoteHead from './note-head';
+import * as symbols from './symbols';
 
 import './styles.css';
 import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism.css';
 import ToolsView from './views/tools-view';
 import LibraryView from './views/library-view';
-
-const PARAGRAPH = 'p';
-const BOLD = 'b';
-const ITALIC = 'i';
-const UNDERLINE = 'u';
-const STRIKETHROUGH = 's';
-const HEADER1 = 'h1';
-const HEADER2 = 'h2';
-const HEADER3 = 'h3';
-const HEADER4 = 'h4';
-const HEADER5 = 'h5';
-const HEADER6 = 'h6';
-const HORIZONTAL_RULE = 'hr';
-const BLOCKQUOTE = 'blockquote';
-const IMAGE = 'image';
-const CODE = 'code';
-const MATH = 'math';
-
-export const headers = [HEADER1, HEADER2, HEADER3, HEADER4, HEADER5, HEADER6];
 
 /*
 class App {
@@ -195,7 +177,7 @@ export function createParagraph(content = '', created, modified) {
   }
 
   const paragraph = {
-    type: PARAGRAPH,
+    type: symbols.PARAGRAPH,
     content,
     element: $paragraph,
     created,
@@ -278,7 +260,7 @@ export function createMath(content = '', created, modified) {
   }
 
   const math = {
-    type: MATH,
+    type: symbols.MATH,
     content,
     element: $container,
     created,
@@ -316,7 +298,7 @@ export function createMath(content = '', created, modified) {
 }
 
 export function createHeader(level, content = '', created, modified) {
-  const type = headers[level - 1];
+  const type = symbols.headers[level - 1];
   const $header = document.createElement(type);
   $header.textContent = content;
   $header.style = 'overflow-wrap: anywhere; width: 100%;';
@@ -363,7 +345,7 @@ export function createHorizontalRule(created, modified) {
   }
 
   const horizontal = {
-    type: HORIZONTAL_RULE,
+    type: symbols.HORIZONTAL_RULE,
     element: $hr,
     created,
     modified
@@ -387,7 +369,7 @@ export function createBlockquote(content = '', created, modified) {
   }
 
   const blockquote = {
-    type: BLOCKQUOTE,
+    type: symbols.BLOCKQUOTE,
     content,
     element: $blockquote,
     created,
@@ -430,7 +412,7 @@ export function createCode(content = '', language = 'javascript', created, modif
   }
 
   const code = {
-    type: CODE,
+    type: symbols.CODE,
     content,
     element: $pre,
     created,

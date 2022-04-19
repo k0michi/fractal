@@ -1,7 +1,8 @@
-import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph, headers } from "./main";
+import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph } from "./main";
 import NoteBody from "./note-body";
 import NoteHead from "./note-head";
 import NoteView from "./views/note-view";
+import * as symbols from './symbols';
 
 export default class Note {
   constructor(head, body) {
@@ -87,7 +88,7 @@ export default class Note {
         body.push(createParagraph(content, created, modified));
       } else if (tagName == 'math') {
         body.push(createMath(content, created, modified));
-      } else if (headers.includes(tagName)) {
+      } else if (symbols.headers.includes(tagName)) {
         body.push(createHeader(parseInt(tagName[1]), content, created, modified));
       } else if (tagName == 'hr') {
         body.push(createHorizontalRule(created, modified));
