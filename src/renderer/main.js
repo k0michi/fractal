@@ -491,6 +491,22 @@ function buildCode(code) {
 
   Prism.highlightElement($code, false);
 
+  $code.addEventListener('keydown', e => {
+    const selection = window.getSelection();
+
+    if (e.key == 'Tab') {
+      e.preventDefault();
+      selection.getRangeAt(0).insertNode(document.createTextNode('  '));
+      selection.collapseToEnd();
+      $code.normalize();
+      const range = utils.getCursorRange($code, selection);
+      Prism.highlightElement($code, false);
+      utils.setCursorRange($code, range);
+      code.content = $code.textContent;
+      code.modified = Date.now();
+    }
+  });
+
   $code.addEventListener('input', e => {
     code.content = $code.textContent;
     code.modified = Date.now();
