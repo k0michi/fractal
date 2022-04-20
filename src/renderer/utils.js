@@ -119,3 +119,13 @@ export function setCursorRange(parent, cursorRange) {
   const selection = window.getSelection();
   selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
 }
+
+export function nodeIndexOf(node, collection) {
+  for (let i = 0; i < collection.length; i++) {
+    if (collection[i] == node) {
+      return i;
+    }
+  }
+
+  return -1;
+}

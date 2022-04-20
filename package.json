@@ -3,6 +3,7 @@
   "productName": "Sarashina",
   "dependencies": {
     "katex": "^0.15.2",
+    "nanoid": "^3.3.3",
     "prismjs": "^1.26.0"
   },
   "scripts": {
