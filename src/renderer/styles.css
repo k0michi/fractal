@@ -59,6 +59,7 @@ body {
   margin: 0;
   padding-left: 24px;
   border-left: 3px solid #000;
+  box-sizing: border-box;
 }
 
 #note img {
