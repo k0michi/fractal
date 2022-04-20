@@ -12,6 +12,7 @@ body {
 
 #library {
   flex: 0 0 200px;
+  overflow: auto;
 }
 
 #editor {
@@ -104,6 +105,9 @@ body {
   user-select: none;
   padding: 2px 8px;
   width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .library-item.selected {
