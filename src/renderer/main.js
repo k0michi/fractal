@@ -164,12 +164,13 @@ export async function newNote() {
     name = `${name}_${i}`;
   }
 
-  currentNote = new Note(NoteHead.create(name));
-  currentNoteFile = new NoteFile(`${library.basePath}/${name}`, currentNote);
-  await saveNoteFile(currentNoteFile);
+  const note = new Note(NoteHead.create(name));
+  const noteFile = new NoteFile(`${library.basePath}/${name}`, note);
+  await saveNoteFile(noteFile);
   await library.refresh();
-  libraryView.setSelectedPath(currentNoteFile.path);
+  libraryView.setSelectedPath(noteFile.path);
   renderFiles();
+  openNoteFile(noteFile);
 }
 
 window.addEventListener('load', async () => {
