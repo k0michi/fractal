@@ -19,21 +19,27 @@ export default class Library {
     await bridge.makeDir(`${this.basePath}/${relativePath}`);
   }
 
-  async refresh() {
-    const ents = await bridge.readDir(this.basePath);
-    ents.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }));
-
-    this.items = [];
+  entsToItems(ents) {
+    const items = [];
 
     for (const ent of ents) {
       const path = ent.path;
       const name = ent.name;
 
       if (ent.kind == fileKind.FILE) {
-        this.items.push(new LibraryFile(name, path));
+        items.push(new LibraryFile(name, path));
       } else {
-        this.items.push(new LibraryCollection(name, path));
+        const childItems = this.entsToItems(ent.ents);
+        items.push(new LibraryCollection(name, path, childItems));
       }
     }
+
+    return items;
+  }
+
+  async refresh() {
+    const ents = await bridge.readDirRecursive(this.basePath);
+    ents.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }));
+    this.items = this.entsToItems(ents);
   }
 }

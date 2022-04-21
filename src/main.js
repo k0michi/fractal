@@ -95,6 +95,32 @@ ipcMain.handle('read-dir', async (e, dirPath) => {
   return ents;
 });
 
+ipcMain.handle('read-dir-recursive', async (e, dirPath) => {
+  return await readDirRecursive(dirPath);
+});
+
+async function readDirRecursive(dirPath) {
+  const dir = await fs.opendir(dirPath);
+  const ents = [];
+
+  for await (const dirent of dir) {
+    const pathToEnt = path.join(dirPath, dirent.name);
+    const name = dirent.name;
+    let kind;
+
+    if (dirent.isFile()) {
+      kind = fileKind.FILE;
+      ents.push({ path: pathToEnt, name, kind });
+    } else if (dirent.isDirectory()) {
+      kind = fileKind.DIRECTORY;
+      const childEnts = await readDirRecursive(path.join(dirPath, dirent.name));
+      ents.push({ path: pathToEnt, name, kind, ents:childEnts });
+    }
+  }
+
+  return ents;
+}
+
 ipcMain.handle('make-dir', async (e, dirPath) => {
   return await fs.mkdir(dirPath, { recursive: true });
 });

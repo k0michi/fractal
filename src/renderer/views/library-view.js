@@ -30,43 +30,54 @@ export default class LibraryView {
     this.selectedPath = path;
   }
 
+  renderTo($target, i, depth) {
+    const padding = depth * 12 + 12;
+
+    if (i.type == LibraryItemType.FILE) {
+      const $item = document.createElement('div');
+      $item.classList.add('library-item');
+      $item.classList.add('library-file');
+      $item.textContent = i.name;
+      $item.dataset.path = i.path;
+      $item.dataset.type = i.type;
+      $item.style = `padding-left: ${padding}px`;
+
+      if (i.path == this.selectedPath) {
+        $item.classList.add('selected');
+      }
+
+      $target.append($item);
+    } else {
+      const $item = document.createElement('div');
+      const toggle = this.toggleCollection.get(i.path) ?? false;
+      $item.classList.add('library-item');
+      $item.classList.add('library-collection');
+      $item.textContent = i.name;
+      $item.dataset.path = i.path;
+      $item.dataset.type = i.type;
+      $item.style = `padding-left: ${padding}px`;
+
+      if (i.path == this.selectedPath) {
+        $item.classList.add('selected');
+      }
+
+      $target.append($item);
+
+      if (toggle) {
+        $item.classList.add('open');
+
+        for (const childI of i.items) {
+          this.renderTo($target, childI, depth + 1);
+        }
+      }
+    }
+  }
+
   renderFiles(items) {
     removeChildNodes(this.$library);
 
     for (const i of items) {
-      if (i.type == LibraryItemType.FILE) {
-        const $item = document.createElement('div');
-        $item.classList.add('library-item');
-        $item.classList.add('library-file');
-        $item.textContent = i.name;
-        $item.dataset.path = i.path;
-        $item.dataset.type = i.type;
-
-        if (i.path == this.selectedPath) {
-          $item.classList.add('selected');
-        }
-
-        this.$library.append($item);
-      } else {
-        const $item = document.createElement('div');
-        const toggle = this.toggleCollection.get(i.path) ?? false;
-        $item.classList.add('library-item');
-        $item.classList.add('library-collection');
-
-        if (toggle) {
-          $item.classList.add('open');
-        }
-
-        $item.textContent = i.name;
-        $item.dataset.path = i.path;
-        $item.dataset.type = i.type;
-
-        if (i.path == this.selectedPath) {
-          $item.classList.add('selected');
-        }
-
-        this.$library.append($item);
-      }
+      this.renderTo(this.$library, i, 0);
     }
   }
 }

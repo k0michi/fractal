@@ -17,6 +17,10 @@ contextBridge.exposeInMainWorld('bridge', {
     return await ipcRenderer.invoke('read-dir', ...args);
   },
 
+  async readDirRecursive(...args) {
+    return await ipcRenderer.invoke('read-dir-recursive', ...args);
+  },
+
   async makeDir(...args) {
     return await ipcRenderer.invoke('make-dir', ...args);
   },
