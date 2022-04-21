@@ -82,7 +82,12 @@ export default class Note {
 
     for (const n of $head.childNodes) {
       const tagName = n.tagName;
-      const content = n.textContent;
+      let content = n.textContent;
+
+      if (tagName == 'created' || tagName == 'modified') {
+        content = parseInt(content);
+      }
+
       properties[tagName] = content;
     }
 

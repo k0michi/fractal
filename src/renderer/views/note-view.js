@@ -58,12 +58,17 @@ export default class NoteView {
     const $table = document.createElement('table');
     $table.className = 'property-table';
 
-    for (const [key, value] of Object.entries(note.head.properties)) {
+    for (let [key, value] of Object.entries(note.head.properties)) {
       const $tr = document.createElement('tr');
       const $td1 = document.createElement('td');
       $td1.textContent = key;
       $tr.append($td1);
       const $td2 = document.createElement('td');
+
+      if (key == 'created' || key == 'modified') {
+        value = new Date(value).toLocaleString();
+      }
+
       $td2.textContent = value;
       $tr.append($td2);
       $table.append($tr);
