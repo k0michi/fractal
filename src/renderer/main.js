@@ -155,7 +155,8 @@ export async function selectLibraryItem(path, type) {
     const noteFile = await fileSystem.openNoteFile(path);
     openNoteFile(noteFile);
   } else {
-
+    libraryView.setSelectedPath(path);
+    renderFiles();
   }
 }
 

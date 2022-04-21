@@ -14,13 +14,14 @@ export default class LibraryView {
       if (e.target.classList.contains('library-item')) {
         const path = e.target.dataset.path;
         const type = e.target.dataset.type;
-        selectLibraryItem(path, type);
 
         if (e.target.dataset.type == LibraryItemType.COLLECTION) {
-          e.target.classList.toggle('open');
-          const toggle = e.target.classList.contains('open');
+          let toggle = this.toggleCollection.get(e.target.dataset.path) ?? false;
+          toggle = !toggle;
           this.toggleCollection.set(e.target.dataset.path, toggle);
         }
+
+        selectLibraryItem(path, type);
       }
     });
   }
