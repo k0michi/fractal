@@ -11,8 +11,9 @@ export default class LibraryView {
 
     this.$library.addEventListener('click', async e => {
       if (e.target.classList.contains('library-item')) {
-        const filename = e.target.textContent;
-        selectLibraryItem(filename);
+        const path = e.target.dataset.path;
+        const type = e.target.dataset.type;
+        selectLibraryItem(path, type);
       }
     });
   }
@@ -29,6 +30,7 @@ export default class LibraryView {
       $item.classList.add('library-item');
       $item.textContent = i.name;
       $item.dataset.path = i.path;
+      $item.dataset.type = i.type;
   
       if (i.path == this.selectedPath) {
         $item.classList.add('selected');

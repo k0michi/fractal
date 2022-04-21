@@ -1,5 +1,6 @@
 export default class LibraryItem {
-  constructor(name, path) {
+  constructor(type, name, path) {
+    this.type = type;
     this.name = name;
     this.path = path;
   }

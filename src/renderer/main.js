@@ -13,6 +13,8 @@ import 'prismjs/themes/prism.css';
 import ToolsView from './views/tools-view';
 import LibraryView from './views/library-view';
 import NoteView from './views/note-view';
+import * as fileSystem from './file-system';
+import * as LibraryItemType from "./library-item-type";
 
 /*
 class App {
@@ -148,23 +150,30 @@ export async function selectAndOpenNoteBook() {
   openNoteFile(noteFile);
 }
 
-export async function selectLibraryItem(filename) {
-  const noteFile = await library.open(filename);
-  openNoteFile(noteFile);
+export async function selectLibraryItem(path, type) {
+  if (type == LibraryItemType.FILE) {
+    const noteFile = await fileSystem.openNoteFile(path);
+    openNoteFile(noteFile);
+  }
 }
 
-export async function newNote() {
-  let name = `untitled_${utils.dateToString(new Date())}`;
-
-  if (await library.doesExist(name)) {
+async function getAvailableFileName(name) {
+  if (await fileSystem.doesExist(name)) {
     let i = 2;
 
-    while (await library.doesExist(`${name}_${i}`)) {
+    while (await fileSystem.doesExist(`${name}_${i}`)) {
       i++;
     }
 
     name = `${name}_${i}`;
   }
+
+  return name;
+}
+
+export async function newNote() {
+  let name = `untitled_${utils.dateToString(new Date())}`;
+  name = await getAvailableFileName(name);
 
   const note = new Note(NoteHead.create(name));
   const noteFile = new NoteFile(`${library.basePath}/${name}`, note);
@@ -173,6 +182,15 @@ export async function newNote() {
   libraryView.setSelectedPath(noteFile.path);
   renderFiles();
   openNoteFile(noteFile);
+}
+
+export async function newCollection() {
+  let name = `untitled_collection_${utils.dateToString(new Date())}`;
+  name = await getAvailableFileName(name);
+
+  await library.createCollection(name);
+  await library.refresh();
+  renderFiles();
 }
 
 window.addEventListener('load', async () => {

@@ -1,4 +1,4 @@
-import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, insertOrderedList, insertUnorderedList, newNote, saveCurrentNoteFile, selectAndOpenNoteBook } from "../main";
+import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, insertOrderedList, insertUnorderedList, newCollection, newNote, saveCurrentNoteFile, selectAndOpenNoteBook } from "../main";
 
 export default class ToolsView {
   constructor() {
@@ -45,6 +45,10 @@ export default class ToolsView {
 
     document.getElementById('new').addEventListener('click', async e => {
       await newNote();
+    });
+
+    document.getElementById('new-collection').addEventListener('click', async e => {
+      await newCollection();
     });
   }
 }

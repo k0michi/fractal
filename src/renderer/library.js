@@ -15,6 +15,10 @@ export default class Library {
     await this.refresh();
   }
 
+  async createCollection(relativePath) {
+    await bridge.makeDir(`${this.basePath}/${relativePath}`);
+  }
+
   async refresh() {
     const ents = await bridge.readDir(this.basePath);
     ents.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }));
@@ -31,17 +35,5 @@ export default class Library {
         this.items.push(new LibraryCollection(name, path));
       }
     }
-  }
-
-  async doesExist(filename) {
-    const path = `${this.basePath}/${filename}`;
-    return await bridge.doesExist(path);
-  }
-
-  async open(filename) {
-    const path = `${this.basePath}/${filename}`;
-    const text = await bridge.readFile(path);
-    const noteFile = new NoteFile(path, Note.fromXML(text));
-    return noteFile;
   }
 }
