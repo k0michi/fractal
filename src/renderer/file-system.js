@@ -7,6 +7,6 @@ export async function openNoteFile(path) {
   return noteFile;
 }
 
-export async function doesExist(path) {
-  return await bridge.doesExist(path);
+export async function doesExist(dir, path) {
+  return await bridge.doesExist(`${dir}/${path}`);
 }

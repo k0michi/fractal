@@ -155,15 +155,15 @@ export async function selectLibraryItem(path, type) {
     const noteFile = await fileSystem.openNoteFile(path);
     openNoteFile(noteFile);
   } else {
-    
+
   }
 }
 
-async function getAvailableFileName(name) {
-  if (await fileSystem.doesExist(name)) {
+async function getAvailableFileName(dir, name) {
+  if (await fileSystem.doesExist(dir, name)) {
     let i = 2;
 
-    while (await fileSystem.doesExist(`${name}_${i}`)) {
+    while (await fileSystem.doesExist(dir, `${name}_${i}`)) {
       i++;
     }
 
@@ -175,7 +175,7 @@ async function getAvailableFileName(name) {
 
 export async function newNote() {
   let name = `untitled_${utils.dateToString(new Date())}`;
-  name = await getAvailableFileName(name);
+  name = await getAvailableFileName(library.basePath, name);
 
   const note = new Note(NoteHead.create(name));
   const noteFile = new NoteFile(`${library.basePath}/${name}`, note);
@@ -187,8 +187,8 @@ export async function newNote() {
 }
 
 export async function newCollection() {
-  let name = `untitled_collection_${utils.dateToString(new Date())}`;
-  name = await getAvailableFileName(name);
+  let name = `untitled_collection`;
+  name = await getAvailableFileName(library.basePath, name);
 
   await library.createCollection(name);
   await library.refresh();
@@ -207,7 +207,7 @@ window.addEventListener('load', async () => {
   await library.initialize();
   renderFiles();
 
-  const emptyNote = new Note(NoteHead.create('Untitled'));
+  const emptyNote = new Note(NoteHead.create('untitled'));
   const emptyNoteFile = new NoteFile(null, emptyNote);
   openNoteFile(emptyNoteFile);
 });
