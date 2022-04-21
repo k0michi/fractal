@@ -1,4 +1,4 @@
-import { createBlockquote, createCode, createHeader, createHorizontalRule, createMath, createParagraph } from "./main";
+import { createBlockquote, createCode, createHeader, createHorizontalRule, createListItem, createMath, createOrderedList, createParagraph, createUnorderedList } from "./main";
 import NoteBody from "./note-body";
 import NoteHead from "./note-head";
 import * as symbols from './symbols';
@@ -11,6 +11,10 @@ export default class Note {
 
   insert(index, element) {
     this.body.children.splice(index, 0, element);
+  }
+
+  insertListItem(indexOfList, index, element) {
+    this.body.children[indexOfList].splice(index, 0, element);
   }
 
   remove(index) {
@@ -34,20 +38,35 @@ export default class Note {
     $root.append($body);
 
     for (const e of this.body.children) {
-      const tagName = e.type;
-      const element = xml.createElement(tagName);
-      element.append(e.content);
-      element.setAttribute('created', e.created);
-      element.setAttribute('modified', e.modified);
-
-      if (e.language != null) {
-        element.setAttribute('language', e.language);
-      }
-
-      $body.appendChild(element);
+      $body.appendChild(this.elementToXML(xml, e));
     }
 
     return serializer.serializeToString(xml);
+  }
+
+  elementToXML(xml, e) {
+    const tagName = e.type;
+    const element = xml.createElement(tagName);
+    element.setAttribute('created', e.created);
+    element.setAttribute('modified', e.modified);
+
+    if (e.language != null) {
+      element.setAttribute('language', e.language);
+    }
+
+    if (tagName == 'ul' || tagName == 'ol') {
+      for (const i of e.content) {
+        const item = xml.createElement('li');
+        item.textContent = i.content;
+        item.setAttribute('created', i.created);
+        item.setAttribute('modified', i.modified);
+        element.append(item);
+      }
+    } else {
+      element.append(e.content);
+    }
+
+    return element;
   }
 
   static fromXML(text) {
@@ -86,6 +105,26 @@ export default class Note {
       } else if (tagName == 'code') {
         const language = n.getAttribute('language');
         body.push(createCode(content, language, created, modified));
+      } else if (tagName == 'ol') {
+        const items = [];
+
+        for (const childN of n.childNodes) {
+          const created = parseInt(childN.getAttribute('created'));
+          const modified = parseInt(childN.getAttribute('modified'));
+          items.push(createListItem(childN.textContent, created, modified));
+        }
+
+        body.push(createOrderedList(items, created, modified));
+      } else if (tagName == 'ul') {
+        const items = [];
+
+        for (const childN of n.childNodes) {
+          const created = parseInt(childN.getAttribute('created'));
+          const modified = parseInt(childN.getAttribute('modified'));
+          items.push(createListItem(childN.textContent, created, modified));
+        }
+
+        body.push(createUnorderedList(items, created, modified));
       }
     }
 

@@ -6,7 +6,7 @@ import 'prismjs/components/prism-java';
 
 import * as utils from '../utils';
 import * as symbols from '../symbols';
-import { createParagraph, focus, insertBlock, removeBlock, setFocusIndex } from '../main';
+import { createListItem, createParagraph, focus, focusListItem, insertBlock, insertListItem, removeBlock, removeListItem, setFocusIndex } from '../main';
 
 export default class NoteView {
   constructor() {
@@ -22,12 +22,27 @@ export default class NoteView {
     this.$noteContent.insertBefore(node, this.$noteContent.childNodes[beforeIndex]);
   }
 
+  insertListItem(element, indexOfList, index) {
+    const node = this.buildNode(element);
+    this.$noteContent.childNodes[indexOfList].insertBefore(node, this.$noteContent.childNodes[indexOfList].childNodes[index]);
+  }
+
   remove(index) {
-    this.$noteContent.childNodes[index].remove();
+    this.$noteContent.childNodes[index]?.remove();
+  }
+
+  removeListItem(indexOfList, index) {
+    this.$noteContent.childNodes[indexOfList]?.childNodes[index]?.remove();
   }
 
   focus(index) {
     this.$noteContent.childNodes[index]?.focus();
+  }
+
+  focusListItem(indexOfList, index) {
+    console.log(this.$noteContent.childNodes[indexOfList])
+    console.log(this.$noteContent.childNodes[indexOfList]?.childNodes[index])
+    this.$noteContent.childNodes[indexOfList]?.childNodes[index]?.focus();
   }
 
   render(note) {
@@ -62,6 +77,12 @@ export default class NoteView {
         return buildBlockquote(element);
       case symbols.CODE:
         return buildCode(element);
+      case symbols.LIST_ITEM:
+        return buildListItem(element);
+      case symbols.ORDERED_LIST:
+        return buildOrderedList(element);
+      case symbols.UNORDERED_LIST:
+        return buildUnorderedList(element);
     }
   }
 }
@@ -332,4 +353,75 @@ function buildCode(code) {
   });
 
   return $pre;
+}
+
+function buildListItem(listItem) {
+  const $li = document.createElement('li');
+  $li.dataset.type = symbols.LIST_ITEM;
+  $li.dataset.id = listItem.id;
+  $li.textContent = listItem.content;
+  $li.style = 'overflow-wrap: anywhere; width: 100%;';
+  $li.contentEditable = true;
+
+  $li.addEventListener('keydown', e => {
+    const index = utils.nodeIndexOf($li, $li.parentNode.childNodes);
+    const $list = e.target.parentNode;
+    const indexOfList = utils.nodeIndexOf($list, $list.parentNode.childNodes);
+    //setFocusIndex(index);
+
+    const selection = window.getSelection();
+    const selectionRange = utils.getCursorRange($li);
+
+    if (e.key == 'Enter' && !isComposing) {
+      const nextItem = createListItem();
+      insertListItem(indexOfList, index + 1, nextItem);
+      focusListItem(indexOfList, index + 1);
+      e.preventDefault();
+    }
+
+    if (e.key == 'Backspace' && selection.isCollapsed && selectionRange.start == 0) {
+      removeListItem(indexOfList, index);
+      focusListItem(indexOfList, index - 1);
+      e.preventDefault();
+    }
+  });
+
+  $li.addEventListener('input', e => {
+    listItem.content = $li.textContent;
+    listItem.modified = Date.now();
+  });
+
+  $li.addEventListener('focus', e => {
+    const $list = e.target.parentNode;
+    const indexOfList = utils.nodeIndexOf($list, $list.parentNode.childNodes);
+    setFocusIndex(indexOfList);
+  });
+
+  return $li;
+}
+
+function buildOrderedList(list) {
+  const $ol = document.createElement('ol');
+  $ol.dataset.type = symbols.ORDERED_LIST;
+  $ol.dataset.id = list.id;
+  $ol.style = 'overflow-wrap: anywhere; width: 100%;';
+
+  for (const item of list.content) {
+    $ol.append(buildListItem(item));
+  }
+
+  return $ol;
+}
+
+function buildUnorderedList(list) {
+  const $ul = document.createElement('ul');
+  $ul.dataset.type = symbols.UNORDERED_LIST;
+  $ul.dataset.id = list.id;
+  $ul.style = 'overflow-wrap: anywhere; width: 100%;';
+
+  for (const item of list.content) {
+    $ul.append(buildListItem(item));
+  }
+
+  return $ul;
 }

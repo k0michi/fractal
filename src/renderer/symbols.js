@@ -12,6 +12,9 @@ export const HEADER6 = 'h6';
 export const HORIZONTAL_RULE = 'hr';
 export const BLOCKQUOTE = 'blockquote';
 export const IMAGE = 'image';
+export const LIST_ITEM = 'li';
+export const ORDERED_LIST = 'ol';
+export const UNORDERED_LIST = 'ul';
 export const CODE = 'code';
 export const MATH = 'math';
 

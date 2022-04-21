@@ -75,8 +75,17 @@ export function insertBlock(index, element) {
   currentNote.insert(index, element);
 }
 
+export function insertListItem(indexOfList, index, element) {
+  noteView.insertListItem(element, indexOfList, index);
+  currentNote.insert(indexOfList, index, element);
+}
+
 export function removeBlock(index) {
   currentNote.remove(index);
+}
+
+export function removeListItem(indexOfList, index) {
+  currentNote.removeListItem(indexOfList, index);
 }
 
 export function setFocusIndex(index) {
@@ -110,6 +119,18 @@ export function insertBlockquote() {
 export function insertCode() {
   const code = createCode();
   insertBlock(focusIndex + 1, code);
+  focus(focusIndex + 1);
+}
+
+export function insertOrderedList() {
+  const orderedList = createOrderedList();
+  insertBlock(focusIndex + 1, orderedList);
+  focus(focusIndex + 1);
+}
+
+export function insertUnorderedList() {
+  const unorderedList = createUnorderedList();
+  insertBlock(focusIndex + 1, unorderedList);
   focus(focusIndex + 1);
 }
 
@@ -171,6 +192,11 @@ window.addEventListener('load', async () => {
 export function focus(index) {
   setFocusIndex(index);
   noteView.focus(index);
+}
+
+export function focusListItem(indexOfList, index) {
+  setFocusIndex(indexOfList);
+  noteView.focusListItem(indexOfList, index);
 }
 
 export function createParagraph(content = '', created, modified) {
@@ -301,6 +327,72 @@ export function createCode(content = '', language = 'javascript', created, modif
     created,
     modified,
     language,
+    id
+  };
+
+  return code;
+}
+
+export function createListItem(content = '', created, modified) {
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const id = nanoid();
+
+  const code = {
+    type: symbols.LIST_ITEM,
+    content,
+    created,
+    modified,
+    id
+  };
+
+  return code;
+}
+
+export function createOrderedList(content = [createListItem()], created, modified) {
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const id = nanoid();
+
+  const code = {
+    type: symbols.ORDERED_LIST,
+    content,
+    created,
+    modified,
+    id
+  };
+
+  return code;
+}
+
+export function createUnorderedList(content = [createListItem()], created, modified) {
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const id = nanoid();
+
+  const code = {
+    type: symbols.UNORDERED_LIST,
+    content,
+    created,
+    modified,
     id
   };
 
