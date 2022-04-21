@@ -15,46 +15,49 @@ export default class NoteView {
     this.$noteContent = document.createElement('div');
     this.$noteContent.id = 'note-content';
     this.$note.append(this.$noteContent);
+    this.$nodeBody = document.createElement('div');
+    this.$nodeBody.id = 'note-body';
+    this.$noteContent.append(this.$nodeBody);
   }
 
   insertElement(element, beforeIndex) {
     const node = this.buildNode(element);
-    this.$noteContent.insertBefore(node, this.$noteContent.childNodes[beforeIndex]);
+    this.$nodeBody.insertBefore(node, this.$nodeBody.childNodes[beforeIndex]);
   }
 
   insertListItem(element, indexOfList, index) {
     const node = this.buildNode(element);
-    this.$noteContent.childNodes[indexOfList].insertBefore(node, this.$noteContent.childNodes[indexOfList].childNodes[index]);
+    this.$nodeBody.childNodes[indexOfList].insertBefore(node, this.$nodeBody.childNodes[indexOfList].childNodes[index]);
   }
 
   remove(index) {
-    this.$noteContent.childNodes[index]?.remove();
+    this.$nodeBody.childNodes[index]?.remove();
   }
 
   removeListItem(indexOfList, index) {
-    this.$noteContent.childNodes[indexOfList]?.childNodes[index]?.remove();
+    this.$nodeBody.childNodes[indexOfList]?.childNodes[index]?.remove();
   }
 
   focus(index) {
-    this.$noteContent.childNodes[index]?.focus();
+    this.$nodeBody.childNodes[index]?.focus();
   }
 
   focusListItem(indexOfList, index) {
-    console.log(this.$noteContent.childNodes[indexOfList])
-    console.log(this.$noteContent.childNodes[indexOfList]?.childNodes[index])
-    this.$noteContent.childNodes[indexOfList]?.childNodes[index]?.focus();
+    this.$nodeBody.childNodes[indexOfList]?.childNodes[index]?.focus();
   }
 
   render(note) {
     utils.removeChildNodes(this.$noteContent);
+    utils.removeChildNodes(this.$nodeBody);
     const $h1 = document.createElement('h1');
     $h1.id = 'title';
     $h1.textContent = note.head.properties.title;
     this.$noteContent.append($h1);
+    this.$noteContent.append(this.$nodeBody);
 
     for (const e of note.body.children) {
       const node = this.buildNode(e);
-      this.$noteContent.append(node);
+      this.$nodeBody.append(node);
     }
   }
 

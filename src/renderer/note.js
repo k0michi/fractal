@@ -14,11 +14,15 @@ export default class Note {
   }
 
   insertListItem(indexOfList, index, element) {
-    this.body.children[indexOfList].splice(index, 0, element);
+    this.body.children[indexOfList].content.splice(index, 0, element);
   }
 
   remove(index) {
-    this.body.children.splice(index, 1)[0];
+    this.body.children.splice(index, 1);
+  }
+
+  removeListItem(indexOfList, index) {
+    this.body.children[indexOfList].content.splice(index, 1);
   }
 
   toXML() {

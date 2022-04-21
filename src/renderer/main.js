@@ -77,14 +77,16 @@ export function insertBlock(index, element) {
 
 export function insertListItem(indexOfList, index, element) {
   noteView.insertListItem(element, indexOfList, index);
-  currentNote.insert(indexOfList, index, element);
+  currentNote.insertListItem(indexOfList, index, element);
 }
 
 export function removeBlock(index) {
+  noteView.remove(index);
   currentNote.remove(index);
 }
 
 export function removeListItem(indexOfList, index) {
+  noteView.removeListItem(indexOfList, index);
   currentNote.removeListItem(indexOfList, index);
 }
 
