@@ -119,3 +119,11 @@ body {
   background-color: rgb(234, 234, 234);
   border-radius: 6px;
 }
+
+.library-collection:before {
+  content: '- ';
+}
+
+.library-collection.open:before {
+  content: '+ ';
+}

@@ -154,6 +154,8 @@ export async function selectLibraryItem(path, type) {
   if (type == LibraryItemType.FILE) {
     const noteFile = await fileSystem.openNoteFile(path);
     openNoteFile(noteFile);
+  } else {
+    
   }
 }
 

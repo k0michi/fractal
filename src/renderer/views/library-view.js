@@ -1,9 +1,10 @@
 import { selectLibraryItem } from "../main";
 import { removeChildNodes } from "../utils";
+import * as LibraryItemType from "../library-item-type";
 
 export default class LibraryView {
   constructor() {
-
+    this.toggleCollection = new Map();
   }
 
   initialize() {
@@ -14,6 +15,12 @@ export default class LibraryView {
         const path = e.target.dataset.path;
         const type = e.target.dataset.type;
         selectLibraryItem(path, type);
+
+        if (e.target.dataset.type == LibraryItemType.COLLECTION) {
+          e.target.classList.toggle('open');
+          const toggle = e.target.classList.contains('open');
+          this.toggleCollection.set(e.target.dataset.path, toggle);
+        }
       }
     });
   }
@@ -24,19 +31,41 @@ export default class LibraryView {
 
   renderFiles(items) {
     removeChildNodes(this.$library);
-  
+
     for (const i of items) {
-      const $item = document.createElement('div');
-      $item.classList.add('library-item');
-      $item.textContent = i.name;
-      $item.dataset.path = i.path;
-      $item.dataset.type = i.type;
-  
-      if (i.path == this.selectedPath) {
-        $item.classList.add('selected');
+      if (i.type == LibraryItemType.FILE) {
+        const $item = document.createElement('div');
+        $item.classList.add('library-item');
+        $item.classList.add('library-file');
+        $item.textContent = i.name;
+        $item.dataset.path = i.path;
+        $item.dataset.type = i.type;
+
+        if (i.path == this.selectedPath) {
+          $item.classList.add('selected');
+        }
+
+        this.$library.append($item);
+      } else {
+        const $item = document.createElement('div');
+        const toggle = this.toggleCollection.get(i.path) ?? false;
+        $item.classList.add('library-item');
+        $item.classList.add('library-collection');
+
+        if (toggle) {
+          $item.classList.add('open');
+        }
+
+        $item.textContent = i.name;
+        $item.dataset.path = i.path;
+        $item.dataset.type = i.type;
+
+        if (i.path == this.selectedPath) {
+          $item.classList.add('selected');
+        }
+
+        this.$library.append($item);
       }
-  
-      this.$library.append($item);
     }
   }
 }
