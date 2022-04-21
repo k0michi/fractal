@@ -57,7 +57,7 @@ function renderNote(note) {
 }
 
 function renderFiles() {
-  libraryView.renderFiles(library.files);
+  libraryView.renderFiles(library.items);
 }
 
 let $noteContainer;

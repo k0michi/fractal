@@ -1,6 +1,9 @@
 import LibraryItem from "./library-item";
 import Note from "./note";
 import NoteFile from "./note-file";
+import * as fileKind from "../file-kind";
+import { LibraryFile } from "./library-file";
+import LibraryCollection from "./library-collection";
 
 export default class Library {
   constructor(basePath) {
@@ -13,9 +16,21 @@ export default class Library {
   }
 
   async refresh() {
-    const files = await bridge.readDir(this.basePath, false);
-    files.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
-    this.files = files.map(name => new LibraryItem(name, `${this.basePath}/${name}`));
+    const ents = await bridge.readDir(this.basePath);
+    ents.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }));
+
+    this.items = [];
+
+    for (const ent of ents) {
+      const path = ent.path;
+      const name = ent.name;
+
+      if (ent.kind == fileKind.FILE) {
+        this.items.push(new LibraryFile(name, path));
+      } else {
+        this.items.push(new LibraryCollection(name, path));
+      }
+    }
   }
 
   async doesExist(filename) {

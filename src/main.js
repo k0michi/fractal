@@ -4,6 +4,8 @@ import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
+import * as fileKind from './file-kind';
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -72,18 +74,22 @@ ipcMain.handle('save-file-dialog', async (e, filePath, data) => {
   }
 });
 
-ipcMain.handle('read-dir', async (e, dirPath, fullPath) => {
+ipcMain.handle('read-dir', async (e, dirPath) => {
   const dir = await fs.opendir(dirPath);
   const ents = [];
 
   for await (const dirent of dir) {
+    const pathToEnt = path.join(dirPath, dirent.name);
+    const name = dirent.name;
+    let kind;
+
     if (dirent.isFile()) {
-      if (fullPath) {
-        ents.push(path.join(dirPath, dirent.name));
-      } else {
-        ents.push(dirent.name);
-      }
+      kind = fileKind.FILE;
+    } else if (dirent.isDirectory()) {
+      kind = fileKind.DIRECTORY;
     }
+
+    ents.push({ path: pathToEnt, name, kind });
   }
 
   return ents;
