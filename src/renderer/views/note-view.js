@@ -49,10 +49,28 @@ export default class NoteView {
   render(note) {
     utils.removeChildNodes(this.$noteContent);
     utils.removeChildNodes(this.$nodeBody);
+
     const $h1 = document.createElement('h1');
     $h1.id = 'title';
     $h1.textContent = note.head.properties.title;
     this.$noteContent.append($h1);
+
+    const $table = document.createElement('table');
+    $table.className = 'property-table';
+
+    for (const [key, value] of Object.entries(note.head.properties)) {
+      const $tr = document.createElement('tr');
+      const $td1 = document.createElement('td');
+      $td1.textContent = key;
+      $tr.append($td1);
+      const $td2 = document.createElement('td');
+      $td2.textContent = value;
+      $tr.append($td2);
+      $table.append($tr);
+    }
+
+    this.$noteContent.append($table);
+
     this.$noteContent.append(this.$nodeBody);
 
     for (const e of note.body.children) {
