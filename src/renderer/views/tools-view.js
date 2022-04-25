@@ -1,4 +1,4 @@
-import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, insertOrderedList, insertUnorderedList, newCollection, newNote, saveCurrentNoteFile, selectAndOpenNoteBook } from "../main";
+import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, insertOrderedList, insertUnorderedList, newCollection, newNote, saveCurrentNoteFile, openNoteBookViaDialog } from "../main";
 
 export default class ToolsView {
   constructor() {
@@ -40,7 +40,7 @@ export default class ToolsView {
     });
 
     document.getElementById('open').addEventListener('click', async e => {
-      await selectAndOpenNoteBook();
+      await openNoteBookViaDialog();
     });
 
     document.getElementById('new').addEventListener('click', async e => {

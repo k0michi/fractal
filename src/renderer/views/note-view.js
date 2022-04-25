@@ -46,6 +46,11 @@ export default class NoteView {
     this.$nodeBody.childNodes[indexOfList]?.childNodes[index]?.focus();
   }
 
+  clear() {
+    utils.removeChildNodes(this.$noteContent);
+    utils.removeChildNodes(this.$nodeBody);
+  }
+
   render(note) {
     utils.removeChildNodes(this.$noteContent);
     utils.removeChildNodes(this.$nodeBody);

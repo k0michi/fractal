@@ -15,6 +15,7 @@ import LibraryView from './views/library-view';
 import NoteView from './views/note-view';
 import * as fileSystem from './file-system';
 import * as LibraryItemType from "./library-item-type";
+import TabView from './views/tab-view';
 
 /*
 class App {
@@ -50,6 +51,11 @@ function openNoteFile(noteFile) {
   libraryView.setSelectedPath(currentNoteFile.path);
   renderFiles();
   renderNote(noteFile.note);
+
+  if (!openedFiles.includes(noteFile)) {
+    openedFiles.push(noteFile);
+    addTab(currentNoteFile);
+  }
 }
 
 function renderNote(note) {
@@ -63,6 +69,7 @@ function renderFiles() {
 }
 
 let $noteContainer;
+let openedFiles = [];
 let currentNote;
 let currentNoteFile;
 let library;
@@ -71,6 +78,7 @@ let focusIndex;
 let toolsView = new ToolsView();
 let libraryView = new LibraryView();
 let noteView = new NoteView();
+let tabView = new TabView();
 
 export function insertBlock(index, element) {
   noteView.insertElement(element, index);
@@ -142,17 +150,27 @@ export async function saveCurrentNoteFile() {
   await saveNoteFile(currentNoteFile);
 }
 
-export async function selectAndOpenNoteBook() {
-  const file = await bridge.openFile();
-  const xml = await bridge.readFile(file);
-  const note = Note.fromXML(xml);
-  const noteFile = new NoteFile(file, note);
+export async function openNoteBookViaDialog() {
+  const path = await bridge.openFile();
+  let noteFile = getOpenedNoteBookFromPath(path);
+
+  if (noteFile == null) {
+    const xml = await bridge.readFile(path);
+    const note = Note.fromXML(xml);
+    noteFile = new NoteFile(path, note)
+  }
+
   openNoteFile(noteFile);
 }
 
 export async function selectLibraryItem(path, type) {
   if (type == LibraryItemType.FILE) {
-    const noteFile = await fileSystem.openNoteFile(path);
+    let noteFile = getOpenedNoteBookFromPath(path);
+
+    if (noteFile == null) {
+      noteFile = await fileSystem.openNoteFile(path);
+    }
+
     openNoteFile(noteFile);
   } else {
     libraryView.setSelectedPath(path);
@@ -194,6 +212,48 @@ export async function newCollection() {
   await library.createCollection(name);
   await library.refresh();
   renderFiles();
+}
+
+export function addTab(noteFile) {
+  tabView.addTab(noteFile.id, noteFile.note.head.properties.title);
+}
+
+export function switchTab(noteFileID) {
+  const noteFile = getOpenedNoteBookFromID(noteFileID);
+  openNoteFile(noteFile);
+}
+
+export function getOpenedNoteBookFromID(noteFileID) {
+  return openedFiles.find(noteBook => noteBook.id == noteFileID);
+}
+
+export function getOpenedNoteBookFromPath(path) {
+  return openedFiles.find(noteBook => noteBook.path == path);
+}
+
+export function removeOpened(noteFileID) {
+  const index = openedFiles.findIndex(noteBook => noteBook.id == noteFileID);
+
+  if (index != -1) {
+    openedFiles.splice(index, 1);
+  }
+}
+
+export function clearNote() {
+  noteView.clear();
+}
+
+export function closeTab(noteFileID) {
+  removeOpened(noteFileID);
+  const previous = tabView.getIDOfPrevious(noteFileID);
+  tabView.removeTab(noteFileID);
+
+  if (previous == null) {
+    clearNote();
+  } else {
+    const noteFile = getOpenedNoteBookFromID(previous);
+    openNoteFile(noteFile);
+  }
 }
 
 window.addEventListener('load', async () => {

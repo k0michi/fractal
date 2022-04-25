@@ -46,6 +46,27 @@ body {
   margin: 0 auto;
 }
 
+#tabs {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+}
+
+.tab {
+  padding: 2px 10px;
+  border: 1px solid rgb(110, 110, 110);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.tab-close {
+  margin-left: 4px;
+}
+
+.tab-close:hover {
+  color: rgb(131, 131, 131);
+}
+
 .math {
   min-height: 1em;
 }
@@ -106,7 +127,6 @@ body {
 
 .library-item {
   box-sizing: border-box;
-  cursor: default;
   user-select: none;
   padding: 2px 8px;
   width: 100%;

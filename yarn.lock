@@ -4312,26 +4312,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sarashina@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "sarashina@workspace:."
-  dependencies:
-    "@babel/cli": ^7.17.6
-    "@babel/core": ^7.17.9
-    "@babel/preset-env": ^7.16.11
-    concurrently: ^7.1.0
-    css-loader: ^6.5.1
-    electron: ^18.0.4
-    html-webpack-plugin: ^5.5.0
-    katex: ^0.15.2
-    nanoid: ^3.3.3
-    prismjs: ^1.26.0
-    style-loader: ^3.3.1
-    webpack: ^5.64.4
-    webpack-cli: ^4.9.1
-  languageName: unknown
-  linkType: soft
-
 "schema-utils@npm:^3.1.0, schema-utils@npm:^3.1.1":
   version: 3.1.1
   resolution: "schema-utils@npm:3.1.1"
@@ -4437,6 +4417,26 @@ __metadata:
   checksum: 1a2bcae50de99034fcd92ad4212d8e01eedf52c7ec7830eedcf886622804fe36884278f2be8be0ea5fde3fd1c23911643a4e0f726c8685b61871c8908af01222
   languageName: node
   linkType: hard
+
+"shiki@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "shiki@workspace:."
+  dependencies:
+    "@babel/cli": ^7.17.6
+    "@babel/core": ^7.17.9
+    "@babel/preset-env": ^7.16.11
+    concurrently: ^7.1.0
+    css-loader: ^6.5.1
+    electron: ^18.0.4
+    html-webpack-plugin: ^5.5.0
+    katex: ^0.15.2
+    nanoid: ^3.3.3
+    prismjs: ^1.26.0
+    style-loader: ^3.3.1
+    webpack: ^5.64.4
+    webpack-cli: ^4.9.1
+  languageName: unknown
+  linkType: soft
 
 "signal-exit@npm:^3.0.3, signal-exit@npm:^3.0.7":
   version: 3.0.7
