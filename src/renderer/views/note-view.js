@@ -6,7 +6,7 @@ import 'prismjs/components/prism-java';
 
 import * as utils from '../utils';
 import * as symbols from '../symbols';
-import { createListItem, createParagraph, focus, focusListItem, insertBlock, insertListItem, removeBlock, removeListItem, setFocusIndex } from '../main';
+import { changeTitle, createListItem, createParagraph, focus, focusListItem, insertBlock, insertListItem, removeBlock, removeListItem, setFocusIndex } from '../main';
 
 export default class NoteView {
   constructor() {
@@ -53,6 +53,12 @@ export default class NoteView {
     const $h1 = document.createElement('h1');
     $h1.id = 'title';
     $h1.textContent = note.head.properties.title;
+    $h1.contentEditable = true;
+
+    $h1.addEventListener('input', e => {
+      changeTitle($h1.textContent);
+    });
+
     this.$noteContent.append($h1);
 
     const $table = document.createElement('table');
@@ -409,6 +415,10 @@ function buildListItem(listItem) {
       removeListItem(indexOfList, index);
       focusListItem(indexOfList, index - 1);
       e.preventDefault();
+    }
+
+    if (e.key == 'Tab') {
+      // TODO: Support indentation
     }
   });
 

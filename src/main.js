@@ -64,7 +64,7 @@ ipcMain.handle('save-file', async (e, filePath, data) => {
   return await fs.writeFile(filePath, data);
 });
 
-ipcMain.handle('save-file-dialog', async (e, filePath, data) => {
+ipcMain.handle('save-file-dialog', async (e) => {
   const result = await dialog.showSaveDialog({ properties: ['createDirectory'] });
 
   if (!result.canceled) {

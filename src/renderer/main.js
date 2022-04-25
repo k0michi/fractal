@@ -223,6 +223,10 @@ export function focusListItem(indexOfList, index) {
   noteView.focusListItem(indexOfList, index);
 }
 
+export function changeTitle(newTitle) {
+  currentNote.head.properties.title = newTitle;
+}
+
 export function createParagraph(content = '', created, modified) {
   if (created == null) {
     created = Date.now();
