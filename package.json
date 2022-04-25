@@ -1,6 +1,6 @@
 {
-  "name": "sarashina",
-  "productName": "Sarashina",
+  "name": "shiki",
+  "productName": "Shiki",
   "dependencies": {
     "katex": "^0.15.2",
     "nanoid": "^3.3.3",
