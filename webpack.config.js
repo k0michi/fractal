@@ -17,6 +17,11 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.ts(x)?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',
@@ -27,6 +32,13 @@ const config = {
         test: /\.png$/,
         type: 'asset/resource'
       }
+    ]
+  },
+  resolve: {
+    extensions: [
+      '.tsx',
+      '.ts',
+      '.js'
     ]
   },
   plugins: [
