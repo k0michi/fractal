@@ -4,7 +4,8 @@
   "dependencies": {
     "katex": "^0.15.2",
     "nanoid": "^3.3.3",
-    "prismjs": "^1.26.0"
+    "prismjs": "^1.26.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "watch": "concurrently \"tsc --watch\" \"webpack --mode development --watch\"",

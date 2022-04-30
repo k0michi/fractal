@@ -16,6 +16,7 @@ import NoteView from './views/note-view';
 import * as fileSystem from './file-system';
 import * as LibraryItemType from "./library-item-type";
 import TabView from './views/tab-view';
+import * as skml from './skml';
 
 /*
 class App {
@@ -42,7 +43,7 @@ async function saveNoteFile(noteFile) {
     noteFile.path = path;
   }
 
-  await bridge.saveFile(noteFile.path, noteFile.note.toXML());
+  await bridge.saveFile(noteFile.path, skml.toSKML(noteFile.note));
 }
 
 function openNoteFile(noteFile) {
@@ -156,7 +157,7 @@ export async function openNoteBookViaDialog() {
 
   if (noteFile == null) {
     const xml = await bridge.readFile(path);
-    const note = Note.fromXML(xml);
+    const note = skml.fromSKML(xml);
     noteFile = new NoteFile(path, note)
   }
 

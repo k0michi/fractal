@@ -1,9 +1,10 @@
 import Note from "./note";
 import NoteFile from "./note-file";
+import * as skml from './skml';
 
 export async function openNoteFile(path) {
   const text = await bridge.readFile(path);
-  const noteFile = new NoteFile(path, Note.fromXML(text));
+  const noteFile = new NoteFile(path, skml.fromSKML(text));
   return noteFile;
 }
 
