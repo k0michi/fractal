@@ -1,39 +1,45 @@
 import { ipcRenderer, contextBridge } from 'electron';
 
-contextBridge.exposeInMainWorld('bridge', {
-  async openFile(...args) {
+export class Bridge {
+  openFile = async (...args) => {
     return await ipcRenderer.invoke('open-file', ...args);
-  },
+  }
 
-  async readFile(...args) {
+  readFile = async (...args) => {
     return await ipcRenderer.invoke('read-file', ...args);
-  },
+  }
 
-  async saveFile(...args) {
+  readBinaryFile = async (...args) => {
+    return await ipcRenderer.invoke('read-binary-file', ...args);
+  }
+
+  saveFile = async (...args) => {
     return await ipcRenderer.invoke('save-file', ...args);
-  },
+  }
 
-  async readDir(...args) {
+  readDir = async (...args) => {
     return await ipcRenderer.invoke('read-dir', ...args);
-  },
+  }
 
-  async readDirRecursive(...args) {
+  readDirRecursive = async (...args) => {
     return await ipcRenderer.invoke('read-dir-recursive', ...args);
-  },
+  }
 
-  async makeDir(...args) {
+  makeDir = async (...args) => {
     return await ipcRenderer.invoke('make-dir', ...args);
-  },
+  }
 
-  async getPath(...args) {
+  getPath = async (...args) => {
     return await ipcRenderer.invoke('get-path', ...args);
-  },
+  }
 
-  async doesExist(...args) {
+  doesExist = async (...args) => {
     return await ipcRenderer.invoke('does-exist', ...args);
-  },
+  }
 
-  async saveFileDialog(...args) {
+  saveFileDialog = async (...args) => {
     return await ipcRenderer.invoke('save-file-dialog', ...args);
-  },
-});
+  }
+}
+
+contextBridge.exposeInMainWorld('bridge', new Bridge());

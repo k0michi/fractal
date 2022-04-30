@@ -179,11 +179,15 @@ export async function selectLibraryItem(path, type) {
   }
 }
 
-async function getAvailableFileName(dir, name) {
+function joinExtension(name, ext) {
+  return ext == null ? name : `${name}.${ext}`;
+}
+
+async function getAvailableFileName(dir, name, ext) {
   if (await fileSystem.doesExist(dir, name)) {
     let i = 2;
 
-    while (await fileSystem.doesExist(dir, `${name}_${i}`)) {
+    while (await fileSystem.doesExist(dir, joinExtension(`${name}_${i}`, ext))) {
       i++;
     }
 
@@ -195,10 +199,11 @@ async function getAvailableFileName(dir, name) {
 
 export async function newNote() {
   let name = `untitled_${utils.dateToString(new Date())}`;
-  name = await getAvailableFileName(library.basePath, name);
+  name = await getAvailableFileName(library.basePath, name, 'skml');
+  const filename = name + '.skml';
 
   const note = new Note(NoteHead.create(name));
-  const noteFile = new NoteFile(`${library.basePath}/${name}`, note);
+  const noteFile = new NoteFile(`${library.basePath}/${filename}`, note);
   await saveNoteFile(noteFile);
   await library.refresh();
   libraryView.setSelectedPath(noteFile.path);

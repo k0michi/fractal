@@ -19,6 +19,10 @@ export function registerHandlers() {
     return await fs.readFile(filePath, { encoding: 'utf-8' });
   });
 
+  ipcMain.handle('read-binary-file', async (e, filePath) => {
+    return await fs.readFile(filePath);
+  });
+
   ipcMain.handle('save-file', async (e, filePath, data) => {
     return await fs.writeFile(filePath, data);
   });

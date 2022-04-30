@@ -11,7 +11,7 @@ export function toSKML(note) {
   const $head = skml.createElement('head');
   $root.append($head);
 
-  for (const [key, value] of Object.entries(this.head.properties)) {
+  for (const [key, value] of Object.entries(note.head.properties)) {
     const meta = skml.createElement(key);
     meta.append(value);
     $head.append(meta);

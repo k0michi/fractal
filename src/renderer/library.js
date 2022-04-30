@@ -1,6 +1,3 @@
-import LibraryItem from "./library-item";
-import Note from "./note";
-import NoteFile from "./note-file";
 import * as fileKind from "../file-kind";
 import { LibraryFile } from "./library-file";
 import LibraryCollection from "./library-collection";
