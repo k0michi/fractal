@@ -13,8 +13,12 @@ export class Bridge {
     return await ipcRenderer.invoke('read-binary-file', ...args);
   }
 
-  saveFile = async (...args) => {
-    return await ipcRenderer.invoke('save-file', ...args);
+  writeFile = async (...args) => {
+    return await ipcRenderer.invoke('write-file', ...args);
+  }
+
+  writeBinaryFile = async (...args) => {
+    return await ipcRenderer.invoke('write-binary-file', ...args);
   }
 
   readDir = async (...args) => {

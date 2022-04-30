@@ -17,6 +17,7 @@ import * as fileSystem from './file-system';
 import * as LibraryItemType from "./library-item-type";
 import TabView from './views/tab-view';
 import * as skml from './skml';
+import * as archive from './archive';
 
 /*
 class App {
@@ -43,7 +44,8 @@ async function saveNoteFile(noteFile) {
     noteFile.path = path;
   }
 
-  await bridge.saveFile(noteFile.path, skml.toSKML(noteFile.note));
+  // await bridge.writeFile(noteFile.path, skml.toSKML(noteFile.note));
+  await bridge.writeBinaryFile(noteFile.path, await archive.toArchive(noteFile.note));
 }
 
 function openNoteFile(noteFile) {

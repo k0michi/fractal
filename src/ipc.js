@@ -23,7 +23,11 @@ export function registerHandlers() {
     return await fs.readFile(filePath);
   });
 
-  ipcMain.handle('save-file', async (e, filePath, data) => {
+  ipcMain.handle('write-file', async (e, filePath, data) => {
+    return await fs.writeFile(filePath, data);
+  });
+
+  ipcMain.handle('write-binary-file', async (e, filePath, data) => {
     return await fs.writeFile(filePath, data);
   });
 
