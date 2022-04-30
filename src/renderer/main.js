@@ -186,7 +186,7 @@ function joinExtension(name, ext) {
 }
 
 async function getAvailableFileName(dir, name, ext) {
-  if (await fileSystem.doesExist(dir, name)) {
+  if (await fileSystem.doesExist(dir, joinExtension(name, ext))) {
     let i = 2;
 
     while (await fileSystem.doesExist(dir, joinExtension(`${name}_${i}`, ext))) {
@@ -201,8 +201,8 @@ async function getAvailableFileName(dir, name, ext) {
 
 export async function newNote() {
   let name = `untitled_${utils.dateToString(new Date())}`;
-  name = await getAvailableFileName(library.basePath, name, 'skml');
-  const filename = name + '.skml';
+  name = await getAvailableFileName(library.basePath, name, 'sk');
+  const filename = name + '.sk';
 
   const note = new Note(NoteHead.create(name));
   const noteFile = new NoteFile(`${library.basePath}/${filename}`, note);
