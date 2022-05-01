@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import * as path from 'path-browserify';
 import { filetypemime } from 'magic-bytes.js';
 
@@ -7,7 +6,6 @@ import Note from './note';
 import NoteFile from './note-file';
 import Library from './library';
 import NoteHead from './note-head';
-import * as symbols from './symbols';
 
 import './styles.css';
 import 'katex/dist/katex.min.css';
@@ -20,6 +18,7 @@ import * as LibraryItemType from "./library-item-type";
 import TabView from './views/tab-view';
 import * as skml from './skml';
 import * as archive from './archive';
+import * as elements from './elements';
 
 /*
 class App {
@@ -110,43 +109,43 @@ export function setFocusIndex(index) {
 }
 
 export function insertMath() {
-  const math = createMath();
+  const math = elements.createMath();
   insertBlock(focusIndex + 1, math);
   focus(focusIndex + 1);
 }
 
 export function insertHeader(level) {
-  const header = createHeader(level);
+  const header = elements.createHeader(level);
   insertBlock(focusIndex + 1, header);
   focus(focusIndex + 1);
 }
 
 export function insertHorizontalRule() {
-  const horizontal = createHorizontalRule();
+  const horizontal = elements.createHorizontalRule();
   insertBlock(focusIndex + 1, horizontal);
   focus(focusIndex + 1);
 }
 
 export function insertBlockquote() {
-  const blockquote = createBlockquote();
+  const blockquote = elements.createBlockquote();
   insertBlock(focusIndex + 1, blockquote);
   focus(focusIndex + 1);
 }
 
 export function insertCode() {
-  const code = createCode();
+  const code = elements.createCode();
   insertBlock(focusIndex + 1, code);
   focus(focusIndex + 1);
 }
 
 export function insertOrderedList() {
-  const orderedList = createOrderedList();
+  const orderedList = elements.createOrderedList();
   insertBlock(focusIndex + 1, orderedList);
   focus(focusIndex + 1);
 }
 
 export function insertUnorderedList() {
-  const unorderedList = createUnorderedList();
+  const unorderedList = elements.createUnorderedList();
   insertBlock(focusIndex + 1, unorderedList);
   focus(focusIndex + 1);
 }
@@ -156,7 +155,7 @@ export async function insertImage() {
   const data = await bridge.readBinaryFile(imagePath);
   const filename = path.basename(imagePath);
   const mediaType = filetypemime(data)[0];
-  const image = createImage(data, filename, mediaType);
+  const image = elements.createImage(data, filename, mediaType);
   insertBlock(focusIndex + 1, image);
   focus(focusIndex + 1);
 }
@@ -305,128 +304,4 @@ export function focusListItem(indexOfList, index) {
 
 export function changeTitle(newTitle) {
   currentNote.head.properties.title = newTitle;
-}
-
-export function createParagraph(content = '') {
-  const id = nanoid();
-
-  const paragraph = {
-    type: symbols.PARAGRAPH,
-    content,
-    id
-  };
-
-  return paragraph;
-}
-
-export function createMath(content = '') {
-  const id = nanoid();
-
-  const math = {
-    type: symbols.MATH,
-    content,
-    id
-  };
-
-  return math;
-}
-
-export function createHeader(level, content = '') {
-  const type = symbols.headers[level - 1];
-
-  const id = nanoid();
-
-  const header = {
-    type,
-    content,
-    id
-  };
-
-  return header;
-}
-
-export function createHorizontalRule() {
-  const id = nanoid();
-
-  const horizontal = {
-    type: symbols.HORIZONTAL_RULE,
-    id
-  };
-
-  return horizontal;
-}
-
-export function createBlockquote(content = '') {
-  const id = nanoid();
-
-  const blockquote = {
-    type: symbols.BLOCKQUOTE,
-    content,
-    id
-  };
-
-  return blockquote;
-}
-
-export function createCode(content = '', language = 'javascript') {
-  const id = nanoid();
-
-  const code = {
-    type: symbols.CODE,
-    content,
-    language,
-    id
-  };
-
-  return code;
-}
-
-export function createListItem(content = '') {
-  const id = nanoid();
-
-  const code = {
-    type: symbols.LIST_ITEM,
-    content,
-    id
-  };
-
-  return code;
-}
-
-export function createOrderedList(content = [createListItem()]) {
-  const id = nanoid();
-
-  const code = {
-    type: symbols.ORDERED_LIST,
-    content,
-    id
-  };
-
-  return code;
-}
-
-export function createUnorderedList(content = [createListItem()]) {
-  const id = nanoid();
-
-  const code = {
-    type: symbols.UNORDERED_LIST,
-    content,
-    id
-  };
-
-  return code;
-}
-
-export function createImage(data, filename, mediaType) {
-  const id = nanoid();
-
-  const image = {
-    type: symbols.IMAGE,
-    data,
-    filename,
-    mediaType,
-    id
-  };
-
-  return image;
 }

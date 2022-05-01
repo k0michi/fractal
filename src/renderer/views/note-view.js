@@ -6,7 +6,8 @@ import 'prismjs/components/prism-java';
 
 import * as utils from '../utils';
 import * as symbols from '../symbols';
-import { changeTitle, createListItem, createParagraph, focus, focusListItem, insertBlock, insertListItem, removeBlock, removeListItem, setFocusIndex } from '../main';
+import * as elements from '../elements';
+import { changeTitle, focus, focusListItem, insertBlock, insertListItem, removeBlock, removeListItem, setFocusIndex } from '../main';
 
 export default class NoteView {
   constructor() {
@@ -152,7 +153,7 @@ function buildParagraph(paragraph) {
     const selectionRange = utils.getCursorRange($paragraph);
 
     if (e.key == 'Enter' && !isComposing) {
-      const nextParagraph = createParagraph();
+      const nextParagraph = elements.createParagraph();
       insertBlock(index + 1, nextParagraph);
       focus(index + 1);
       e.preventDefault();
@@ -412,7 +413,7 @@ function buildListItem(listItem) {
     const selectionRange = utils.getCursorRange($li);
 
     if (e.key == 'Enter' && !isComposing) {
-      const nextItem = createListItem();
+      const nextItem = elements.createListItem();
       insertListItem(indexOfList, index + 1, nextItem);
       focusListItem(indexOfList, index + 1);
       e.preventDefault();

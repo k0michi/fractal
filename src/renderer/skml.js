@@ -1,4 +1,4 @@
-import { createBlockquote, createCode, createHeader, createHorizontalRule, createListItem, createMath, createOrderedList, createParagraph, createUnorderedList } from "./main";
+import * as elements from './elements';
 import Note from "./note";
 import NoteBody from "./note-body";
 import NoteHead from "./note-head";
@@ -75,34 +75,34 @@ export function fromSKML(text) {
     const content = n.textContent;
 
     if (tagName == 'p') {
-      body.push(createParagraph(content));
+      body.push(elements.createParagraph(content));
     } else if (tagName == 'math') {
-      body.push(createMath(content));
+      body.push(elements.createMath(content));
     } else if (symbols.headers.includes(tagName)) {
-      body.push(createHeader(parseInt(tagName[1]), content));
+      body.push(elements.createHeader(parseInt(tagName[1]), content));
     } else if (tagName == 'hr') {
-      body.push(createHorizontalRule());
+      body.push(elements.createHorizontalRule());
     } else if (tagName == 'blockquote') {
-      body.push(createBlockquote(content));
+      body.push(elements.createBlockquote(content));
     } else if (tagName == 'code') {
       const language = n.getAttribute('language');
-      body.push(createCode(content, language));
+      body.push(elements.createCode(content, language));
     } else if (tagName == 'ol') {
       const items = [];
 
       for (const childN of n.childNodes) {
-        items.push(createListItem(childN.textContent));
+        items.push(elements.createListItem(childN.textContent));
       }
 
-      body.push(createOrderedList(items));
+      body.push(elements.createOrderedList(items));
     } else if (tagName == 'ul') {
       const items = [];
 
       for (const childN of n.childNodes) {
-        items.push(createListItem(childN.textContent));
+        items.push(elements.createListItem(childN.textContent));
       }
 
-      body.push(createUnorderedList(items));
+      body.push(elements.createUnorderedList(items));
     }
   }
 
