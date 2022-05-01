@@ -21,16 +21,21 @@ export async function fromArchive(data) {
   const entries = await reader.getEntries();
   let index;
   const files = [];
+  const promises = [];
 
   for (const entry of entries) {
-    if (entry.filename == 'index.skml') {
-      index = await entry.getData(new zip.TextWriter());
-    } else {
-      const data = await entry.getData(new zip.Uint8ArrayWriter());
-      const mediaType = filetypemime(data)[0];
-      files.push(new EmbeddedFile(entry.filename, data, mediaType));
-    }
+    promises.push((async () => {
+      if (entry.filename == 'index.skml') {
+        index = await entry.getData(new zip.TextWriter());
+      } else {
+        const data = await entry.getData(new zip.Uint8ArrayWriter());
+        const mediaType = filetypemime(data)[0];
+        files.push(new EmbeddedFile(entry.filename, data, mediaType));
+      }
+    })());
   }
+
+  await Promise.all(promises);
 
   if (index == null) {
     throw new Error('Unsupported format');

@@ -485,15 +485,11 @@ function buildImage(image, note) {
   $img.dataset.type = symbols.IMAGE;
   $img.dataset.id = image.id;
   const imageFile = note.getFile(image.filename);
-  $img.src = uint8ArrayToBase64(imageFile.data, imageFile.mediaType);
+  // TODO: revoke
+  $img.src = uint8ArrayObjectURL(imageFile.data, imageFile.mediaType);
   return $img;
 }
 
-function uint8ArrayToBinaryString(array) {
-  return Array.from(array, v => String.fromCharCode(v)).join('');
-}
-
-function uint8ArrayToBase64(array, mediaType) {
-  const data = btoa(uint8ArrayToBinaryString(array));
-  return `data:${mediaType};base64,${data}`;
+function uint8ArrayObjectURL(array, mediaType) {
+  return URL.createObjectURL(new Blob([array.buffer], { type: mediaType }));
 }
