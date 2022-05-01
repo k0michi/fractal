@@ -200,6 +200,11 @@ function buildParagraph(paragraph) {
     e.preventDefault();
   });
 
+  $paragraph.addEventListener('drop', e => {
+    // Prevent images from being dropped
+    e.preventDefault();
+  });
+
   return $paragraph;
 }
 
