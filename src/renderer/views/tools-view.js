@@ -1,10 +1,26 @@
-import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, insertOrderedList, insertUnorderedList, newCollection, newNote, saveCurrentNoteFile, openNoteBookViaDialog } from "../main";
+import { insertBlockquote, insertCode, insertHeader, insertHorizontalRule, insertMath, insertOrderedList, insertUnorderedList, newCollection, newNote, saveCurrentNoteFile, openNoteBookViaDialog, insertImage } from "../main";
 
 export default class ToolsView {
   constructor() {
   }
 
   initialize() {
+    document.getElementById('save').addEventListener('click', async e => {
+      await saveCurrentNoteFile();
+    });
+
+    document.getElementById('open').addEventListener('click', async e => {
+      await openNoteBookViaDialog();
+    });
+
+    document.getElementById('new').addEventListener('click', async e => {
+      await newNote();
+    });
+
+    document.getElementById('new-collection').addEventListener('click', async e => {
+      await newCollection();
+    });
+
     document.getElementById('ins-math').addEventListener('click', e => {
       insertMath();
     });
@@ -35,20 +51,8 @@ export default class ToolsView {
       insertUnorderedList();
     });
 
-    document.getElementById('save').addEventListener('click', async e => {
-      await saveCurrentNoteFile();
-    });
-
-    document.getElementById('open').addEventListener('click', async e => {
-      await openNoteBookViaDialog();
-    });
-
-    document.getElementById('new').addEventListener('click', async e => {
-      await newNote();
-    });
-
-    document.getElementById('new-collection').addEventListener('click', async e => {
-      await newCollection();
+    document.getElementById('ins-image').addEventListener('click', e => {
+      insertImage();
     });
   }
 }

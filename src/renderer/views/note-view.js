@@ -120,6 +120,8 @@ export default class NoteView {
         return buildOrderedList(element);
       case symbols.UNORDERED_LIST:
         return buildUnorderedList(element);
+      case symbols.IMAGE:
+        return buildImage(element);
     }
   }
 }
@@ -465,4 +467,21 @@ function buildUnorderedList(list) {
   }
 
   return $ul;
+}
+
+function buildImage(image) {
+  const $img = document.createElement('img');
+  $img.dataset.type = symbols.IMAGE;
+  $img.dataset.id = image.id;
+  $img.src = uint8ArrayToBase64(image.data, image.mediaType);
+  return $img;
+}
+
+function uint8ArrayToBinaryString(array) {
+  return Array.from(array, v => String.fromCharCode(v)).join('');
+}
+
+function uint8ArrayToBase64(array, mediaType) {
+  const data = btoa(uint8ArrayToBinaryString(array));
+  return `data:${mediaType};base64,${data}`;
 }

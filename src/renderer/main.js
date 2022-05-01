@@ -1,4 +1,6 @@
 import { nanoid } from 'nanoid';
+import * as path from 'path-browserify';
+import { filetypemime } from 'magic-bytes.js';
 
 import * as utils from './utils';
 import Note from './note';
@@ -146,6 +148,16 @@ export function insertOrderedList() {
 export function insertUnorderedList() {
   const unorderedList = createUnorderedList();
   insertBlock(focusIndex + 1, unorderedList);
+  focus(focusIndex + 1);
+}
+
+export async function insertImage() {
+  const imagePath = await bridge.openFile();
+  const data = await bridge.readBinaryFile(imagePath);
+  const filename = path.basename(imagePath);
+  const mediaType = filetypemime(data)[0];
+  const image = createImage(data, filename, mediaType);
+  insertBlock(focusIndex + 1, image);
   focus(focusIndex + 1);
 }
 
@@ -493,4 +505,28 @@ export function createUnorderedList(content = [createListItem()], created, modif
   };
 
   return code;
+}
+
+export function createImage(data, filename, mediaType, created, modified) {
+  if (created == null) {
+    created = Date.now();
+  }
+
+  if (modified == null) {
+    modified = created;
+  }
+
+  const id = nanoid();
+
+  const image = {
+    type: symbols.IMAGE,
+    data,
+    filename,
+    mediaType,
+    created,
+    modified,
+    id
+  };
+
+  return image;
 }

@@ -1,6 +1,7 @@
 import { app, dialog, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import { filetypemime } from 'magic-bytes.js';
 
 import * as fileKind from './file-kind';
 
