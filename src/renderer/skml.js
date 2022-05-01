@@ -30,8 +30,6 @@ export function toSKML(note) {
 function toDOM(xml, e) {
   const tagName = e.type;
   const element = xml.createElement(tagName);
-  element.setAttribute('created', e.created);
-  element.setAttribute('modified', e.modified);
 
   if (e.language != null) {
     element.setAttribute('language', e.language);
@@ -41,8 +39,6 @@ function toDOM(xml, e) {
     for (const i of e.content) {
       const item = xml.createElement('li');
       item.textContent = i.content;
-      item.setAttribute('created', i.created);
-      item.setAttribute('modified', i.modified);
       element.append(item);
     }
   } else {
@@ -77,42 +73,36 @@ export function fromSKML(text) {
   for (const n of $body.childNodes) {
     const tagName = n.tagName;
     const content = n.textContent;
-    const created = parseInt(n.getAttribute('created'));
-    const modified = parseInt(n.getAttribute('modified'));
 
     if (tagName == 'p') {
-      body.push(createParagraph(content, created, modified));
+      body.push(createParagraph(content));
     } else if (tagName == 'math') {
-      body.push(createMath(content, created, modified));
+      body.push(createMath(content));
     } else if (symbols.headers.includes(tagName)) {
-      body.push(createHeader(parseInt(tagName[1]), content, created, modified));
+      body.push(createHeader(parseInt(tagName[1]), content));
     } else if (tagName == 'hr') {
-      body.push(createHorizontalRule(created, modified));
+      body.push(createHorizontalRule());
     } else if (tagName == 'blockquote') {
-      body.push(createBlockquote(content, created, modified));
+      body.push(createBlockquote(content));
     } else if (tagName == 'code') {
       const language = n.getAttribute('language');
-      body.push(createCode(content, language, created, modified));
+      body.push(createCode(content, language));
     } else if (tagName == 'ol') {
       const items = [];
 
       for (const childN of n.childNodes) {
-        const created = parseInt(childN.getAttribute('created'));
-        const modified = parseInt(childN.getAttribute('modified'));
-        items.push(createListItem(childN.textContent, created, modified));
+        items.push(createListItem(childN.textContent));
       }
 
-      body.push(createOrderedList(items, created, modified));
+      body.push(createOrderedList(items));
     } else if (tagName == 'ul') {
       const items = [];
 
       for (const childN of n.childNodes) {
-        const created = parseInt(childN.getAttribute('created'));
-        const modified = parseInt(childN.getAttribute('modified'));
-        items.push(createListItem(childN.textContent, created, modified));
+        items.push(createListItem(childN.textContent));
       }
 
-      body.push(createUnorderedList(items, created, modified));
+      body.push(createUnorderedList(items));
     }
   }
 

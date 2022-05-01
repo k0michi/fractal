@@ -307,133 +307,73 @@ export function changeTitle(newTitle) {
   currentNote.head.properties.title = newTitle;
 }
 
-export function createParagraph(content = '', created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createParagraph(content = '') {
   const id = nanoid();
 
   const paragraph = {
     type: symbols.PARAGRAPH,
     content,
-    created,
-    modified,
     id
   };
 
   return paragraph;
 }
 
-export function createMath(content = '', created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createMath(content = '') {
   const id = nanoid();
 
   const math = {
     type: symbols.MATH,
     content,
-    created,
-    modified,
     id
   };
 
   return math;
 }
 
-export function createHeader(level, content = '', created, modified) {
+export function createHeader(level, content = '') {
   const type = symbols.headers[level - 1];
-
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
 
   const id = nanoid();
 
   const header = {
     type,
     content,
-    created,
-    modified,
     id
   };
 
   return header;
 }
 
-export function createHorizontalRule(created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createHorizontalRule() {
   const id = nanoid();
 
   const horizontal = {
     type: symbols.HORIZONTAL_RULE,
-    created,
-    modified,
     id
   };
 
   return horizontal;
 }
 
-export function createBlockquote(content = '', created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createBlockquote(content = '') {
   const id = nanoid();
 
   const blockquote = {
     type: symbols.BLOCKQUOTE,
     content,
-    created,
-    modified,
     id
   };
 
   return blockquote;
 }
 
-export function createCode(content = '', language = 'javascript', created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createCode(content = '', language = 'javascript') {
   const id = nanoid();
 
   const code = {
     type: symbols.CODE,
     content,
-    created,
-    modified,
     language,
     id
   };
@@ -441,81 +381,43 @@ export function createCode(content = '', language = 'javascript', created, modif
   return code;
 }
 
-export function createListItem(content = '', created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createListItem(content = '') {
   const id = nanoid();
 
   const code = {
     type: symbols.LIST_ITEM,
     content,
-    created,
-    modified,
     id
   };
 
   return code;
 }
 
-export function createOrderedList(content = [createListItem()], created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createOrderedList(content = [createListItem()]) {
   const id = nanoid();
 
   const code = {
     type: symbols.ORDERED_LIST,
     content,
-    created,
-    modified,
     id
   };
 
   return code;
 }
 
-export function createUnorderedList(content = [createListItem()], created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createUnorderedList(content = [createListItem()]) {
   const id = nanoid();
 
   const code = {
     type: symbols.UNORDERED_LIST,
     content,
-    created,
-    modified,
     id
   };
 
   return code;
 }
 
-export function createImage(data, filename, mediaType, created, modified) {
-  if (created == null) {
-    created = Date.now();
-  }
-
-  if (modified == null) {
-    modified = created;
-  }
-
+export function createImage(data, filename, mediaType) {
   const id = nanoid();
 
   const image = {
@@ -523,8 +425,6 @@ export function createImage(data, filename, mediaType, created, modified) {
     data,
     filename,
     mediaType,
-    created,
-    modified,
     id
   };
 
