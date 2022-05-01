@@ -16,7 +16,6 @@ import NoteView from './views/note-view';
 import * as fileSystem from './file-system';
 import * as LibraryItemType from "./library-item-type";
 import TabView from './views/tab-view';
-import * as skml from './skml';
 import * as archive from './archive';
 import * as elements from './elements';
 
@@ -72,7 +71,6 @@ function renderFiles() {
   libraryView.renderFiles(library.items);
 }
 
-let $noteContainer;
 let openedFiles = [];
 let currentNote;
 let currentNoteFile;
@@ -169,9 +167,7 @@ export async function openNoteBookViaDialog() {
   let noteFile = getOpenedNoteBookFromPath(path);
 
   if (noteFile == null) {
-    const xml = await bridge.readFile(path);
-    const note = skml.fromSKML(xml);
-    noteFile = new NoteFile(path, note)
+    noteFile = await fileSystem.openNoteFile(path);
   }
 
   openNoteFile(noteFile);
@@ -276,8 +272,6 @@ export function closeTab(noteFileID) {
 }
 
 window.addEventListener('load', async () => {
-  $noteContainer = document.getElementById('note-container');
-
   toolsView.initialize();
   libraryView.initialize();
 
