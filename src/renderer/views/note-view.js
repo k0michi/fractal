@@ -26,6 +26,11 @@ export default class NoteView {
     this.$nodeBody.insertBefore(node, this.$nodeBody.childNodes[beforeIndex]);
   }
 
+  insertImage(element, beforeIndex, note) {
+    const node = this.buildNode(element, note);
+    this.$nodeBody.insertBefore(node, this.$nodeBody.childNodes[beforeIndex]);
+  }
+
   insertListItem(element, indexOfList, index) {
     const node = this.buildNode(element);
     this.$nodeBody.childNodes[indexOfList].insertBefore(node, this.$nodeBody.childNodes[indexOfList].childNodes[index]);
@@ -91,12 +96,12 @@ export default class NoteView {
     this.$noteContent.append(this.$nodeBody);
 
     for (const e of note.body.children) {
-      const node = this.buildNode(e);
+      const node = this.buildNode(e, note);
       this.$nodeBody.append(node);
     }
   }
 
-  buildNode(element) {
+  buildNode(element, note) {
     switch (element.type) {
       case symbols.PARAGRAPH:
         return buildParagraph(element);
@@ -122,7 +127,7 @@ export default class NoteView {
       case symbols.UNORDERED_LIST:
         return buildUnorderedList(element);
       case symbols.IMAGE:
-        return buildImage(element);
+        return buildImage(element, note);
     }
   }
 }
@@ -475,11 +480,12 @@ function buildUnorderedList(list) {
   return $ul;
 }
 
-function buildImage(image) {
+function buildImage(image, note) {
   const $img = document.createElement('img');
   $img.dataset.type = symbols.IMAGE;
   $img.dataset.id = image.id;
-  $img.src = uint8ArrayToBase64(image.data, image.mediaType);
+  const imageFile = note.getFile(image.filename);
+  $img.src = uint8ArrayToBase64(imageFile.data, imageFile.mediaType);
   return $img;
 }
 

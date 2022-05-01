@@ -6,10 +6,6 @@ import Note from './note';
 import NoteFile from './note-file';
 import Library from './library';
 import NoteHead from './note-head';
-
-import './styles.css';
-import 'katex/dist/katex.min.css';
-import 'prismjs/themes/prism.css';
 import ToolsView from './views/tools-view';
 import LibraryView from './views/library-view';
 import NoteView from './views/note-view';
@@ -18,6 +14,12 @@ import * as LibraryItemType from "./library-item-type";
 import TabView from './views/tab-view';
 import * as archive from './archive';
 import * as elements from './elements';
+import EmbeddedFile from './embedded-file';
+import * as symbols from './symbols';
+
+import './styles.css';
+import 'katex/dist/katex.min.css';
+import 'prismjs/themes/prism.css';
 
 /*
 class App {
@@ -62,6 +64,7 @@ function openNoteFile(noteFile) {
 }
 
 function renderNote(note) {
+  const $noteContainer = document.getElementById('note-container');
   utils.removeChildNodes($noteContainer);
   $noteContainer.append(noteView.$note);
   noteView.render(note);
@@ -83,7 +86,12 @@ let noteView = new NoteView();
 let tabView = new TabView();
 
 export function insertBlock(index, element) {
-  noteView.insertElement(element, index);
+  if (element.type == symbols.IMAGE) {
+    noteView.insertImage(element, index, currentNote);
+  } else {
+    noteView.insertElement(element, index);
+  }
+
   currentNote.insert(index, element);
 }
 
@@ -153,7 +161,9 @@ export async function insertImage() {
   const data = await bridge.readBinaryFile(imagePath);
   const filename = path.basename(imagePath);
   const mediaType = filetypemime(data)[0];
-  const image = elements.createImage(data, filename, mediaType);
+  const image = elements.createImage(filename);
+  const imageFile = new EmbeddedFile(filename, data, mediaType);
+  currentNote.addFile(imageFile);
   insertBlock(focusIndex + 1, image);
   focus(focusIndex + 1);
 }

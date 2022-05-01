@@ -41,6 +41,8 @@ function toDOM(xml, e) {
       item.textContent = i.content;
       element.append(item);
     }
+  } else if (tagName == 'image') {
+    element.setAttribute('path', e.filename);
   } else {
     element.append(e.content);
   }
@@ -48,7 +50,7 @@ function toDOM(xml, e) {
   return element;
 }
 
-export function fromSKML(text) {
+export function fromSKML(text, files = []) {
   const parser = new DOMParser();
   const xml = parser.parseFromString(text, 'text/xml');
   const $root = xml.firstChild;
@@ -103,8 +105,11 @@ export function fromSKML(text) {
       }
 
       body.push(elements.createUnorderedList(items));
+    } else if (tagName == 'image') {
+      const path = n.getAttribute('path');
+      body.push(elements.createImage(path));
     }
   }
 
-  return new Note(head, new NoteBody(body));
+  return new Note(head, new NoteBody(body), files);
 }

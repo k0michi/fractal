@@ -111,14 +111,12 @@ export function createUnorderedList(content = [createListItem()]) {
   return code;
 }
 
-export function createImage(data, filename, mediaType) {
+export function createImage(filename) {
   const id = nanoid();
 
   const image = {
     type: symbols.IMAGE,
-    data,
     filename,
-    mediaType,
     id
   };
 
