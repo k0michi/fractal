@@ -44,6 +44,10 @@ export class Bridge {
   saveFileDialog = async (...args) => {
     return await ipcRenderer.invoke('save-file-dialog', ...args);
   }
+
+  fetch = async (...args) => {
+    return await ipcRenderer.invoke('fetch', ...args);
+  }
 }
 
 contextBridge.exposeInMainWorld('bridge', new Bridge());

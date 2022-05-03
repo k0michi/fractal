@@ -1,5 +1,6 @@
 import * as path from 'path-browserify';
 import { filetypemime } from 'magic-bytes.js';
+import { v4 as uuidv4 } from 'uuid';
 
 import * as utils from './utils';
 import Note from './note';
@@ -222,6 +223,25 @@ export async function newNote() {
   const filename = name + '.sk';
 
   const note = new Note(NoteHead.create(name));
+  const noteFile = new NoteFile(`${library.basePath}/${filename}`, note);
+  await saveNoteFile(noteFile);
+  await library.refresh();
+  libraryView.setSelectedPath(noteFile.path);
+  renderFiles();
+  openNoteFile(noteFile);
+}
+
+export async function newNoteFromURL(url) {
+  const meta = await bridge.fetch(url);
+
+  const name = uuidv4();
+  const filename = name + '.sk';
+
+  const noteHead = NoteHead.create(meta.title);
+  noteHead.setProperty('description', meta.description);
+  noteHead.setProperty('imageURL', meta.imageURL);
+
+  const note = new Note(noteHead);
   const noteFile = new NoteFile(`${library.basePath}/${filename}`, note);
   await saveNoteFile(noteFile);
   await library.refresh();
