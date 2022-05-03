@@ -719,6 +719,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"content-disposition@npm:^0.5.4":
+  version: 0.5.4
+  resolution: "content-disposition@npm:0.5.4"
+  dependencies:
+    safe-buffer: 5.2.1
+  checksum: afb9d545e296a5171d7574fcad634b2fdf698875f4006a9dd04a3e1333880c5c0c98d47b560d01216fb6505a54a2ba6a843ee3a02ec86d7e911e8315255f56c3
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:~1.0.0":
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
@@ -1077,6 +1086,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"escape-string-regexp@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "escape-string-regexp@npm:5.0.0"
+  checksum: 20daabe197f3cb198ec28546deebcf24b3dbb1a5a269184381b3116d12f0532e06007f4bc8da25669d6a7f8efb68db0758df4cd981f57bc5b57f521a3e12c59e
+  languageName: node
+  linkType: hard
+
 "escodegen@npm:^2.0.0":
   version: 2.0.0
   resolution: "escodegen@npm:2.0.0"
@@ -1218,6 +1234,24 @@ __metadata:
   dependencies:
     pend: ~1.2.0
   checksum: c8585fd5713f4476eb8261150900d2cb7f6ff2d87f8feb306ccc8a1122efd152f1783bdb2b8dc891395744583436bfd8081d8e63ece0ec8687eeefea394d4ff2
+  languageName: node
+  linkType: hard
+
+"filename-reserved-regex@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "filename-reserved-regex@npm:3.0.0"
+  checksum: 1803e19ce64d7cb88ee5a1bd3ce282470a5c263987269222426d889049fc857e302284fa71937de9582eba7a9f39539557d45e0562f2fa51cade8efc68c65dd9
+  languageName: node
+  linkType: hard
+
+"filenamify@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "filenamify@npm:5.1.1"
+  dependencies:
+    filename-reserved-regex: ^3.0.0
+    strip-outer: ^2.0.0
+    trim-repeated: ^2.0.0
+  checksum: 55a7ed0858eb2655bb1bb1e945a59e3fb30ba4767f6924fa064ccd731bff07678aac3cb4f3899ae0e1621fe81d6472b5688232bb6afd4eeb989ade785fc1c6f1
   languageName: node
   linkType: hard
 
@@ -2455,7 +2489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:^5.1.0":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:^5.1.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
@@ -2575,8 +2609,10 @@ __metadata:
     "@types/uuid": ^8.3.4
     "@zip.js/zip.js": ^2.4.10
     concurrently: ^7.1.0
+    content-disposition: ^0.5.4
     css-loader: ^6.5.1
     electron: ^18.0.4
+    filenamify: ^5.1.1
     hi-base32: ^0.5.1
     html-webpack-plugin: ^5.5.0
     jsdom: ^19.0.0
@@ -2680,6 +2716,13 @@ __metadata:
   version: 2.0.0
   resolution: "strip-final-newline@npm:2.0.0"
   checksum: 69412b5e25731e1938184b5d489c32e340605bb611d6140344abc3421b7f3c6f9984b21dff296dfcf056681b82caa3bb4cc996a965ce37bcfad663e92eae9c64
+  languageName: node
+  linkType: hard
+
+"strip-outer@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "strip-outer@npm:2.0.0"
+  checksum: 14ef9fe861e59a5f1555f1860982ae4edce2edb4ed34ab1b37cb62a8ba2f7c3540cbca6c884eabe4006e6cd729ab5d708a631169dd5b66fda570836e7e3b6589
   languageName: node
   linkType: hard
 
@@ -2825,6 +2868,15 @@ __metadata:
   bin:
     tree-kill: cli.js
   checksum: 49117f5f410d19c84b0464d29afb9642c863bc5ba40fcb9a245d474c6d5cc64d1b177a6e6713129eb346b40aebb9d4631d967517f9fbe8251c35b21b13cd96c7
+  languageName: node
+  linkType: hard
+
+"trim-repeated@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "trim-repeated@npm:2.0.0"
+  dependencies:
+    escape-string-regexp: ^5.0.0
+  checksum: 4086eb0bc560f3da0370f427f423db4e3fc0a8e1560ecffc3b68512071319fe82dc9dd86d76b981d36ada76d7d49c3f8897ac054c87bc177e7a25abfd29e2bcd
   languageName: node
   linkType: hard
 

@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 
 import * as fileKind from './file-kind';
-import { fetchMeta } from './fetch';
+import { fetchImage, fetchMeta } from './fetch';
 
 export function registerHandlers() {
   ipcMain.handle('open-file', async (e) => {
@@ -108,5 +108,9 @@ export function registerHandlers() {
 
   ipcMain.handle('fetch', async (e, url) => {
     return await fetchMeta(url);
+  });
+
+  ipcMain.handle('fetch-image', async (e, url) => {
+    return await fetchImage(url);
   });
 }

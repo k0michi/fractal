@@ -48,6 +48,10 @@ export class Bridge {
   fetch = async (...args) => {
     return await ipcRenderer.invoke('fetch', ...args);
   }
+
+  fetchImage = async (...args) => {
+    return await ipcRenderer.invoke('fetch-image', ...args);
+  }
 }
 
 contextBridge.exposeInMainWorld('bridge', new Bridge());

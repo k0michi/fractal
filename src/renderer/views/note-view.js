@@ -61,6 +61,14 @@ export default class NoteView {
     utils.removeChildNodes(this.$noteContent);
     utils.removeChildNodes(this.$nodeBody);
 
+    if (note.head.properties.thumbnail != null) {
+      const $img = document.createElement('img');
+      const imageFile = note.getFile(note.head.properties.thumbnail);
+      // TODO: revoke
+      $img.src = uint8ArrayObjectURL(imageFile.data, imageFile.mediaType);
+      this.$noteContent.append($img);
+    }
+
     const $h1 = document.createElement('h1');
     $h1.id = 'title';
     $h1.textContent = note.head.properties.title;

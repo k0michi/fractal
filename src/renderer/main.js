@@ -1,6 +1,7 @@
 import * as path from 'path-browserify';
 import { filetypemime } from 'magic-bytes.js';
 import { v4 as uuidv4 } from 'uuid';
+import filenamify from 'filenamify/browser';
 
 import * as utils from './utils';
 import Note from './note';
@@ -220,7 +221,6 @@ async function getAvailableFileName(dir, name, ext) {
 
 export async function newNote() {
   const name = uuidToBase32(uuidv4());
-
   const filename = name + '.sk';
 
   const note = new Note(NoteHead.create(name));
@@ -240,9 +240,18 @@ export async function newNoteFromURL(url) {
 
   const noteHead = NoteHead.create(meta.title);
   noteHead.setProperty('description', meta.description);
-  noteHead.setProperty('imageURL', meta.imageURL);
 
   const note = new Note(noteHead);
+
+  if (meta.imageURL != null) {
+    const thumbnail = await bridge.fetchImage(meta.imageURL);
+    const imageFilename = filenamify(thumbnail.filename);
+    const mediaType = filetypemime(thumbnail.data)[0];
+    const imageFile = new EmbeddedFile(imageFilename, thumbnail.data, mediaType);
+    note.addFile(imageFile);
+    noteHead.setProperty('thumbnail', imageFilename);
+  }
+
   const noteFile = new NoteFile(`${library.basePath}/${filename}`, note);
   await saveNoteFile(noteFile);
   await library.refresh();
