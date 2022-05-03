@@ -21,6 +21,7 @@ import * as symbols from './symbols';
 import './styles.css';
 import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism.css';
+import { uuidToBase32 } from './id';
 
 /*
 class App {
@@ -218,8 +219,8 @@ async function getAvailableFileName(dir, name, ext) {
 }
 
 export async function newNote() {
-  let name = `untitled_${utils.dateToString(new Date())}`;
-  name = await getAvailableFileName(library.basePath, name, 'sk');
+  const name = uuidToBase32(uuidv4());
+
   const filename = name + '.sk';
 
   const note = new Note(NoteHead.create(name));
@@ -234,7 +235,7 @@ export async function newNote() {
 export async function newNoteFromURL(url) {
   const meta = await bridge.fetch(url);
 
-  const name = uuidv4();
+  const name = uuidToBase32(uuidv4());
   const filename = name + '.sk';
 
   const noteHead = NoteHead.create(meta.title);
