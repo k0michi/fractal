@@ -1,6 +1,6 @@
 {
-  "name": "shiki",
-  "productName": "Shiki",
+  "name": "yomikaki",
+  "productName": "Yomikaki",
   "dependencies": {
     "@zip.js/zip.js": "^2.4.10",
     "content-disposition": "^0.5.4",

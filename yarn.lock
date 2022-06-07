@@ -2600,37 +2600,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shiki@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "shiki@workspace:."
-  dependencies:
-    "@types/jsdom": ^16.2.14
-    "@types/node": ^17.0.30
-    "@types/uuid": ^8.3.4
-    "@zip.js/zip.js": ^2.4.10
-    concurrently: ^7.1.0
-    content-disposition: ^0.5.4
-    css-loader: ^6.5.1
-    electron: ^18.0.4
-    filenamify: ^5.1.1
-    hi-base32: ^0.5.1
-    html-webpack-plugin: ^5.5.0
-    jsdom: ^19.0.0
-    katex: ^0.15.2
-    magic-bytes.js: ^1.0.11
-    nanoid: ^3.3.3
-    node-fetch: 2
-    path-browserify: ^1.0.1
-    prismjs: ^1.26.0
-    style-loader: ^3.3.1
-    ts-loader: ^9.2.9
-    typescript: ^4.6.4
-    uuid: ^8.3.2
-    webpack: ^5.64.4
-    webpack-cli: ^4.9.1
-  languageName: unknown
-  linkType: soft
-
 "signal-exit@npm:^3.0.3":
   version: 3.0.7
   resolution: "signal-exit@npm:3.0.7"
@@ -3299,3 +3268,34 @@ __metadata:
   checksum: 7f21fe0bbad6e2cb130044a5d1d0d5a0e5bf3d8d4f8c4e6ee12163ce798fee3de7388d22a7a0907f563ac5f9d40f8699a223d3d5c1718da90b0156da6904022b
   languageName: node
   linkType: hard
+
+"yomikaki@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "yomikaki@workspace:."
+  dependencies:
+    "@types/jsdom": ^16.2.14
+    "@types/node": ^17.0.30
+    "@types/uuid": ^8.3.4
+    "@zip.js/zip.js": ^2.4.10
+    concurrently: ^7.1.0
+    content-disposition: ^0.5.4
+    css-loader: ^6.5.1
+    electron: ^18.0.4
+    filenamify: ^5.1.1
+    hi-base32: ^0.5.1
+    html-webpack-plugin: ^5.5.0
+    jsdom: ^19.0.0
+    katex: ^0.15.2
+    magic-bytes.js: ^1.0.11
+    nanoid: ^3.3.3
+    node-fetch: 2
+    path-browserify: ^1.0.1
+    prismjs: ^1.26.0
+    style-loader: ^3.3.1
+    ts-loader: ^9.2.9
+    typescript: ^4.6.4
+    uuid: ^8.3.2
+    webpack: ^5.64.4
+    webpack-cli: ^4.9.1
+  languageName: unknown
+  linkType: soft
