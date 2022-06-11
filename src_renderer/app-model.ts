@@ -19,7 +19,7 @@ export default class AppModel {
     const file = await bridge.showFileOpenDialog();
 
     if (file != null) {
-      await this.openFile(file);
+      await this.openNoteFromPath(file);
     }
   }
 
@@ -32,14 +32,19 @@ export default class AppModel {
   onClickSave() {
     const note = this.note.get();
     this.library.saveNote(note!);
-    this.library.changeTitle(note?.head.id,note?.head.title);
+    this.library.changeTitle(note?.head.id, note?.head.title);
   }
 
-  async openFile(path: string) {
+  async openNoteFromPath(path: string) {
     const content = await bridge.readFileUTF8(path);
     const note = parseMIML(content);
-    transformHL(note.body);
-    const element = toElement(note.body.childNodes);
+    this.openNote(note);
+  }
+
+  async openNote(note: Note) {
+    const cloned = note.body.cloneNode(true);
+    transformHL(cloned as Element);
+    const element = toElement(cloned.childNodes);
     this.element.set(element as React.ReactElement);
     this.note.set(note);
   }

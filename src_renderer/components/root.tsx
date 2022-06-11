@@ -9,7 +9,7 @@ export default function Root() {
   return (
     <>
       <div id="side-pane">
-        <Library></Library>
+        <Library />
       </div>
       <div id="main-pane">
         <ToolBar />

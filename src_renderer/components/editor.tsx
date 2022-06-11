@@ -8,12 +8,11 @@ export default function Editor() {
   const note = useObservable(model.note);
   const element = useObservable(model.element);
   const title = note?.head?.title ?? '';
-  console.log(title)
 
   return (
     <div id="editor">
       <EditableHeading placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableHeading>
-      <div>{note?.head?.createdAt}</div>
+      <div>{note?.head?.createdAt.toString()}</div>
       {element}
     </div>
   );

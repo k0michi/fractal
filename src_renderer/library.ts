@@ -113,7 +113,7 @@ export default class Library {
     return entry;
   }
 
-  changeTitle(id:string, title: string) {
+  changeTitle(id: string, title: string) {
     this.noteEntryByID[id].head!.title = title;
     this.updateView();
   }
@@ -132,12 +132,13 @@ export default class Library {
   }
 
   onClickItem(note: NoteEntry) {
-    this.appModel.openFile(note.path!);
+    this.appModel.openNoteFromPath(note.path!);
   }
 
   onClickNew() {
     const note = this.newNote();
     this.register(note);
     this.saveNote(note);
+    this.appModel.openNote(note);
   }
 }
