@@ -16,6 +16,7 @@ export default function EditableHeading(props: any) {
   const onInput = (e) => {
     if (!compositing.current) {
       range.current = getCursorRange(element.current!);
+      console.log(range.current)
       props.onInput(e.target.innerHTML);
     }
   }
@@ -29,6 +30,11 @@ export default function EditableHeading(props: any) {
       contentEditable
       onFocus={e => setFocused(true)}
       onBlur={e => setFocused(false)}
+      onKeyDown={e => {
+        if (e.key == 'Enter') {
+          (e.target as HTMLHeadingElement).blur()
+        }
+      }}
       onInput={onInput}
       onCompositionStart={e => compositing.current = true}
       onCompositionEnd={e => {
