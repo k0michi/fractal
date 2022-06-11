@@ -12,7 +12,7 @@ export default function Editor() {
   return (
     <div id="editor">
       <EditableHeading placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableHeading>
-      <div>{note?.head?.createdAt.toString()}</div>
+      <div>{note?.head?.createdAt?.toString()}</div>
       {element}
     </div>
   );

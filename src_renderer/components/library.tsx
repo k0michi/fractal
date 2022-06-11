@@ -17,7 +17,7 @@ export default function Library() {
   );
 };
 
-function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppModel, currentNote: Note | null) {
+function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppModel, currentNote: Note | null): React.ReactElement[] {
   const list: React.ReactElement[] = [];
 
   if (Array.isArray(notes)) {
@@ -34,14 +34,15 @@ function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppMod
         style={{ paddingLeft: depth * 24 + 'px' }}
         className={selected ? 'selected' : ''}
         onClick={() => model.library.onClickItem(n)}
+        key={n.head?.id}
       >
         {title}
       </li>);
       const children = treeToList(n.children, depth + 1, model, currentNote);
-      list.push(children);
+      list.push(...children);
     }
 
-    return <>{list}</>;
+    return list;
   } else {
     return treeToList([notes], depth, model, currentNote);
   }
