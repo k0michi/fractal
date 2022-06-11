@@ -30,6 +30,10 @@ export function toElement(node: Node | NodeList): React.ReactElement | string {
 
       const tag = element.tagName.toLowerCase();
 
+      if (tag == 'p') {
+        props.contentEditable = true;
+      }
+
       return React.createElement(tag, props, ...children);
     } else if (node.nodeType == Node.TEXT_NODE) {
       const text = node as Text;

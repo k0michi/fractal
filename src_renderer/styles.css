@@ -56,14 +56,30 @@ ul {
 #main-pane {
   flex: 1 1 auto;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+#tool-bar {
+  flex: 0 0 auto;
 }
 
 #editor {
+  flex: 1 1 auto;
   padding: 12px;
+}
+
+#editor * {
+  outline: none;
 }
 
 #editor .placeholder {
   color: #d1d1d1;
+}
+
+#editor p {
+  height: 24px;
+  width: 100%;
 }
 
 ul.hierarchical li {
