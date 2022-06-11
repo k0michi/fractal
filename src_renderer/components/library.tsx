@@ -10,13 +10,13 @@ export default function LibraryComponent() {
   return (
     <div id="library">
       <ul>
-        {rootNote != null ? treeToList(model.library, rootNote, 0) : null}
+        {rootNote != null ? treeToList(model, rootNote, 0) : null}
       </ul>
     </div>
   );
 };
 
-function treeToList(library: Library, notes: NoteEntry | NoteEntry[], depth: number) {
+function treeToList(model: AppModel, notes: NoteEntry | NoteEntry[], depth: number) {
   const list: React.ReactElement[] = [];
 
   if (Array.isArray(notes)) {
@@ -27,13 +27,21 @@ function treeToList(library: Library, notes: NoteEntry | NoteEntry[], depth: num
         title = n.head!.id;
       }
 
-      list.push(<li style={{ paddingLeft: depth * 24 + 'px' }}><a href="#" onClick={() => library.onClickItem(n)}>{title}</a></li>);
-      const children = treeToList(library, n.children, depth + 1);
+      const selected = n.head?.id == model.note.get()?.head.id;
+
+      list.push(<li
+        style={{ paddingLeft: depth * 24 + 'px' }}
+        className={selected ? 'selected' : ''}
+        onClick={() => model.library.onClickItem(n)}
+      >
+        {title}
+      </li>);
+      const children = treeToList(model, n.children, depth + 1);
       list.push(children);
     }
 
     return <>{list}</>;
   } else {
-    return treeToList(library, [notes], depth);
+    return treeToList(model, [notes], depth);
   }
 }

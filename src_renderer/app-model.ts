@@ -39,6 +39,7 @@ export default class AppModel {
     const content = await bridge.readFileUTF8(path);
     const note = parseMIML(content);
     this.openNote(note);
+    this.library.updateView();
   }
 
   async openNote(note: Note) {

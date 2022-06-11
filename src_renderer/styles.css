@@ -37,11 +37,20 @@ ul {
   overflow: auto;
 }
 
+#library {
+  user-select: none;
+}
+
 #library li {
   list-style: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-bottom: 1px;
+}
+
+#library li.selected {
+  background-color: #e9e9e9;
 }
 
 #main-pane {
