@@ -1,22 +1,23 @@
 import { useModel, useObservable } from 'kyoka';
 import * as React from 'react'
 import AppModel from '../app-model';
-import Library, { NoteEntry } from '../library';
+import { Note, NoteEntry } from '../library';
 
-export default function LibraryComponent() {
+export default function Library() {
   const model = useModel<AppModel>();
   const rootNote = useObservable(model.library.rootNote);
+  const currentNote = useObservable(model.note);
 
   return (
     <div id="library">
       <ul>
-        {rootNote != null ? treeToList(model, rootNote, 0) : null}
+        {rootNote != null ? treeToList(rootNote, 0, model, currentNote) : null}
       </ul>
     </div>
   );
 };
 
-function treeToList(model: AppModel, notes: NoteEntry | NoteEntry[], depth: number) {
+function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppModel, currentNote: Note | null) {
   const list: React.ReactElement[] = [];
 
   if (Array.isArray(notes)) {
@@ -27,7 +28,7 @@ function treeToList(model: AppModel, notes: NoteEntry | NoteEntry[], depth: numb
         title = n.head!.id;
       }
 
-      const selected = n.head?.id == model.note.get()?.head.id;
+      const selected = n.head?.id == currentNote?.head.id;
 
       list.push(<li
         style={{ paddingLeft: depth * 24 + 'px' }}
@@ -36,12 +37,12 @@ function treeToList(model: AppModel, notes: NoteEntry | NoteEntry[], depth: numb
       >
         {title}
       </li>);
-      const children = treeToList(model, n.children, depth + 1);
+      const children = treeToList(n.children, depth + 1, model, currentNote);
       list.push(children);
     }
 
     return <>{list}</>;
   } else {
-    return treeToList(model, [notes], depth);
+    return treeToList([notes], depth, model, currentNote);
   }
 }
