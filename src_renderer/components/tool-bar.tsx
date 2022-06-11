@@ -9,6 +9,7 @@ export default function ToolBar() {
     <div id="tool-bar">
       <button onClick={model.onClickOpen}>Open</button>
       <button onClick={model.library.onClickNew}>New</button>
+      <button onClick={model.onClickSave}>Save</button>
     </div>
   );
 }

@@ -1,17 +1,18 @@
 import * as React from 'react'
 import { useModel, useObservable } from "kyoka";
 import AppModel from "../app-model";
+import EditableHeading from './editable-heading';
 
 export default function Editor() {
   const model = useModel<AppModel>();
   const note = useObservable(model.note);
   const element = useObservable(model.element);
-  const placeholder = note?.head?.title.length == 0;
-  const title = placeholder?'Title':note?.head?.title;
+  const title = note?.head?.title ?? '';
+  console.log(title)
 
   return (
     <div id="editor">
-      <h1 className={placeholder?'placeholder':''}>{title}</h1>
+      <EditableHeading placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableHeading>
       <div>{note?.head?.createdAt}</div>
       {element}
     </div>

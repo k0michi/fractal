@@ -107,10 +107,19 @@ export default class Library {
       this.rootNote.set(entry);
     } else {
       this.noteEntryByID[parent].children.push(entry);
-      this.rootNote.set(this.rootNote.get());
+      this.updateView();
     }
 
     return entry;
+  }
+
+  changeTitle(id:string, title: string) {
+    this.noteEntryByID[id].head!.title = title;
+    this.updateView();
+  }
+
+  updateView() {
+    this.rootNote.set(this.rootNote.get());
   }
 
   async saveNote(note: Note) {

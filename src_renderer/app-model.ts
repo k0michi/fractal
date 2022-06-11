@@ -7,7 +7,7 @@ import Library, { Note } from "./library";
 
 export default class AppModel {
   library = new Library(this);
-  note = new Observable<Note|null>(null);
+  note = new Observable<Note | null>(null);
   element = new Observable<React.ReactElement | null>(null);
 
   constructor() {
@@ -21,6 +21,18 @@ export default class AppModel {
     if (file != null) {
       await this.openFile(file);
     }
+  }
+
+  onChangeTitle(newTitle: string) {
+    const note = this.note.get();
+    note!.head.title = newTitle;
+    this.note.set(note);
+  }
+
+  onClickSave() {
+    const note = this.note.get();
+    this.library.saveNote(note!);
+    this.library.changeTitle(note?.head.id,note?.head.title);
   }
 
   async openFile(path: string) {
