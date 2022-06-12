@@ -78,7 +78,8 @@ ul {
 }
 
 #editor p {
-  height: 24px;
+  min-height: 16px;
+  font-size: 16px;
   width: 100%;
 }
 
