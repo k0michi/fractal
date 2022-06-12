@@ -19,11 +19,13 @@ export default function Editable(props: EditableProps) {
       setCursorRange(element.current!, range.current);
     }
   }, [props.html]);
+  console.log(new Date)
 
   const onInput = React.useCallback((e) => {
     if (!compositing.current) {
+      console.log(e)
+      console.log(e.target.innerHTML)
       range.current = getCursorRange(element.current!);
-      console.log(range.current)
       if (props.onInput != null) {
         props.onInput(e.target.innerHTML);
       }
@@ -40,7 +42,7 @@ export default function Editable(props: EditableProps) {
       onFocus={e => setFocused(true)}
       onBlur={e => setFocused(false)}
       onKeyDown={e => {
-        if (e.key == 'Enter') {
+        if (!compositing.current && e.key == 'Enter') {
           (e.target as HTMLHeadingElement).blur()
         }
       }}
@@ -48,7 +50,6 @@ export default function Editable(props: EditableProps) {
       onCompositionStart={e => compositing.current = true}
       onCompositionEnd={e => {
         compositing.current = false;
-        onInput(e);
       }}
       onPaste={e => {
         const paste = e.clipboardData.getData('text');
