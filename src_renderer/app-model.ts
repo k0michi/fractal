@@ -75,7 +75,6 @@ export default class AppModel {
     const note = this.note.get();
     const element = note?.body.querySelector(`[id="${id}"]`)!;
     element.innerHTML = content;
-    console.log(element)
     this.updateNote();
   }
 }

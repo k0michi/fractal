@@ -42,8 +42,6 @@ export default class Library {
     let noteEntry = this.noteEntryByID[id];
 
     while (noteEntry != null) {
-      console.log(noteEntry.head?.id)
-
       if (noteEntry.head?.parent != null) {
         path = noteEntry.head?.id + '/' + path;
       }
@@ -58,7 +56,6 @@ export default class Library {
     const files = await bridge.globNodes();
 
     for (const path of files) {
-      console.log(path)
       const content = await bridge.readFileUTF8(path);
       const { head } = parseMIML(content);
       const id = head.id!;
@@ -124,7 +121,6 @@ export default class Library {
 
   async saveNote(note: Note) {
     const path = this.noteEntryByID[note.head.id].path;
-    console.log(path)
     const serializer = new XMLSerializer();
     const document = buildDocument(note.head, note.body);
     const serialized = serializer.serializeToString(document);

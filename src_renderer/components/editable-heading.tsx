@@ -19,12 +19,10 @@ export default function Editable(props: EditableProps) {
       setCursorRange(element.current!, range.current);
     }
   }, [props.html]);
-  console.log(new Date)
 
   const onInput = React.useCallback((e) => {
     if (!compositing.current) {
       console.log(e)
-      console.log(e.target.innerHTML)
       range.current = getCursorRange(element.current!);
       if (props.onInput != null) {
         props.onInput(e.target.innerHTML);
@@ -50,6 +48,7 @@ export default function Editable(props: EditableProps) {
       onCompositionStart={e => compositing.current = true}
       onCompositionEnd={e => {
         compositing.current = false;
+        onInput(e);
       }}
       onPaste={e => {
         const paste = e.clipboardData.getData('text');

@@ -30,7 +30,6 @@ function processBody(model: AppModel, note: Note) {
   const element = toElement(cloned.childNodes, (type: any, props: any, ...children) => {
     if (type == 'p') {
       props.onInput = (h) => {
-        console.log(h)
         const id = props.id;
         model.onChange(id, h);
       }
