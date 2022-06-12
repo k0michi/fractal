@@ -88,12 +88,29 @@ pre {
 
 #tool-bar {
   flex: 0 0 auto;
+  background-color: #212121;
+  padding: 6px;
+}
+
+#tool-bar button {
+  user-select: none;
+  border: none;
+  background-color: unset;
+  color:#f3f3f3;
+  border-radius: 4px;
+  margin: 2px;
+  border: 1px solid #494949;
+}
+
+#tool-bar button:hover {
+  background-color: #494949;
 }
 
 #editor {
   flex: 1 1 auto;
-  padding: 12px;
+  padding: 10px;
   font-size: 16px;
+  overflow: auto;
 }
 
 #editor * {
