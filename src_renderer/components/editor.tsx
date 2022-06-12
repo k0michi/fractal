@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useModel, useObservable } from "kyoka";
 import AppModel from "../app-model";
-import EditableHeading from './editable-heading';
+import  { EditableH1 } from './editable-heading';
 import EditorBody from './editor-body';
 
 export default function Editor() {
@@ -13,7 +13,7 @@ export default function Editor() {
   return (
     <div id="editor">
       {note != null ? <>
-        <EditableHeading placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableHeading>
+        <EditableH1 placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableH1>
         <div>{note?.head?.createdAt?.toString()}</div>
         <EditorBody element={element} />
       </> : null}

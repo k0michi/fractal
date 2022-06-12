@@ -1,7 +1,14 @@
 import * as React from 'react'
 import { CursorRange, getCursorRange, setCursorRange } from '../cursor';
 
-export default function EditableHeading(props: any) {
+export interface EditableProps {
+  html: string;
+  onInput: (html: string) => void;
+  component: React.FC<any>;
+  placeholder?: string;
+}
+
+export default function Editable(props: EditableProps) {
   const element = React.useRef<HTMLHeadingElement>(null);
   const compositing = React.useRef(false);
   const range = React.useRef<CursorRange>();
@@ -24,7 +31,7 @@ export default function EditableHeading(props: any) {
   const doUsePlaceholder = !focused && props.html.length == 0;
 
   return (
-    <h1
+    <props.component
       className={doUsePlaceholder ? 'placeholder' : ''}
       ref={element}
       contentEditable
@@ -58,6 +65,22 @@ export default function EditableHeading(props: any) {
         e.preventDefault();
       }}
       dangerouslySetInnerHTML={{ __html: doUsePlaceholder ? props.placeholder : props.html }}>
-    </h1>
+    </props.component>
   );
+}
+
+export function EditableH1(props: any) {
+  const H1 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+    <h1 ref={ref} {...props} />
+  ));
+
+  return <Editable component={H1} {...props}></Editable>
+}
+
+export function EditableParagraph(props: any) {
+  const P = React.forwardRef((props, ref: React.Ref<HTMLParagraphElement>) => (
+    <p ref={ref} {...props} />
+  ));
+
+  return <Editable component={P} {...props}></Editable>
 }
