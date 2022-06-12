@@ -79,6 +79,46 @@ export function EditableH1(props: any) {
   return <Editable component={H1} {...props}></Editable>
 }
 
+const H2 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+  <h2 ref={ref} {...props} />
+));
+
+export function EditableH2(props: any) {
+  return <Editable component={H2} {...props}></Editable>
+}
+
+const H3 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+  <h3 ref={ref} {...props} />
+));
+
+export function EditableH3(props: any) {
+  return <Editable component={H3} {...props}></Editable>
+}
+
+const H4 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+  <h4 ref={ref} {...props} />
+));
+
+export function EditableH4(props: any) {
+  return <Editable component={H4} {...props}></Editable>
+}
+
+const H5 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+  <h5 ref={ref} {...props} />
+));
+
+export function EditableH5(props: any) {
+  return <Editable component={H5} {...props}></Editable>
+}
+
+const H6 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+  <h6 ref={ref} {...props} />
+));
+
+export function EditableH6(props: any) {
+  return <Editable component={H6} {...props}></Editable>
+}
+
 const P = React.forwardRef((props, ref: React.Ref<HTMLParagraphElement>) => (
   <p ref={ref} {...props} />
 ));

@@ -2,10 +2,10 @@ import autoBind from "auto-bind";
 import React from "react";
 import { Observable } from "kyoka";
 import { parseMIML, parseXML, transformHL } from "./miml";
-import { toElement } from "./miml-react";
 import Library, { Note } from "./library";
 import ElementType from "./element-type";
 import { v4 as uuidV4 } from 'uuid';
+import { getElementTag } from "./element-tag";
 
 export default class AppModel {
   library = new Library(this);
@@ -62,11 +62,9 @@ export default class AppModel {
     const body = note?.body;
     const document = note?.body.ownerDocument;
 
-    if (type == ElementType.Paragraph) {
-      const p = document.createElement('p');
-      p.setAttribute('id', uuidV4());
-      body.appendChild(p);
-    }
+    const element = document.createElement(getElementTag(type));
+    element.setAttribute('id', uuidV4());
+    body.appendChild(element);
 
     this.updateNote();
   }
