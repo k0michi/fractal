@@ -35,14 +35,15 @@ h6 {
 
 ul {
   margin: 0;
+  padding-left: 0;
 }
 
 p {
   margin: 0;
 }
 
-ul {
-  padding-left: 0;
+pre {
+  margin: 0;
 }
 
 #root {
@@ -103,8 +104,17 @@ ul {
   width: 100%;
 }
 
+#editor .math {
+  background-color: rgb(243, 243, 243);
+  padding: 12px;
+}
+
 #editor-body {
   height: 100%;
+}
+
+.katex-display {
+  margin: 0;
 }
 
 ul.hierarchical li {

@@ -15,6 +15,8 @@ export function getElementTag(type: ElementType) {
     return 'h5';
   } else if (type == ElementType.Heading6) {
     return 'h6';
+  } else if (type == ElementType.Math) {
+    return 'math';
   }
 
   throw new Error('Unsupported');

@@ -6,6 +6,7 @@ import EditorBody from './editor-body';
 import { toElement } from '../miml-react';
 import { Note } from '../library';
 import { transformHL } from '../miml';
+import { EditableMath } from './editable-math';
 
 export default function Editor() {
   const model = useModel<AppModel>();
@@ -31,6 +32,15 @@ function processBody(model: AppModel, note: Note) {
     const editable = getEditable(type);
 
     if (editable != null) {
+      if (type == 'math') {
+        props.onInput = (t) => {
+          const id = props.id;
+          model.onChange(id, t);
+        }
+  
+        return React.createElement(editable, props, ...children);
+      }
+
       props.onInput = (h) => {
         const id = props.id;
         model.onChange(id, h);
@@ -61,5 +71,7 @@ function getEditable(type: string) {
     return EditableH5;
   } else if (type == 'h6') {
     return EditableH6;
+  } else if (type == 'math') {
+    return EditableMath;
   }
 }

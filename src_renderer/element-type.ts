@@ -5,7 +5,8 @@ enum ElementType {
   Heading3,
   Heading4,
   Heading5,
-  Heading6
+  Heading6,
+  Math
 }
 
 export default ElementType;

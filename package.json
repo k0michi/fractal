@@ -6,13 +6,17 @@
     "auto-bind": "^5.0.1",
     "glob": "^8.0.3",
     "glob-promise": "^4.2.2",
+    "katex": "^0.16.0",
     "kyoka": "^0.0.1",
     "modern-normalize": "^1.1.0",
+    "prismjs": "^1.28.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/katex": "^0.14.0",
+    "@types/prismjs": "^1.26.0",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
     "@types/uuid": "^8.3.4",

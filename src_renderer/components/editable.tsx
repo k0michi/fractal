@@ -1,18 +1,33 @@
 import * as React from 'react'
 import { CursorRange, getCursorRange, setCursorRange } from '../cursor';
 
+export interface EditableRef {
+  focus();
+}
+
 export interface EditableProps {
   html?: string;
   onInput?: (html: string) => void;
   component: React.FC<any>;
   placeholder?: string;
+  ref?: EditableRef;
 }
 
-export default function Editable(props: EditableProps) {
+const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, ref) {
   const element = React.useRef<HTMLHeadingElement>(null);
   const compositing = React.useRef(false);
   const range = React.useRef<CursorRange>();
   const [focused, setFocused] = React.useState(false);
+
+  React.useImperativeHandle(ref, () => ({
+    focus() {
+      if (element.current != null) {
+        element.current.focus();
+        window.getSelection()?.selectAllChildren(element.current);
+        window.getSelection()?.collapseToEnd();
+      }
+    }
+  }));
 
   React.useEffect(() => {
     if (range.current != null) {
@@ -22,7 +37,6 @@ export default function Editable(props: EditableProps) {
 
   const onInput = React.useCallback((e) => {
     if (!compositing.current) {
-      console.log(e)
       range.current = getCursorRange(element.current!);
       if (props.onInput != null) {
         props.onInput(e.target.innerHTML);
@@ -69,6 +83,14 @@ export default function Editable(props: EditableProps) {
       dangerouslySetInnerHTML={{ __html: showPlaceholder ? props.placeholder : props.html }}>
     </props.component>
   );
+});
+
+const P = React.forwardRef((props, ref: React.Ref<HTMLParagraphElement>) => (
+  <p ref={ref} {...props} />
+));
+
+export function EditableParagraph(props: any) {
+  return <Editable component={P} {...props}></Editable>
 }
 
 const H1 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
@@ -119,10 +141,10 @@ export function EditableH6(props: any) {
   return <Editable component={H6} {...props}></Editable>
 }
 
-const P = React.forwardRef((props, ref: React.Ref<HTMLParagraphElement>) => (
-  <p ref={ref} {...props} />
+const Pre = React.forwardRef((props, ref: React.Ref<HTMLPreElement>) => (
+  <pre ref={ref} {...props} />
 ));
 
-export function EditableParagraph(props: any) {
-  return <Editable component={P} {...props}></Editable>
-}
+export const EditablePre = React.forwardRef(function (props: any, ref) {
+  return <Editable ref={ref} component={Pre} {...props}></Editable>
+});

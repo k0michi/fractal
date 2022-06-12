@@ -20,6 +20,7 @@ export default function ToolBar() {
         <button onClick={e => model.onClickAdd(ElementType.Heading4)}>H4</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading5)}>H5</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading6)}>H6</button>
+        <button onClick={e => model.onClickAdd(ElementType.Math)}>Math</button>
       </div>
     </div>
   );
