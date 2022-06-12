@@ -41,6 +41,22 @@ export default function EditableHeading(props: any) {
         compositing.current = false;
         onInput(e);
       }}
+      onPaste={e => {
+        const paste = e.clipboardData.getData('text');
+        const selection = window.getSelection();
+
+        if (selection != null && selection.rangeCount > 0) {
+          selection.deleteFromDocument();
+          selection.getRangeAt(0).insertNode(document.createTextNode(paste));
+          selection.collapseToEnd();
+          onInput(e);
+        }
+
+        e.preventDefault();
+      }}
+      onDrop={e => {
+        e.preventDefault();
+      }}
       dangerouslySetInnerHTML={{ __html: doUsePlaceholder ? props.placeholder : props.html }}>
     </h1>
   );
