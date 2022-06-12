@@ -2,8 +2,8 @@ import * as React from 'react'
 import { CursorRange, getCursorRange, setCursorRange } from '../cursor';
 
 export interface EditableProps {
-  html: string;
-  onInput: (html: string) => void;
+  html?: string;
+  onInput?: (html: string) => void;
   component: React.FC<any>;
   placeholder?: string;
 }
@@ -24,15 +24,17 @@ export default function Editable(props: EditableProps) {
     if (!compositing.current) {
       range.current = getCursorRange(element.current!);
       console.log(range.current)
-      props.onInput(e.target.innerHTML);
+      if (props.onInput != null) {
+        props.onInput(e.target.innerHTML);
+      }
     }
   }
 
-  const doUsePlaceholder = !focused && props.html.length == 0;
+  const showPlaceholder = props.placeholder != null && (props.html == null || (!focused && props.html.length == 0));
 
   return (
     <props.component
-      className={doUsePlaceholder ? 'placeholder' : ''}
+      className={showPlaceholder ? 'placeholder' : ''}
       ref={element}
       contentEditable
       onFocus={e => setFocused(true)}
@@ -64,7 +66,7 @@ export default function Editable(props: EditableProps) {
       onDrop={e => {
         e.preventDefault();
       }}
-      dangerouslySetInnerHTML={{ __html: doUsePlaceholder ? props.placeholder : props.html }}>
+      dangerouslySetInnerHTML={{ __html: showPlaceholder ? props.placeholder : props.html }}>
     </props.component>
   );
 }

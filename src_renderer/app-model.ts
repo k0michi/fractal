@@ -17,6 +17,21 @@ export default class AppModel {
     this.library.initialize();
   }
 
+  async openNoteFromPath(path: string) {
+    const content = await bridge.readFileUTF8(path);
+    const note = parseMIML(content);
+    this.openNote(note);
+  }
+
+  async openNote(note: Note) {
+    this.note.set(note);
+    this.updateNote();
+  }
+
+  updateNote() {
+    this.note.set(this.note.get());
+  }
+
   async onClickOpen() {
     const file = await bridge.showFileOpenDialog();
 
@@ -37,25 +52,6 @@ export default class AppModel {
     this.library.changeTitle(note?.head.id, note?.head.title);
   }
 
-  async openNoteFromPath(path: string) {
-    const content = await bridge.readFileUTF8(path);
-    const note = parseMIML(content);
-    this.openNote(note);
-  }
-
-  async openNote(note: Note) {
-    this.note.set(note);
-    this.updateElement();
-  }
-
-  updateElement() {
-    const note = this.note.get();
-    const cloned = note!.body.cloneNode(true);
-    transformHL(cloned as Element);
-    const element = toElement(cloned.childNodes);
-    this.element.set(element as React.ReactElement);
-  }
-
   onClickAdd(type: ElementType) {
     const note = this.note.get();
 
@@ -72,6 +68,14 @@ export default class AppModel {
       body.appendChild(p);
     }
 
-    this.updateElement();
+    this.updateNote();
+  }
+
+  onChange(id:string, content:string) {
+    const note = this.note.get();
+    const element = note?.body.querySelector(`[id="${id}"]`)!;
+    element.innerHTML = content;
+    console.log(element)
+    this.updateNote();
   }
 }
