@@ -33,6 +33,11 @@ h6 {
   margin: 0;
 }
 
+hr {
+  margin: 0;
+  border: 0;
+}
+
 ul {
   margin: 0;
   padding-left: 0;
@@ -101,6 +106,11 @@ pre {
 
 #editor h1 {
   font-size: 2em;
+}
+
+#editor hr {
+  margin: 4px 0;
+  border-top: 1px solid #c8c8c8;
 }
 
 #editor-body {
