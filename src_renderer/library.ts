@@ -122,7 +122,13 @@ export default class Library {
   async saveNote(note: Note) {
     const path = this.noteEntryByID[note.head.id].path;
     const serializer = new XMLSerializer();
-    const document = buildDocument(note.head, note.body);
+    const bodyCloned = note.body.cloneNode(true) as Element;
+
+    if (bodyCloned.lastElementChild?.tagName == 'p' && bodyCloned.lastElementChild?.textContent?.length == 0) {
+      bodyCloned.removeChild(bodyCloned.lastElementChild);
+    }
+
+    const document = buildDocument(note.head, bodyCloned);
     const serialized = serializer.serializeToString(document);
     await bridge.writeFile(path, serialized);
   }

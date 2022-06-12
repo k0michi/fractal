@@ -69,6 +69,12 @@ export function createBlankBody(): Element {
   return body;
 }
 
+export function createBlock(document: Document, tag: string) {
+  const element = document.createElement(tag);
+  element.setAttribute('id', uuidV4());
+  return element;
+}
+
 export function buildHead(document: Document, headData: Head): Element {
   const head = document.createElement('head');
 

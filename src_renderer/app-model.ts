@@ -1,7 +1,7 @@
 import autoBind from "auto-bind";
 import React from "react";
 import { Observable } from "kyoka";
-import { parseMIML, parseXML, transformHL } from "./miml";
+import { createBlock, parseMIML, parseXML, transformHL } from "./miml";
 import Library, { Note } from "./library";
 import ElementType from "./element-type";
 import { v4 as uuidV4 } from 'uuid';
@@ -24,8 +24,8 @@ export default class AppModel {
   }
 
   async openNote(note: Note) {
+    appendParagraphLast(note);
     this.note.set(note);
-    this.updateNote();
   }
 
   updateNote() {
@@ -62,10 +62,12 @@ export default class AppModel {
     const body = note?.body;
     const document = note?.body.ownerDocument;
 
-    const element = document.createElement(getElementTag(type));
-    element.setAttribute('id', uuidV4());
-    body.appendChild(element);
+    if (body.lastChild?.textContent?.length == 0) {
+      body.removeChild(body.lastChild);
+    }
 
+    body.appendChild(createBlock(document,getElementTag(type)));
+    appendParagraphLast(note);
     this.updateNote();
   }
 
@@ -74,5 +76,21 @@ export default class AppModel {
     const element = note?.body.querySelector(`[id="${id}"]`)!;
     element.innerHTML = content;
     this.updateNote();
+  }
+}
+
+function  appendParagraphLast(note: Note) {
+  const lastElement = note?.body.lastElementChild;
+  let willAppend = lastElement == null;
+
+  if (lastElement!=null) {
+    if (lastElement.tagName != 'p') {
+      willAppend = true;
+    }
+  }
+
+  if (willAppend) {
+    const document = note?.body.ownerDocument!;
+    note?.body.append(createBlock(document, 'p'));
   }
 }
