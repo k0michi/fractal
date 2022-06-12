@@ -20,7 +20,7 @@ export default function Editable(props: EditableProps) {
     }
   }, [props.html]);
 
-  const onInput = (e) => {
+  const onInput = React.useCallback((e) => {
     if (!compositing.current) {
       range.current = getCursorRange(element.current!);
       console.log(range.current)
@@ -28,7 +28,7 @@ export default function Editable(props: EditableProps) {
         props.onInput(e.target.innerHTML);
       }
     }
-  }
+  }, [props.onInput]);
 
   const showPlaceholder = props.placeholder != null && (props.html == null || (!focused && props.html.length == 0));
 
@@ -71,18 +71,18 @@ export default function Editable(props: EditableProps) {
   );
 }
 
-export function EditableH1(props: any) {
-  const H1 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
-    <h1 ref={ref} {...props} />
-  ));
+const H1 = React.forwardRef((props, ref: React.Ref<HTMLHeadingElement>) => (
+  <h1 ref={ref} {...props} />
+));
 
+export function EditableH1(props: any) {
   return <Editable component={H1} {...props}></Editable>
 }
 
-export function EditableParagraph(props: any) {
-  const P = React.forwardRef((props, ref: React.Ref<HTMLParagraphElement>) => (
-    <p ref={ref} {...props} />
-  ));
+const P = React.forwardRef((props, ref: React.Ref<HTMLParagraphElement>) => (
+  <p ref={ref} {...props} />
+));
 
+export function EditableParagraph(props: any) {
   return <Editable component={P} {...props}></Editable>
 }
