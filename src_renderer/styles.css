@@ -108,7 +108,7 @@ pre {
 
 #editor {
   flex: 1 1 auto;
-  padding: 10px;
+  padding: 8px;
   font-size: 16px;
   overflow: auto;
 }
@@ -122,6 +122,7 @@ pre {
 }
 
 #editor h1 {
+  line-height: 1em;
   font-size: 2em;
 }
 

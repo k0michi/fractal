@@ -16,8 +16,10 @@ export default function Editor() {
   return (
     <div id="editor">
       {note != null ? <>
-        <EditableH1 placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableH1>
-        <div>{note?.head?.createdAt?.toString()}</div>
+        <div id="editor-head">
+          <EditableH1 placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableH1>
+          <div>{note?.head?.createdAt?.toString()}</div>
+        </div>
         <hr />
         <EditorBody element={processBody(model, note)} />
       </> : null}
@@ -38,13 +40,17 @@ function processBody(model: AppModel, note: Note) {
           const id = props.id;
           model.onChange(id, t);
         }
-  
+
         return React.createElement(editable, props, ...children);
       }
 
       props.onInput = (h) => {
         const id = props.id;
         model.onChange(id, h);
+      }
+
+      if (type == 'h1' || type == 'h2' || type == 'h3' || type == 'h4' || type == 'h5' || type == 'h6') {
+        props.placeholder = `Heading ${type.charAt(1)}`;
       }
 
       props.html = children.join();
