@@ -7,6 +7,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 h1 {
@@ -111,6 +112,8 @@ pre {
   padding: 8px;
   font-size: 16px;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #editor * {
@@ -121,18 +124,17 @@ pre {
   color: #d1d1d1;
 }
 
-#editor h1 {
-  line-height: 1em;
-  font-size: 2em;
-}
-
 #editor hr {
   margin: 4px 0;
   border-top: 1px solid #c8c8c8;
 }
 
+#editor-head h1 {
+  font-size: 2em;
+}
+
 #editor-body {
-  height: 100%;
+  flex: 1 1 auto;
 }
 
 #editor-body p {
