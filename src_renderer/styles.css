@@ -73,7 +73,8 @@ pre {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-bottom: 1px;
+  padding: 2px 0px;
+  font-size: 14px;
 }
 
 #library li.selected {

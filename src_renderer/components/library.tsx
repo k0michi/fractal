@@ -31,7 +31,7 @@ function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppMod
       const selected = n.head?.id == currentNote?.head.id;
 
       list.push(<li
-        style={{ paddingLeft: depth * 24 + 'px' }}
+        style={{ paddingLeft: depth * 16 + 8 + 'px' }}
         className={selected ? 'selected' : ''}
         onClick={() => model.library.onClickItem(n)}
         key={n.head?.id}
