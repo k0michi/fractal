@@ -82,6 +82,10 @@ ul {
   width: 100%;
 }
 
+#editor-body {
+  height: 100%;
+}
+
 ul.hierarchical li {
   list-style: none;
 }
