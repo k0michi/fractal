@@ -14,7 +14,6 @@ export default function ToolBar() {
       <div>
         <button onClick={e => model.onClickAdd(ElementType.Heading1)}>H1</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading2)}>H2</button>
-        <button onClick={e => model.onClickAdd(ElementType.Heading2)}>H2</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading3)}>H3</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading4)}>H4</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading5)}>H5</button>

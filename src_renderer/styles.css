@@ -88,6 +88,7 @@ pre {
 #editor {
   flex: 1 1 auto;
   padding: 12px;
+  font-size: 16px;
 }
 
 #editor * {
@@ -98,24 +99,51 @@ pre {
   color: #d1d1d1;
 }
 
-#editor p {
-  min-height: 16px;
-  font-size: 16px;
-  width: 100%;
-}
-
-#editor .math {
-  background-color: rgb(243, 243, 243);
-  padding: 12px;
-  overflow: auto;
+#editor h1 {
+  font-size: 2em;
 }
 
 #editor-body {
   height: 100%;
 }
 
+#editor-body p {
+  min-height: 16px;
+  width: 100%;
+}
+
 .katex-display {
   margin: 0;
+}
+
+#editor-body .math {
+  background-color: rgb(243, 243, 243);
+  padding: 12px;
+  overflow: auto;
+}
+
+#editor-body h1 {
+  font-size: 1.9em;
+}
+
+#editor-body h2 {
+  font-size: 1.6em;
+}
+
+#editor-body h3 {
+  font-size: 1.4em;
+}
+
+#editor-body h4 {
+  font-size: 1.2em;
+}
+
+#editor-body h5 {
+  font-size: 1.1em;
+}
+
+#editor-body h6 {
+  font-size: 1em;
 }
 
 ul.hierarchical li {
