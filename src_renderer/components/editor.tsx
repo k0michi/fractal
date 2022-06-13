@@ -18,7 +18,7 @@ export default function Editor() {
     <div id="editor">
       {note != null ? <>
         <div id="editor-head">
-          <EditableH1 placeholder="Title" onInput={(h) => model.onChangeTitle(h)} html={title}></EditableH1>
+          <EditableH1 placeholder="Title" onInput={(h) => model.onChangeTitle(h)}>{title}</EditableH1>
           <div>{note?.head?.createdAt?.toString()}</div>
         </div>
         <hr />
