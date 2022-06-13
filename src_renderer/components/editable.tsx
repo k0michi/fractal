@@ -11,6 +11,7 @@ export interface EditableProps {
   component: React.FC<any>;
   placeholder?: string;
   ref?: EditableRef;
+  id?:string;
 }
 
 const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, ref) {
@@ -80,6 +81,7 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
       onDrop={e => {
         e.preventDefault();
       }}
+      data-id={props.id}
       dangerouslySetInnerHTML={{ __html: showPlaceholder ? props.placeholder : props.html }}>
     </props.component>
   );

@@ -53,7 +53,7 @@ function processBody(model: AppModel, note: Note) {
         props.placeholder = `Heading ${type.charAt(1)}`;
       }
 
-      props.html = children.join();
+      props.html = children.join('');
       return React.createElement(editable, props);
     }
 

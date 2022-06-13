@@ -115,3 +115,11 @@ export function setCursorRange(parent: Node, cursorRange: CursorRange) {
   const selection = window.getSelection()!;
   selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
 }
+
+export function normalizeRange(range: CursorRange) {
+  if (range.end < range.start) {
+    return {start:range.end, end:range.start};
+  }
+
+  return range;
+}
