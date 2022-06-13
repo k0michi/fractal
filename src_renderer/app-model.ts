@@ -5,7 +5,7 @@ import { createBlock, parseMIML, parseXML, transformHL } from "./miml";
 import Library, { Note } from "./library";
 import ElementType from "./element-type";
 import { v4 as uuidV4 } from 'uuid';
-import { getCursorRange, normalizeRange, setCursorRange, visitNodes } from "./cursor";
+import { CursorRange, getCursorRange, normalizeRange, setCursorRange, visitNodes } from "./cursor";
 
 export default class AppModel {
   library = new Library(this);
@@ -88,32 +88,84 @@ export default class AppModel {
     let range = getCursorRange(block);
     range = normalizeRange(range);
     const xmlBlock = this.getBlock(block.dataset.id!);
-    let chars = 0;
 
-    visitNodes(xmlBlock, n => {
-      if (n.nodeType == Node.TEXT_NODE) {
-        const t = n as Text;
-        const textStart = chars;
-        const textEnd = chars + t.length;
-
-        if (textStart <= range.start && textEnd >= range.start) {
-          applyStyle(t, range.start - chars, Math.min(range.end, textEnd) - chars, type);
-        } else if (textStart <= range.end && textEnd >= range.end) {
-          applyStyle(t, Math.max(range.start, textStart) - chars, range.end - chars, type);
-        }else if (textStart >= range.start && textEnd <= range.end) {
-          applyStyle(t,textStart - chars, textEnd - chars, type);
-        }
-
-        chars = textEnd;
-      }
-    });
+    console.log('isEveryCharacterStyled', isEveryCharacterStyled(xmlBlock, range, type))
+    applyStyleRange(xmlBlock, range, type);
 
     this.updateNote();
   }
 
   getBlock(id: string) {
-    return  this.note.get()!.body.querySelector(`[id="${id}"]`)!;
+    return this.note.get()!.body.querySelector(`[id="${id}"]`)!;
   }
+}
+
+function isEveryCharacterStyled(block: Element, range: CursorRange, type: ElementType) {
+  let chars = 0;
+  let result = true;
+
+  visitNodes(block, n => {
+    if (n.nodeType == Node.TEXT_NODE) {
+      const t = n as Text;
+      const textStart = chars;
+      const textEnd = chars + t.length;
+
+      // Ranges might be wrong
+      if (textStart <= range.start && textEnd > range.start) {
+        if (!isChildOf(t, type)) {
+          result = false;
+        }
+      } else if (textStart < range.end && textEnd >= range.end) {
+        if (!isChildOf(t, type)) {
+          result = false;
+        }
+      } else if (textStart >= range.start && textEnd <= range.end) {
+        if (!isChildOf(t, type)) {
+          result = false;
+        }
+      }
+
+      chars = textEnd;
+    }
+  });
+
+  return result;
+}
+
+function isChildOf(node: Node, tag: string) {
+  let m: Node | null | undefined = node;
+
+  while (m != null && !isTag(m, tag)) {
+    m = m?.parentNode;
+  }
+
+  return m != null;
+}
+
+function isTag(node: Node | null, tag: string) {
+  return node != null && node.nodeType == Node.ELEMENT_NODE && (node as Element).tagName == tag;
+}
+
+function applyStyleRange(block: Element, range: CursorRange, type: ElementType) {
+  let chars = 0;
+
+  visitNodes(block, n => {
+    if (n.nodeType == Node.TEXT_NODE) {
+      const t = n as Text;
+      const textStart = chars;
+      const textEnd = chars + t.length;
+
+      if (textStart <= range.start && textEnd > range.start) {
+        applyStyle(t, range.start - chars, Math.min(range.end, textEnd) - chars, type);
+      } else if (textStart < range.end && textEnd >= range.end) {
+        applyStyle(t, Math.max(range.start, textStart) - chars, range.end - chars, type);
+      } else if (textStart >= range.start && textEnd <= range.end) {
+        applyStyle(t, textStart - chars, textEnd - chars, type);
+      }
+
+      chars = textEnd;
+    }
+  });
 }
 
 function applyStyle(text: Text, start: number, end: number, type: ElementType) {
@@ -133,11 +185,11 @@ function applyStyle(text: Text, start: number, end: number, type: ElementType) {
   const rest2 = text.data.substring(end);
   parent?.insertBefore(document.createTextNode(rest1), next);
   parent?.insertBefore(inline, next);
-  //console.log(inline)
   parent?.insertBefore(document.createTextNode(rest2), next);
+  parent?.normalize();
 }
 
-function getParentBlock(node: Node): HTMLElement|null {
+function getParentBlock(node: Node): HTMLElement | null {
   let m: Node | null = node;
 
   while (m != null && !(m.nodeType == Node.ELEMENT_NODE && (m as HTMLElement).dataset.id)) {
