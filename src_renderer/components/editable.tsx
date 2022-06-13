@@ -6,7 +6,7 @@ export interface EditableRef {
 }
 
 export interface EditableProps {
-  html?: string;
+  children?: any;
   onInput?: (html: string) => void;
   component: React.FC<any>;
   placeholder?: string;
@@ -15,7 +15,7 @@ export interface EditableProps {
 }
 
 const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, ref) {
-  const element = React.useRef<HTMLHeadingElement>(null);
+  const element = React.useRef<HTMLElement>(null);
   const compositing = React.useRef(false);
   const range = React.useRef<CursorRange>();
   const [focused, setFocused] = React.useState(false);
@@ -31,10 +31,11 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
   }));
 
   React.useEffect(() => {
-    if (range.current != null) {
+    if (focused && range.current != null) {
       setCursorRange(element.current!, range.current);
     }
-  }, [props.html]);
+  }, [props.children]);
+  // TO FIX: triggered after every toElement()
 
   const onInput = React.useCallback((e) => {
     if (!compositing.current) {
@@ -45,13 +46,14 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
     }
   }, [props.onInput]);
 
-  const showPlaceholder = props.placeholder != null && (props.html == null || (!focused && props.html.length == 0));
+  const showPlaceholder = props.placeholder != null && (props.children == null && !focused /*|| (!focused && props.html.length == 0)*/);
 
   return (
     <props.component
       className={showPlaceholder ? 'placeholder' : ''}
       ref={element}
       contentEditable
+      suppressContentEditableWarning
       onFocus={e => setFocused(true)}
       onBlur={e => setFocused(false)}
       onKeyDown={e => {
@@ -81,8 +83,13 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
       onDrop={e => {
         e.preventDefault();
       }}
-      data-id={props.id}
-      dangerouslySetInnerHTML={{ __html: showPlaceholder ? props.placeholder : props.html }}>
+      onSelect={e=>{
+        if (!compositing.current) {
+          range.current = getCursorRange(element.current!);
+        }
+      }}
+      data-id={props.id}>
+        {showPlaceholder ? props.placeholder : props.children}
     </props.component>
   );
 });

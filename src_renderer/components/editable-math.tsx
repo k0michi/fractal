@@ -36,7 +36,7 @@ export function EditableMath(props: EditableMathProps) {
             if (props.onInput != null) {
               props.onInput(e);
             }
-          }} html={props.children} /> :
+          }}>{props.children}</EditablePre> :
           <Katex>{props.children}</Katex>
       }
     </div>

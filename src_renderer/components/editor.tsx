@@ -7,6 +7,7 @@ import { toElement } from '../miml-react';
 import { Note } from '../library';
 import { transformHL } from '../miml';
 import { EditableMath } from './editable-math';
+import ElementType from '../element-type';
 
 export default function Editor() {
   const model = useModel<AppModel>();
@@ -53,8 +54,7 @@ function processBody(model: AppModel, note: Note) {
         props.placeholder = `Heading ${type.charAt(1)}`;
       }
 
-      props.html = children.join('');
-      return React.createElement(editable, props);
+      return React.createElement(editable, props, ...children);
     }
 
     return React.createElement(type, props, ...children);

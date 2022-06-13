@@ -100,14 +100,15 @@ export default class AppModel {
           applyStyle(t, range.start - chars, Math.min(range.end, textEnd) - chars, type);
         } else if (textStart <= range.end && textEnd >= range.end) {
           applyStyle(t, Math.max(range.start, textStart) - chars, range.end - chars, type);
+        }else if (textStart >= range.start && textEnd <= range.end) {
+          applyStyle(t,textStart - chars, textEnd - chars, type);
         }
+
         chars = textEnd;
       }
     });
 
     this.updateNote();
-    //setCursorRange(block, range);
-    //selection.collapseToEnd();
   }
 
   getBlock(id: string) {
@@ -132,7 +133,7 @@ function applyStyle(text: Text, start: number, end: number, type: ElementType) {
   const rest2 = text.data.substring(end);
   parent?.insertBefore(document.createTextNode(rest1), next);
   parent?.insertBefore(inline, next);
-  console.log(inline)
+  //console.log(inline)
   parent?.insertBefore(document.createTextNode(rest2), next);
 }
 
