@@ -46,7 +46,7 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
     }
   }, [props.onInput]);
 
-  const showPlaceholder = props.placeholder != null && (props.children == null && !focused /*|| (!focused && props.html.length == 0)*/);
+  const showPlaceholder = props.placeholder != null&&!focused && (props.children == null || props.children === '');
 
   return (
     <props.component
