@@ -8,7 +8,7 @@ export interface EditableRef {
 
 export interface EditableProps {
   children?: any;
-  onInput?: (html: string) => void;
+  onInput?: (e: any) => void;
   component: React.FC<any>;
   placeholder?: string;
   ref?: EditableRef;

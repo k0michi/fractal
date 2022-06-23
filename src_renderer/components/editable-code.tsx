@@ -7,7 +7,7 @@ import 'prismjs/themes/prism.css';
 
 export interface EditableCodeProps {
   children?: string;
-  onInput?: (tex: string) => void;
+  onInput?: (e: any) => void;
 }
 
 export function EditableCode(props: EditableCodeProps) {

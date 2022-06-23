@@ -5,7 +5,7 @@ import Katex from './katex';
 
 export interface EditableMathProps {
   children?: string;
-  onInput?: (tex: string) => void;
+  onInput?: (e: any) => void;
 }
 
 export function EditableMath(props: EditableMathProps) {
