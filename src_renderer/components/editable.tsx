@@ -34,7 +34,7 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
   }));
 
   React.useEffect(() => {
-    if(props.highlight) {
+    if (props.highlight) {
       Prism.highlightElement(element.current!);
     }
 
@@ -43,6 +43,14 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
     }
   }, [props.children]);
   // TO FIX: triggered after every toElement()
+
+  React.useEffect(() => {
+    if (props.highlight) {
+      if (element.current != null) {
+        Prism.highlightElement(element.current);
+      }
+    }
+  }, [props.language]);
 
   const onInput = React.useCallback((e) => {
     if (!compositing.current) {
@@ -54,7 +62,7 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
     }
   }, [props.onInput]);
 
-  const showPlaceholder = props.placeholder != null&&!focused && (props.children == null || props.children === '');
+  const showPlaceholder = props.placeholder != null && !focused && (props.children == null || props.children === '');
 
   return (
     <props.component
@@ -91,13 +99,13 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
       onDrop={e => {
         e.preventDefault();
       }}
-      onSelect={e=>{
+      onSelect={e => {
         if (!compositing.current) {
           range.current = getCursorRange(element.current!);
         }
       }}
       data-id={props.id}>
-        {showPlaceholder ? props.placeholder : props.children}
+      {showPlaceholder ? props.placeholder : props.children}
     </props.component>
   );
 });
@@ -166,10 +174,10 @@ export const EditablePre = React.forwardRef(function (props: any, ref) {
   return <Editable ref={ref} component={Pre} {...props}></Editable>
 });
 
-const PreCode = React.forwardRef((props, ref: React.Ref<HTMLPreElement>) => (
-  <pre className={(props as any).className}><code ref={ref} {...props} /></pre>
+const Code = React.forwardRef((props, ref: React.Ref<HTMLPreElement>) => (
+  <code ref={ref} {...props} />
 ));
 
-export const EditablePreCode = React.forwardRef(function (props: any, ref) {
-  return <Editable ref={ref} component={PreCode} {...props}></Editable>
+export const EditableCodeElem = React.forwardRef(function (props: any, ref) {
+  return <Editable ref={ref} component={Code} {...props}></Editable>
 });

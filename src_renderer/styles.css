@@ -111,7 +111,7 @@ pre {
 #editor {
   flex: 1 1 auto;
   padding: 8px;
-  font-size: 16px;
+  font-size: 14px;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -180,6 +180,11 @@ pre {
 
 #editor-body pre {
   min-height: 1em;
+  font-size: 13px;
+}
+
+#editor-body pre select {
+  display: block;
 }
 
 ul.hierarchical li {
