@@ -887,6 +887,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fractal@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "fractal@workspace:."
+  dependencies:
+    "@types/katex": ^0.14.0
+    "@types/prismjs": ^1.26.0
+    "@types/react": ^18.0.12
+    "@types/react-dom": ^18.0.5
+    "@types/uuid": ^8.3.4
+    auto-bind: ^5.0.1
+    concurrently: ^7.2.1
+    electron: ^19.0.3
+    glob: ^8.0.3
+    glob-promise: ^4.2.2
+    katex: ^0.16.0
+    kyoka: ^0.0.1
+    modern-normalize: ^1.1.0
+    prismjs: ^1.28.0
+    react: ^18.1.0
+    react-dom: ^18.1.0
+    typescript: ^4.7.3
+    uuid: ^8.3.2
+    vite: ^2.9.10
+  languageName: unknown
+  linkType: soft
+
 "fs-extra@npm:^8.1.0":
   version: 8.1.0
   resolution: "fs-extra@npm:8.1.0"
@@ -1414,32 +1440,6 @@ __metadata:
   checksum: 034c78753b0e622bc03c983663b1cdf66d03861050e0c8606563d149bc2b02d63f62ce4d32be4ab50d0553ae0ffe647fc34d1f5281184c6e1e8cf4d85e8d9823
   languageName: node
   linkType: hard
-
-"mimizuku@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "mimizuku@workspace:."
-  dependencies:
-    "@types/katex": ^0.14.0
-    "@types/prismjs": ^1.26.0
-    "@types/react": ^18.0.12
-    "@types/react-dom": ^18.0.5
-    "@types/uuid": ^8.3.4
-    auto-bind: ^5.0.1
-    concurrently: ^7.2.1
-    electron: ^19.0.3
-    glob: ^8.0.3
-    glob-promise: ^4.2.2
-    katex: ^0.16.0
-    kyoka: ^0.0.1
-    modern-normalize: ^1.1.0
-    prismjs: ^1.28.0
-    react: ^18.1.0
-    react-dom: ^18.1.0
-    typescript: ^4.7.3
-    uuid: ^8.3.2
-    vite: ^2.9.10
-  languageName: unknown
-  linkType: soft
 
 "minimatch@npm:^3.1.1":
   version: 3.1.2

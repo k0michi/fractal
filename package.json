@@ -1,6 +1,6 @@
 {
-  "name": "mimizuku",
-  "productName": "Mimizuku",
+  "name": "fractal",
+  "productName": "Fractal",
   "packageManager": "yarn@3.2.0",
   "dependencies": {
     "auto-bind": "^5.0.1",
