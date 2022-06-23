@@ -10,7 +10,8 @@ enum ElementType {
   Bold = 'b',
   Underline = 'u',
   Italic = 'i',
-  Strikethrough = 's'
+  Strikethrough = 's',
+  Code = 'code'
 }
 
 export default ElementType;

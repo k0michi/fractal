@@ -71,9 +71,15 @@ export default class AppModel {
     this.updateNote();
   }
 
-  onChange(id: string, content: string) {
+  onChange(id: string, e: Element) {
     const element = this.getBlock(id);
-    element.innerHTML = content;
+
+    if(element.tagName == 'math' || element.tagName == 'code') {
+      element.textContent = e.textContent;
+    }else {
+      element.innerHTML = e.innerHTML;
+    }
+
     this.updateNote();
   }
 

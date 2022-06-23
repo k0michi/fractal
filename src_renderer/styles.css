@@ -136,6 +136,7 @@ pre {
 
 #editor-body {
   flex: 1 1 auto;
+  white-space: pre-wrap;
 }
 
 #editor-body p {
@@ -175,6 +176,10 @@ pre {
 
 #editor-body h6 {
   font-size: 1em;
+}
+
+#editor-body pre {
+  min-height: 1em;
 }
 
 ul.hierarchical li {

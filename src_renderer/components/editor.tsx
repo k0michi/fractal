@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { useModel, useObservable } from "kyoka";
 import AppModel from "../app-model";
-import { EditableH1, EditableH2, EditableH3, EditableH4, EditableH5, EditableH6, EditableParagraph } from './editable';
+import { EditableH1, EditableH2, EditableH3, EditableH4, EditableH5, EditableH6, EditableParagraph, EditablePreCode } from './editable';
 import EditorBody from './editor-body';
 import { toElement } from '../ftml-react';
 import { Note } from '../library';
 import { transformHL } from '../ftml';
 import { EditableMath } from './editable-math';
 import ElementType from '../element-type';
+import { EditableCode } from './editable-code';
 
 export default function Editor() {
   const model = useModel<AppModel>();
@@ -36,18 +37,9 @@ function processBody(model: AppModel, note: Note) {
     const editable = getEditable(type);
 
     if (editable != null) {
-      if (type == 'math') {
-        props.onInput = (t) => {
-          const id = props.id;
-          model.onChange(id, t);
-        }
-
-        return React.createElement(editable, props, ...children);
-      }
-
-      props.onInput = (h) => {
+      props.onInput = (e) => {
         const id = props.id;
-        model.onChange(id, h);
+        model.onChange(id, e.target);
       }
 
       if (type == 'h1' || type == 'h2' || type == 'h3' || type == 'h4' || type == 'h5' || type == 'h6') {
@@ -80,5 +72,7 @@ function getEditable(type: string) {
     return EditableH6;
   } else if (type == 'math') {
     return EditableMath;
+  } else if (type == 'code') {
+    return EditableCode;
   }
 }

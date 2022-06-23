@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { CursorRange, getCursorRange, setCursorRange } from '../cursor';
+import * as Prism from 'prismjs';
 
 export interface EditableRef {
   focus();
@@ -11,7 +12,9 @@ export interface EditableProps {
   component: React.FC<any>;
   placeholder?: string;
   ref?: EditableRef;
-  id?:string;
+  id?: string;
+  highlight?: boolean;
+  language?: string;
 }
 
 const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, ref) {
@@ -31,6 +34,10 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
   }));
 
   React.useEffect(() => {
+    if(props.highlight) {
+      Prism.highlightElement(element.current!);
+    }
+
     if (focused && range.current != null) {
       setCursorRange(element.current!, range.current);
     }
@@ -40,8 +47,9 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
   const onInput = React.useCallback((e) => {
     if (!compositing.current) {
       range.current = getCursorRange(element.current!);
+
       if (props.onInput != null) {
-        props.onInput(e.target.innerHTML);
+        props.onInput(e);
       }
     }
   }, [props.onInput]);
@@ -50,7 +58,7 @@ const Editable = React.forwardRef<EditableRef, EditableProps>(function (props, r
 
   return (
     <props.component
-      className={showPlaceholder ? 'placeholder' : ''}
+      className={`${showPlaceholder ? 'placeholder' : ''} ${props.language != null ? 'language-' + props.language : ''}`}
       ref={element}
       contentEditable
       suppressContentEditableWarning
@@ -156,4 +164,12 @@ const Pre = React.forwardRef((props, ref: React.Ref<HTMLPreElement>) => (
 
 export const EditablePre = React.forwardRef(function (props: any, ref) {
   return <Editable ref={ref} component={Pre} {...props}></Editable>
+});
+
+const PreCode = React.forwardRef((props, ref: React.Ref<HTMLPreElement>) => (
+  <pre className={(props as any).className}><code ref={ref} {...props} /></pre>
+));
+
+export const EditablePreCode = React.forwardRef(function (props: any, ref) {
+  return <Editable ref={ref} component={PreCode} {...props}></Editable>
 });

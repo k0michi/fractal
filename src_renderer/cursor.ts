@@ -4,7 +4,11 @@ export interface CursorRange {
 }
 
 export function visitNodes(node: Node, visitor: (node: Node) => void) {
-  const stack = [node.firstChild];
+  const stack:Node[] = [];
+
+  if (node.firstChild != null) {
+    stack.push(node.firstChild);
+  }
 
   while (stack.length > 0) {
     const top = stack.pop()!;

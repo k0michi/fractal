@@ -19,6 +19,7 @@ export default function ToolBar() {
         <button onClick={e => model.onClickAdd(ElementType.Heading5)}>H5</button>
         <button onClick={e => model.onClickAdd(ElementType.Heading6)}>H6</button>
         <button onClick={e => model.onClickAdd(ElementType.Math)}>Math</button>
+        <button onClick={e => model.onClickAdd(ElementType.Code)}>Code</button>
         <button onClick={e => model.onClickTextStyle(ElementType.Bold)}>B</button>
         <button onClick={e => model.onClickTextStyle(ElementType.Italic)}>I</button>
         <button onClick={e => model.onClickTextStyle(ElementType.Underline)}>U</button>
