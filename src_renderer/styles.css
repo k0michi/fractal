@@ -179,8 +179,12 @@ pre {
 }
 
 #editor-body pre {
-  min-height: 1em;
   font-size: 13px;
+}
+
+#editor-body pre code {
+  min-height: 1em;
+  display: block;
 }
 
 #editor-body pre select {

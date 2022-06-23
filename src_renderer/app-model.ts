@@ -71,7 +71,7 @@ export default class AppModel {
     this.updateNote();
   }
 
-  onChange(id: string, e: Element) {
+  modifyElement(id: string, e: Element) {
     const element = this.getBlock(id);
 
     if(element.tagName == 'math' || element.tagName == 'code') {
@@ -80,6 +80,12 @@ export default class AppModel {
       element.innerHTML = e.innerHTML;
     }
 
+    this.updateNote();
+  }
+
+  changeLang(id: string, lang: string) {
+    const element = this.getBlock(id);
+    element.setAttribute('lang', lang);
     this.updateNote();
   }
 

@@ -36,9 +36,16 @@ function processBody(model: AppModel, note: Note) {
     const editable = getEditable(type);
 
     if (editable != null) {
+      const id = props.id;
+
+      if(type == 'code') {
+        props.onChangeLang=(lang:string)=>{
+          model.changeLang(id, lang);
+        };
+      }
+
       props.onInput = (e) => {
-        const id = props.id;
-        model.onChange(id, e.target);
+        model.modifyElement(id, e.target);
       }
 
       if (type == 'h1' || type == 'h2' || type == 'h3' || type == 'h4' || type == 'h5' || type == 'h6') {
