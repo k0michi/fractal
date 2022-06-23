@@ -14,7 +14,7 @@ export function parseXML(string: string) {
   return $document;
 }
 
-export function parseMIML(string: string): Note {
+export function parseFTML(string: string): Note {
   const document = parseXML(string);
   const head = extractHead(document);
   const body = document.querySelector('body')!;
@@ -63,7 +63,7 @@ export function createBlankHead(parent: string | undefined): Head {
 }
 
 export function createBlankBody(): Element {
-  const document = window.document.implementation.createDocument(null, 'miml');
+  const document = window.document.implementation.createDocument(null, 'ftml');
 
   const body = document.createElement('body');
   return body;
@@ -97,17 +97,17 @@ export function buildHead(document: Document, headData: Head): Element {
 
 export function buildDocument(head: Head, body: Element) {
   const document = body.ownerDocument;
-  let miml = document.firstChild! as Element;
+  let ftml = document.firstChild! as Element;
 
-  while (miml.firstChild != null) {
-    miml.removeChild(miml.firstChild);
+  while (ftml.firstChild != null) {
+    ftml.removeChild(ftml.firstChild);
   }
 
   const headEl = buildHead(document, head);
-  miml.appendChild(headEl);
-  miml.appendChild(body);
+  ftml.appendChild(headEl);
+  ftml.appendChild(body);
 
-  miml.setAttribute('version', '0.1');
+  ftml.setAttribute('version', '0.1');
 
   return document;
 }

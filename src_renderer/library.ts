@@ -1,7 +1,7 @@
 import autoBind from "auto-bind";
 import { Observable } from "kyoka";
 import AppModel from "./app-model";
-import { buildDocument, createBlankBody, createBlankHead, extractHead, Head, parseMIML, parseXML } from "./miml";
+import { buildDocument, createBlankBody, createBlankHead, extractHead, Head, parseFTML, parseXML } from "./ftml";
 
 export interface NoteEntry {
   path?: string;
@@ -57,7 +57,7 @@ export default class Library {
 
     for (const path of files) {
       const content = await bridge.readFileUTF8(path);
-      const { head } = parseMIML(content);
+      const { head } = parseFTML(content);
       const id = head.id!;
       const parent = head.parent;
 
@@ -92,9 +92,9 @@ export default class Library {
     let path: string;
 
     if (parent == null) {
-      path = `${this.libraryPath}/index.miml`
+      path = `${this.libraryPath}/index.ftml`
     } else {
-      path = `${this.libraryPath}/${parentPath}/${note.head.id}/index.miml`
+      path = `${this.libraryPath}/${parentPath}/${note.head.id}/index.ftml`
     }
 
     const entry: NoteEntry = { path, head: note.head, children: [] };

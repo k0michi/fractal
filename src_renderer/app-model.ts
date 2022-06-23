@@ -1,7 +1,7 @@
 import autoBind from "auto-bind";
 import React from "react";
 import { Observable } from "kyoka";
-import { createBlock, parseMIML, parseXML, transformHL } from "./miml";
+import { createBlock, parseFTML, parseXML, transformHL } from "./ftml";
 import Library, { Note } from "./library";
 import ElementType from "./element-type";
 import { v4 as uuidV4 } from 'uuid';
@@ -19,7 +19,7 @@ export default class AppModel {
 
   async openNoteFromPath(path: string) {
     const content = await bridge.readFileUTF8(path);
-    const note = parseMIML(content);
+    const note = parseFTML(content);
     this.openNote(note);
   }
 
