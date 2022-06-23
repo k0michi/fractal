@@ -4,7 +4,7 @@ export interface CursorRange {
 }
 
 export function visitNodes(node: Node, visitor: (node: Node) => void) {
-  const stack:Node[] = [];
+  const stack: Node[] = [];
 
   if (node.firstChild != null) {
     stack.push(node.firstChild);
@@ -20,7 +20,7 @@ export function visitNodes(node: Node, visitor: (node: Node) => void) {
     if (top?.firstChild != null) {
       stack.push(top.firstChild);
     }
-    
+
     visitor(top);
   }
 }
@@ -123,7 +123,7 @@ export function setCursorRange(parent: Node, cursorRange: CursorRange) {
 
 export function normalizeRange(range: CursorRange) {
   if (range.end < range.start) {
-    return {start:range.end, end:range.start};
+    return { start: range.end, end: range.start };
   }
 
   return range;

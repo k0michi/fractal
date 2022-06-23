@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { CursorRange, getCursorRange, setCursorRange } from '../cursor';
 import { EditableParagraph, EditablePre, EditableRef } from './editable';
 import Katex from './katex';
 

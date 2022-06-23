@@ -3,7 +3,7 @@ import { CursorRange, getCursorRange, setCursorRange } from '../cursor';
 import * as Prism from 'prismjs';
 
 export interface EditableRef {
-  focus();
+  focus(): void;
 }
 
 export interface EditableProps {
