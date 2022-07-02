@@ -1,18 +1,8 @@
 import autoBind from "auto-bind";
 import { Observable } from "kyoka";
 import AppModel from "./app-model";
-import { buildDocument, createBlankBody, createBlankHead, extractHead, Head, parseFTML, parseXML } from "./ftml";
-
-export interface NoteEntry {
-  path?: string;
-  head?: Head;
-  children: NoteEntry[];
-}
-
-export interface Note {
-  head: Head;
-  body: Element;
-}
+import { buildDocument, createBlankBody, createBlankHead, parseFTML, parseXML } from "./ftml";
+import {Head, NoteEntry, Note} from './note';
 
 export default class LibraryModel {
   libraryPath: string;

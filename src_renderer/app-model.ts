@@ -2,13 +2,15 @@ import autoBind from "auto-bind";
 import React from "react";
 import { Observable } from "kyoka";
 import { createBlock, parseFTML, parseXML, transformHL } from "./ftml";
-import LibraryModel, { Note } from "./library-model";
+import LibraryModel from "./library-model";
+import { Note } from './note';
 import ElementType from "./element-type";
-import { v4 as uuidV4 } from 'uuid';
 import { CursorRange, getCursorRange, normalizeRange, setCursorRange, visitNodes } from "./cursor";
+import EditorModel from "./editor-model";
 
 export default class AppModel {
   library = new LibraryModel(this);
+  // editors: EditorModel[] = [];
   note = new Observable<Note | null>(null);
   element = new Observable<React.ReactElement | null>(null);
 
@@ -74,9 +76,9 @@ export default class AppModel {
   modifyElement(id: string, e: Element) {
     const element = this.getBlock(id);
 
-    if(element.tagName == 'math' || element.tagName == 'code') {
+    if (element.tagName == 'math' || element.tagName == 'code') {
       element.textContent = e.textContent;
-    }else {
+    } else {
       element.innerHTML = e.innerHTML;
     }
 

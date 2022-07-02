@@ -1,7 +1,5 @@
 import { v4 as uuidV4 } from 'uuid';
-import { Note } from './library-model';
-
-export type Head = { [name: string]: any };
+import {Head, Note} from './note';
 
 export function parseXML(string: string) {
   const parser = new DOMParser();
