@@ -2,13 +2,13 @@ import autoBind from "auto-bind";
 import React from "react";
 import { Observable } from "kyoka";
 import { createBlock, parseFTML, parseXML, transformHL } from "./ftml";
-import Library, { Note } from "./library";
+import LibraryModel, { Note } from "./library-model";
 import ElementType from "./element-type";
 import { v4 as uuidV4 } from 'uuid';
 import { CursorRange, getCursorRange, normalizeRange, setCursorRange, visitNodes } from "./cursor";
 
 export default class AppModel {
-  library = new Library(this);
+  library = new LibraryModel(this);
   note = new Observable<Note | null>(null);
   element = new Observable<React.ReactElement | null>(null);
 

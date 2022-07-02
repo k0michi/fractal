@@ -1,5 +1,5 @@
 import { v4 as uuidV4 } from 'uuid';
-import { Note } from './library';
+import { Note } from './library-model';
 
 export type Head = { [name: string]: any };
 

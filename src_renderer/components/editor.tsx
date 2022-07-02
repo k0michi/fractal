@@ -4,7 +4,7 @@ import AppModel from "../app-model";
 import { EditableH1, EditableH2, EditableH3, EditableH4, EditableH5, EditableH6, EditableParagraph } from './editable';
 import EditorBody from './editor-body';
 import { toElement } from '../ftml-react';
-import { Note } from '../library';
+import { Note } from '../library-model';
 import { transformHL } from '../ftml';
 import { EditableMath } from './editable-math';
 import { EditableCode } from './editable-code';

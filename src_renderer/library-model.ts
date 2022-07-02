@@ -14,7 +14,7 @@ export interface Note {
   body: Element;
 }
 
-export default class Library {
+export default class LibraryModel {
   libraryPath: string;
   appModel: AppModel;
   noteEntryByID: { [id: string]: NoteEntry } = {};

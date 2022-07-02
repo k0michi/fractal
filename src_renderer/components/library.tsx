@@ -1,7 +1,7 @@
 import { useModel, useObservable } from 'kyoka';
 import * as React from 'react'
 import AppModel from '../app-model';
-import { Note, NoteEntry } from '../library';
+import { Note, NoteEntry } from '../library-model';
 
 export default function Library() {
   const model = useModel<AppModel>();
