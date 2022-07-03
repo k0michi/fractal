@@ -28,8 +28,8 @@ export default class EditorModel {
   }
 
   addElement(type: ElementType) {
-    const body = this.note?.body;
-    const document = this.note?.body.ownerDocument;
+    const body = this.note.body;
+    const document = this.note.body.ownerDocument;
 
     /*
     if (body.lastChild?.textContent?.length == 0) {
@@ -43,7 +43,7 @@ export default class EditorModel {
   }
 
   onEditElement(id: string, e: Element) {
-    const element = this.getBlock(id);
+    const element = this.getBlock(id)!;
 
     if (element.tagName == 'math') {
       element.textContent = e.textContent;
@@ -71,7 +71,7 @@ export default class EditorModel {
     const block = getParentBlock(selection.focusNode!)!;
     let range = getCursorRange(block);
     range = normalizeRange(range);
-    const xmlBlock = this.getBlock(block.dataset.id!);
+    const xmlBlock = this.getBlock(block.dataset.id!)!;
 
     console.log('isEveryCharacterStyled', isEveryCharacterStyled(xmlBlock, range, type))
     if (isEveryCharacterStyled(xmlBlock, range, type)) {
@@ -85,7 +85,7 @@ export default class EditorModel {
   }
 
   getBlock(id: string) {
-    return this.note.body.querySelector(`[id="${id}"]`)!;
+    return this.note.body.querySelector(`[id="${id}"]`);
   }
 
   appendParagraphLast() {
@@ -105,6 +105,27 @@ export default class EditorModel {
       note.body.append(p);
       this.view?.appendChild(p);
     }
+  }
+
+  increaseIndent(id: string) {
+    {
+      const document = this.note.body.ownerDocument;
+      const block = this.getBlock(id)!;
+      const indent = document.createElement('indent');
+      this.wrapNode(block, indent);
+    }
+
+    {
+      const block = this.view?.getBlock(id)!;
+      const indent = document.createElement('div');
+      indent.className = 'indent';
+      this.wrapNode(block, indent);
+    }
+  }
+
+  wrapNode(node: Node, container: Element) {
+    node.parentNode?.replaceChild(container, node);
+    container.appendChild(node);
   }
 }
 

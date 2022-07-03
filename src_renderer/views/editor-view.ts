@@ -102,6 +102,13 @@ export default class EditorView {
         const p = Editable.buildEditable('p', content);
         p.dataset.id = attributes['id'].value;
         this.registerEditableEvent(p);
+
+        p.addEventListener('keydown', e => {
+          if (e.key == 'Tab') {
+            this.model?.increaseIndent(p.dataset.id!);
+          }
+        });
+
         return p;
       case ElementType.Heading1:
       case ElementType.Heading2:
@@ -139,6 +146,11 @@ export default class EditorView {
         code.dataset.id = attributes['id'].value;
         this.registerEditableEvent(code);
         return code;
+      case ElementType.Indent:
+        const indent = document.createElement('div');
+        indent.className = 'indent';
+        indent.appendChild(content);
+        return indent;
     }
 
     throw new Error('Unsupported element');
@@ -179,5 +191,9 @@ export default class EditorView {
   appendChild(element: Element) {
     const transformed = this.transformNode(element);
     this.$editorBody.appendChild(transformed);
+  }
+
+  getBlock(id: string) {
+    return this.$editorBody.querySelector(`[data-id="${id}"]`);
   }
 }

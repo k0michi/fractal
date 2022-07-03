@@ -192,3 +192,7 @@ pre {
 #editor-body pre select {
   display: block;
 }
+
+#editor-body .indent {
+  padding-left: 12px;
+}
