@@ -1,7 +1,7 @@
 import autoBind from "auto-bind";
 import { Observable } from "kyoka";
 import AppModel from "./app-model";
-import { buildDocument, createBlankBody, createBlankHead, parseFTML, parseXML } from "./ftml";
+import { buildDocument, createBlankBody, createBlankHead, parseFML, parseXML } from "./fml";
 import {Head, NoteEntry, Note} from './note';
 
 export default class LibraryModel {
@@ -47,7 +47,7 @@ export default class LibraryModel {
 
     for (const path of files) {
       const content = await bridge.readFileUTF8(path);
-      const { head } = parseFTML(content);
+      const { head } = parseFML(content);
       const id = head.id!;
       const parent = head.parent;
 
@@ -82,9 +82,9 @@ export default class LibraryModel {
     let path: string;
 
     if (parent == null) {
-      path = `${this.libraryPath}/index.ftml`
+      path = `${this.libraryPath}/index.fml`
     } else {
-      path = `${this.libraryPath}/${parentPath}/${note.head.id}/index.ftml`
+      path = `${this.libraryPath}/${parentPath}/${note.head.id}/index.fml`
     }
 
     note.path = path;

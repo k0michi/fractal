@@ -2,7 +2,7 @@ import autoBind from "auto-bind";
 import AppModel from "./app-model";
 import { CursorRange, getCursorRange, normalizeRange, setCursorRange, visitNodes } from "./cursor";
 import ElementType from "./element-type";
-import { buildDocument, createBlock } from "./ftml";
+import { buildDocument, createBlock } from "./fml";
 import { Note } from './note';
 import EditorView from "./views/editor-view";
 

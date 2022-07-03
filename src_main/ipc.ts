@@ -27,7 +27,7 @@ export function registerHandlers() {
   });
 
   ipcMain.handle(Channel.globNodes, async (e, pattern) => {
-    return await glob('**/*.ftml', { cwd: libraryPath, absolute: true });
+    return await glob('**/*.fml', { cwd: libraryPath, absolute: true });
   });
 
   ipcMain.handle(Channel.makeLibraryDir, async (e, pattern) => {
