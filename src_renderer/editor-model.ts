@@ -9,13 +9,13 @@ import EditorView from "./views/editor-view";
 export default class EditorModel {
   appModel: AppModel;
   note: Note;
-  view: EditorView;
+  view: EditorView | null;
 
   constructor(appModel: AppModel, note: Note) {
     this.appModel = appModel;
     this.note = note;
     autoBind(this);
-    appendParagraphLast(note);
+    this.appendParagraphLast();
   }
 
   registerView(view: EditorView) {
@@ -38,8 +38,8 @@ export default class EditorModel {
 
     const newBlock = createBlock(document, type);
     body.appendChild(newBlock);
-    this.view.appendChild(newBlock);
-    // appendParagraphLast(this.note);
+    this.view?.appendChild(newBlock);
+    this.appendParagraphLast();
   }
 
   onEditElement(id: string, e: Element) {
@@ -74,17 +74,41 @@ export default class EditorModel {
     const xmlBlock = this.getBlock(block.dataset.id!);
 
     console.log('isEveryCharacterStyled', isEveryCharacterStyled(xmlBlock, range, type))
-    applyStyleRange(xmlBlock, range, type);
-    applyStyleRange(block, range, type);
+    if (isEveryCharacterStyled(xmlBlock, range, type)) {
+      // removeStyleRange(xmlBlock, range, type);
+      // removeStyleRange(block, range, type);
+    } else {
+      applyStyleRange(xmlBlock, range, type);
+      applyStyleRange(block, range, type);
+    }
     setCursorRange(block, range);
   }
 
   getBlock(id: string) {
     return this.note.body.querySelector(`[id="${id}"]`)!;
   }
+
+  appendParagraphLast() {
+    const note = this.note;
+    const lastElement = note.body.lastElementChild;
+    let willAppend = lastElement == null;
+
+    if (lastElement != null) {
+      if (lastElement.tagName != 'p') {
+        willAppend = true;
+      }
+    }
+
+    if (willAppend) {
+      const document = note.body.ownerDocument!;
+      const p = createBlock(document, 'p');
+      note.body.append(p);
+      this.view?.appendChild(p);
+    }
+  }
 }
 
-function isEveryCharacterStyled(block: Element, range: CursorRange, type: ElementType) {
+function isEveryCharacterStyled(block: Element, range: CursorRange, type: string) {
   let chars = 0;
   let result = true;
 
@@ -116,21 +140,25 @@ function isEveryCharacterStyled(block: Element, range: CursorRange, type: Elemen
   return result;
 }
 
-function isChildOf(node: Node, tag: string) {
+function findParentTag(node: Node, tag: string) {
   let m: Node | null | undefined = node;
 
   while (m != null && !isTag(m, tag)) {
     m = m.parentNode;
   }
 
-  return m != null;
+  return m;
+}
+
+function isChildOf(node: Node, tag: string) {
+  return findParentTag(node, tag) != null;
 }
 
 function isTag(node: Node | null, tag: string) {
   return node != null && node.nodeType == Node.ELEMENT_NODE && (node as Element).tagName.toLowerCase() == tag;
 }
 
-function applyStyleRange(block: Element, range: CursorRange, type: ElementType) {
+function applyStyleRange(block: Element, range: CursorRange, type: string) {
   let chars = 0;
 
   visitNodes(block, n => {
@@ -152,16 +180,16 @@ function applyStyleRange(block: Element, range: CursorRange, type: ElementType) 
   });
 }
 
-function applyStyle(text: Text, start: number, end: number, type: ElementType) {
+function applyStyle(text: Text, start: number, end: number, type: string) {
   if (isChildOf(text, type)) {
     return;
   }
 
-  const document = text.ownerDocument;
-
   if (start == end) {
     return;
   }
+
+  const document = text.ownerDocument;
 
   const parent = text.parentNode;
   const next = text.nextSibling;
@@ -177,6 +205,63 @@ function applyStyle(text: Text, start: number, end: number, type: ElementType) {
   parent?.normalize();
 }
 
+/*
+function removeStyleRange(block: Element, range: CursorRange, type: ElementType) {
+  let chars = 0;
+
+  visitNodes(block, n => {
+    if (n.nodeType == Node.TEXT_NODE) {
+      const t = n as Text;
+      const textStart = chars;
+      const textEnd = chars + t.length;
+
+      if (textStart <= range.start && textEnd > range.start) {
+        removeStyle(t, range.start - chars, Math.min(range.end, textEnd) - chars, type);
+      } else if (textStart < range.end && textEnd >= range.end) {
+        removeStyle(t, Math.max(range.start, textStart) - chars, range.end - chars, type);
+      } else if (textStart >= range.start && textEnd <= range.end) {
+        removeStyle(t, textStart - chars, textEnd - chars, type);
+      }
+
+      chars = textEnd;
+    }
+  });
+}
+
+function removeStyle(text: Text, start: number, end: number, type: ElementType) {
+  const parentTag = findParentTag(text, type);
+
+  if (parentTag == null) {
+    return;
+  }
+
+  if (start == end) {
+    return;
+  }
+
+  const document = text.ownerDocument;
+  reorderTag(parentTag as Element);
+}
+
+function reorderTag(node: Element) {
+  const tagName = node.tagName;
+  const document = node.ownerDocument!;
+  const children = document.createDocumentFragment();
+
+  for (const c of node.childNodes) {
+    children.appendChild(c);
+  }
+
+  visitNodes(children, n => {
+    if (n.nodeType == Node.TEXT_NODE) {
+      const t = n as Text;
+      applyStyle(t, 0, t.length, tagName);
+    }
+  });
+
+  node.parentNode?.replaceChild(children, node);
+}*/
+
 function getParentBlock(node: Node | null): HTMLElement | null {
   let m: Node | null = node;
 
@@ -185,20 +270,4 @@ function getParentBlock(node: Node | null): HTMLElement | null {
   }
 
   return m as HTMLElement;
-}
-
-function appendParagraphLast(note: Note) {
-  const lastElement = note?.body.lastElementChild;
-  let willAppend = lastElement == null;
-
-  if (lastElement != null) {
-    if (lastElement.tagName != 'p') {
-      willAppend = true;
-    }
-  }
-
-  if (willAppend) {
-    const document = note?.body.ownerDocument!;
-    note?.body.append(createBlock(document, 'p'));
-  }
 }
