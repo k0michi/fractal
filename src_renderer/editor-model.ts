@@ -55,7 +55,6 @@ export default class EditorModel {
     } else {
       element.innerHTML = e.innerHTML;
     }
-    console.log(element)
 
     // notify update
   }
@@ -95,7 +94,7 @@ function isEveryCharacterStyled(block: Element, range: CursorRange, type: Elemen
       const textStart = chars;
       const textEnd = chars + t.length;
 
-      // Ranges might be wrong
+      // FIXME: Ranges might be wrong
       if (textStart <= range.start && textEnd > range.start) {
         if (!isChildOf(t, type)) {
           result = false;
@@ -121,14 +120,14 @@ function isChildOf(node: Node, tag: string) {
   let m: Node | null | undefined = node;
 
   while (m != null && !isTag(m, tag)) {
-    m = m?.parentNode;
+    m = m.parentNode;
   }
 
   return m != null;
 }
 
 function isTag(node: Node | null, tag: string) {
-  return node != null && node.nodeType == Node.ELEMENT_NODE && (node as Element).tagName == tag;
+  return node != null && node.nodeType == Node.ELEMENT_NODE && (node as Element).tagName.toLowerCase() == tag;
 }
 
 function applyStyleRange(block: Element, range: CursorRange, type: ElementType) {
@@ -154,6 +153,10 @@ function applyStyleRange(block: Element, range: CursorRange, type: ElementType) 
 }
 
 function applyStyle(text: Text, start: number, end: number, type: ElementType) {
+  if (isChildOf(text, type)) {
+    return;
+  }
+
   const document = text.ownerDocument;
 
   if (start == end) {
