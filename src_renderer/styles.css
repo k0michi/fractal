@@ -146,9 +146,10 @@ pre {
 
 .katex-display {
   margin: 0;
+  min-height: 1em;
 }
 
-#editor-body .math {
+#editor-body .math-block {
   background-color: rgb(243, 243, 243);
   padding: 12px;
   overflow: auto;
@@ -180,6 +181,7 @@ pre {
 
 #editor-body pre {
   font-size: 13px;
+  margin: 0;
 }
 
 #editor-body pre code {

@@ -6,18 +6,18 @@ import { NoteEntry, Note } from '../note';
 export default function Library() {
   const model = useModel<AppModel>();
   const rootNote = useObservable(model.library.rootNote);
-  const currentNote = useObservable(model.note);
+  const activeNote = useObservable(model.activeEditor)?.note;
 
   return (
     <div id="library">
       <ul>
-        {rootNote != null ? treeToList(rootNote, 0, model, currentNote) : null}
+        {rootNote != null ? treeToList(rootNote, 0, model, activeNote) : null}
       </ul>
     </div>
   );
 };
 
-function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppModel, currentNote: Note | null): React.ReactElement[] {
+function treeToList(notes: NoteEntry | NoteEntry[], depth: number, model: AppModel, currentNote: Note | undefined): React.ReactElement[] {
   const list: React.ReactElement[] = [];
 
   if (Array.isArray(notes)) {

@@ -7,6 +7,7 @@ export interface NoteEntry {
 }
 
 export interface Note {
+  path?: string
   head: Head;
   body: Element;
 }

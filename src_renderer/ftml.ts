@@ -29,27 +29,6 @@ export function extractHead(document: Document) {
   return head;
 }
 
-export function transformHL(root: Element) {
-  const document = root.ownerDocument;
-
-  for (const hl of root.querySelectorAll('hl > li > hl')) {
-    const parentNext = hl.parentNode!.nextSibling;
-    const gParent = hl.parentNode!.parentNode!;
-    gParent.insertBefore(hl, parentNext);
-  }
-
-  for (const hl of root.querySelectorAll('hl')) {
-    const ul = document.createElement('ul');
-    ul.setAttribute('className', 'hierarchical');
-
-    while (hl.firstChild != null) {
-      ul.appendChild(hl.firstChild);
-    }
-
-    hl.parentNode!.replaceChild(ul, hl);
-  }
-}
-
 export function createBlankHead(parent: string | undefined): Head {
   const createdAt = new Date();
   const modifiedAt = createdAt;
@@ -108,8 +87,4 @@ export function buildDocument(head: Head, body: Element) {
   ftml.setAttribute('version', '0.1');
 
   return document;
-}
-
-export enum PropertyType {
-  String, Number, Boolean, DateTime, URL, ID
 }

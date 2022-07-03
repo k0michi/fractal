@@ -23,7 +23,7 @@ export default class LibraryModel {
     if (this.rootNote.get() == null) {
       const rootNote = this.newNote();
       this.register(rootNote);
-      await this.saveNote(rootNote);
+      await this.appModel.saveNote(rootNote);
     }
   }
 
@@ -87,6 +87,7 @@ export default class LibraryModel {
       path = `${this.libraryPath}/${parentPath}/${note.head.id}/index.ftml`
     }
 
+    note.path = path;
     const entry: NoteEntry = { path, head: note.head, children: [] };
     this.noteEntryByID[note.head.id] = entry;
 
@@ -109,28 +110,14 @@ export default class LibraryModel {
     this.rootNote.set(this.rootNote.get());
   }
 
-  async saveNote(note: Note) {
-    const path = this.noteEntryByID[note.head.id].path;
-    const serializer = new XMLSerializer();
-    const bodyCloned = note.body.cloneNode(true) as Element;
-
-    if (bodyCloned.lastElementChild?.tagName == 'p' && bodyCloned.lastElementChild?.textContent?.length == 0) {
-      bodyCloned.removeChild(bodyCloned.lastElementChild);
-    }
-
-    const document = buildDocument(note.head, bodyCloned);
-    const serialized = serializer.serializeToString(document);
-    await bridge.writeFile(path, serialized);
-  }
-
   onClickItem(note: NoteEntry) {
     this.appModel.openNoteFromPath(note.path!);
   }
 
-  onClickNew() {
+  async onClickNew() {
     const note = this.newNote();
     this.register(note);
-    this.saveNote(note);
+    await this.appModel.saveNote(note);
     this.appModel.openNote(note);
   }
 }
